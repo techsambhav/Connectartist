@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "connect-with-your-artist",
+  "private_key_id": "1ec1b0a553e3f97dd170dc3511599d26a3a527ad",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDebo2CaIjkkWTB\nAvkAadxmjZl88MEtizFZV2x5f2xp4CyduJuvoCEyyzsQUuX6fkBcyN9tE2GsMOk1\nh9NuM0WkrWWn7SSVq8p0z4znDgS187fTO/n+/uJSgg2huBGTvLpxI6weIsnTv4+8\nGKGRGaB2BTHUeemnrfZthsX2R3reOSZmuFDAf3l61MvlO+MRcjEL2LB5kccVHSfX\neQmNg534KG8fhBCxdrqepMf+J4jEwCL0zsIfme6CM7sLm7sLbzL6eApqr0vNtWkk\n/j6XW5Eu34H1P4EQGsO0upet4AC6YLF4iTNU8nff620BouDJB24HJUJ+rl4BDUXt\nO2BePCFPAgMBAAECggEAO9s8MW+4BuopVtdZ8oaKTP6l4z1Wfs8KRKSGCFwF7Kfq\n2baoDqbkyCpwhoAIa1Q2NcHIfi3NBu1SlJksiGc7woj25i2mvrAwFycTH8ph8iTX\nvvxQ1hH5DYL58B78e+k5suCKnMF31oeiQlfOgqGG0LutISR9gCYMPoUaGKA7rDjs\nOg/PS/VLldpNYfLJt2C6qhChJsOYSXpA1iB4Nib/pC3diG54b+qoncRHhF80sTR8\nBE88fYX5zfxTc+AIB/WZfFl/DCoQAw59ZltSGgnDkAFRgbXCl4Js/xTc6g7TRHcS\n5PxSOrzgzuM9To+1r2uOnSclxfnVy2uiN+nOUNzr4QKBgQD9AByEtJywbOFLDwxE\n8hkuUxVpt8QA89ckpCzsHjdCNQulInsIhALr2kIIQS3QF9CYJhXhcKJzhYDY8Kwi\nSVCWPVJOXnjQOIBGso/Kq8KrBsDdBryom+bpf+dDXYN4YrymkcWn87emAqWwtOLX\n4hQUZaryffvZUZoXaPODWzROqwKBgQDhEalsElKBW+cH4z9qajaqbOJ3todbc9w+\n//NcVkjZP5Po2DknUqA32ua1KUgXT/Wt3baaAnvQ3OhHxUznyEAm17JuGl01T3AA\n/YpCI/p61Jy8OqR1q5R2QglxtaCQMO/S/F/rbgQ/Qi9vvx6drB1btfLPFiDXaC+S\nkOFKp3nn7QKBgQDTCaPAQpQtSjVHkf7PCA9fJ+jFrYcusDe3FcdvEelQLcVP8woj\n2VJCgGXyUsQvP549PA+mZHjt2d/XljJPy04QdIhSXNV0Ap1l2468JTgVx2VbOUJn\ndtxPy+QRulBvPBVW8GOqrE51iOHDG6/ZGnlbZk8JRXOuHDZn7qCp4osoTwKBgEw+\nSG900YBC2sPARsZMztHy6tD1A2uGlzC8UfuQu0LlF70EKnBYvC/PtuHd5y8Ghkps\n1iPb/YemngVaIBBQtPKzlR1ZTwP1MhMT0JdRStP7XFEjaHz4L+XTvxFHHupZuZR2\nrCO79DJdwGYRj1SIbrWXsHZYn614/MygycEZdOGNAoGBAIYl30uLvv583iuH7aGz\npN6c6ZjheDtXAuzjiMixvTfWtCvys3u20tGEGfN8YAhDRZ1FwVX3179ILGhOBdbm\noZCDDABcYz665LHkT5bMsneGBagD6NT+RwRCs0jWkrUvvJCR9GrTOLFu2mZgDCPS\nOsqZVM/pwgphmBIqPmbevYUb\n-----END PRIVATE KEY-----\n",
+  "client_email": "connectartist-storage@connect-with-your-artist.iam.gserviceaccount.com",
+  "client_id": "106590902203708478605",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/connectartist-storage%40connect-with-your-artist.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

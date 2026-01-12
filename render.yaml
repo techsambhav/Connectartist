@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: connect-artist-backend
+    env: node
+    buildCommand: npm ci && npx puppeteer browsers install chrome
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TOKEN_EXPIRES_IN
+        value: 30d
+      - key: PUPPETEER_CACHE_DIR
+        value: /opt/render/.cache/puppeteer

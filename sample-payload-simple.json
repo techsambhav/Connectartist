@@ -1,0 +1,72 @@
+{
+  "bookingId": "CA-BKG-2025-000123",
+  "logoUrl": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODYiIGhlaWdodD0iODYiIHZpZXdCb3g9IjAgMCA4NiA4NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iODYiIGhlaWdodD0iODYiIHJ4PSI4IiBmaWxsPSIjMWE3M2U4Ii8+PHRleHQgeD0iNDMiIHk9IjUwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7wn46kPC90ZXh0Pjwvc3ZnPg==",
+  "brandBackgroundUrl": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjYwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDI2MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjI2MCIgaGVpZ2h0PSIxNTAiIGZpbGw9IiNmMGY0ZjgiLz48L3N2Zz4=",
+  "event": {
+    "type": "Concert",
+    "formattedDate": "2025-11-15 (Sat)",
+    "startTime": "19:00",
+    "endTime": "21:30",
+    "audienceSize": "500",
+    "venue": {
+      "place_id": "ChIJ...abc",
+      "formatted_address": "Royal Garden Grounds, Sector 17, Mumbai, Maharashtra",
+      "city": "Mumbai",
+      "postal_code": "400001",
+      "lat": 19.0760,
+      "lng": 72.8777
+    }
+  },
+  "artist": {
+    "id": "615abcd",
+    "name": "The Live Band",
+    "genre": "Rock / Pop",
+    "phone": "+91 98765 43210",
+    "email": "band@example.com",
+    "photoUrl": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE2MCIgdmlld0JveD0iMCAwIDE2MCAxNjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iODAiIGN5PSI4MCIgcj0iODAiIGZpbGw9IiM2NjY2ZmYiLz48dGV4dCB4PSI4MCIgeT0iOTUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI2MCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkw8L3RleHQ+PC9zdmc+",
+    "profileUrl": "https://connectartist.example/profile/615abcd"
+  },
+  "organizer": {
+    "id": "608ef",
+    "name": "Ravi Kumar",
+    "phone": "+91 91234 56789",
+    "email": "ravi@eventsco.com",
+    "backup": { "name": "Priya Sharma", "phone": "+91 99887 77665" }
+  },
+  "venueManager": {
+    "name": "Mr. Venue",
+    "phone": "+91 92111 22334"
+  },
+  "performance": {
+    "sets": 2,
+    "setDurationMinutes": 45,
+    "loadIn": "15:00",
+    "soundcheck": "17:00",
+    "stageSize": "8m x 6m",
+    "power": "2 x 32A / 230V",
+    "rider": ["PA System", "2 Monitor Wedges", "Lighting Rig", "Backline: Drumkit"]
+  },
+  "payment": {
+    "price": 75000,
+    "currency": "INR",
+    "depositRequired": true,
+    "depositAmount": 20000,
+    "paid": 20000,
+    "status": "Deposit received",
+    "payoutDate": "2025-11-18"
+  },
+  "attachments": [
+    { "name": "StagePlan.pdf", "url": "https://your-cdn.example/uploads/stageplan.pdf" }
+  ],
+  "notes": "Please arrange two parking slots near the main gate for load-in. Artist arrives at 15:00.",
+  "travel": {
+    "responsibility": "Organizer",
+    "details": "Pick-up from Airport, Hotel: Grand Stay, Room 402",
+    "pickup": "Pick-up at 14:00, Terminal 2"
+  },
+  "terms": {
+    "version": "1.0",
+    "acceptedAt": "2025-10-01T12:32:00+05:30",
+    "cancellationShort": "Cancel >14d: full refund; 7-14d: 50%; <7d: no refund"
+  }
+}
