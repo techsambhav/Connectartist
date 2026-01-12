@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Artist Contact Information</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+      :root {
+          --primary: #4361ee;
+          --primary-dark: #3a56d4;
+          --secondary: #3f37c9;
+          --success: #4cc9f0;
+          --danger: #f72585;
+          --warning: #f8961e;
+          --info: #4895ef;
+          --light: #f8f9fa;
+          --dark: #212529;
+          --white: #ffffff;
+          --gray: #6c757d;
+          --gray-dark: #343a40;
+          --radius: 8px;
+          --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+          --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.16);
+          --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+          --transition: all 0.3s ease;
+      }
+
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: 'Poppins', sans-serif;
+          background-color: #f5f7fa;
+          color: var(--dark);
+          line-height: 1.6;
+      }
+
+      .contact-container {
+          max-width: 800px;
+          margin: 2rem auto;
+          padding: 2rem;
+          background: var(--white);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow-lg);
+      }
+
+      .contact-header {
+          text-align: center;
+          margin-bottom: 2rem;
+      }
+
+      .contact-header h1 {
+          font-size: 2rem;
+          color: var(--primary);
+          margin-bottom: 0.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+      }
+
+      .contact-header p {
+          color: var(--gray);
+          font-size: 0.95rem;
+      }
+
+      .contact-form {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+      }
+
+      .form-group {
+          position: relative;
+      }
+
+      .form-group label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+          color: var(--dark);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .form-group .icon {
+          color: var(--primary);
+          font-size: 1.1rem;
+      }
+
+      .form-control {
+          width: 100%;
+          padding: 0.8rem 1rem;
+          border: 1px solid #ddd;
+          border-radius: var(--radius);
+          font-size: 1rem;
+          transition: var(--transition);
+          background-color: var(--white);
+      }
+
+      .form-control:focus {
+          outline: none;
+          border-color: var(--primary);
+          box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      .required {
+          color: var(--danger);
+          margin-left: 0.2rem;
+      }
+
+      .btn-group {
+          display: flex;
+          gap: 1rem;
+          margin-top: 1.5rem;
+      }
+
+      .btn {
+          padding: 0.8rem 1.5rem;
+          border-radius: var(--radius);
+          border: none;
+          font-weight: 600;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: var(--transition);
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+      }
+
+      .btn-primary {
+          background-color: var(--primary);
+          color: var(--white);
+      }
+
+      .btn-primary:hover {
+          background-color: var(--primary-dark);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
+      }
+
+      .btn-secondary {
+          background-color: var(--light);
+          color: var(--dark);
+          border: 1px solid #ddd;
+      }
+
+      .btn-secondary:hover {
+          background-color: #e9ecef;
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-sm);
+      }
+
+      .contact-display {
+          margin-top: 2rem;
+          border-top: 1px solid #eee;
+          padding-top: 2rem;
+      }
+
+      .contact-display h2 {
+          font-size: 1.5rem;
+          margin-bottom: 1.5rem;
+          color: var(--primary);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .contact-item {
+          background: var(--light);
+          padding: 1.5rem;
+          border-radius: var(--radius);
+          margin-bottom: 1rem;
+          position: relative;
+          box-shadow: var(--shadow-sm);
+      }
+
+      .contact-field {
+          display: flex;
+          margin-bottom: 1rem;
+          align-items: flex-start;
+      }
+
+      .contact-field:last-child {
+          margin-bottom: 0;
+      }
+
+      .contact-field .label {
+          font-weight: 600;
+          min-width: 150px;
+          color: var(--dark);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+      }
+
+      .contact-field .value {
+          flex: 1;
+          color: var(--gray-dark);
+      }
+
+      .contact-actions {
+          position: absolute;
+          top: 1rem;
+          right: 1rem;
+          display: flex;
+          gap: 0.5rem;
+      }
+
+      .action-btn {
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-size: 1rem;
+          padding: 0.3rem;
+          border-radius: 50%;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: var(--transition);
+      }
+
+      .edit-btn {
+          color: var(--info);
+          background-color: rgba(72, 149, 239, 0.1);
+      }
+
+      .edit-btn:hover {
+          background-color: rgba(72, 149, 239, 0.2);
+      }
+
+      .delete-btn {
+          color: var(--danger);
+          background-color: rgba(247, 37, 133, 0.1);
+      }
+
+      .delete-btn:hover {
+          background-color: rgba(247, 37, 133, 0.2);
+      }
+
+      .empty-state {
+          text-align: center;
+          padding: 2rem;
+          color: var(--gray);
+      }
+
+      .empty-state i {
+          font-size: 3rem;
+          margin-bottom: 1rem;
+          color: #ddd;
+      }
+
+      .toast {
+          position: fixed;
+          bottom: 2rem;
+          right: 2rem;
+          padding: 1rem 1.5rem;
+          background-color: var(--success);
+          color: var(--white);
+          border-radius: var(--radius);
+          box-shadow: var(--shadow-lg);
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          transform: translateY(100px);
+          opacity: 0;
+          transition: var(--transition);
+          z-index: 1000;
+      }
+
+      .toast.show {
+          transform: translateY(0);
+          opacity: 1;
+      }
+
+      .toast.error {
+          background-color: var(--danger);
+      }
+
+      @media (max-width: 768px) {
+          .contact-container {
+              margin: 1rem;
+              padding: 1.5rem;
+          }
+
+          .contact-field {
+              flex-direction: column;
+              gap: 0.3rem;
+          }
+
+          .contact-field .label {
+              min-width: auto;
+          }
+
+          .btn-group {
+              flex-direction: column;
+          }
+      }
+  </style>
+</head>
+<body>
+  <div class="contact-container">
+      <div class="contact-header">
+          <h1><i class="fas fa-id-card"></i> Contact Information</h1>
+          <p>Provide your contact details so clients can reach you easily</p>
+      </div>
+
+      <!-- Contact Form -->
+      <form id="contactForm" class="contact-form">
+          <div class="form-group">
+              <label for="phone">
+                  <i class="fas fa-phone icon"></i> Phone Number <span class="required">*</span>
+              </label>
+              <input type="tel" id="phone" class="form-control" placeholder="+91 9876543210" required>
+          </div>
+
+          <div class="form-group">
+              <label for="location">
+                  <i class="fas fa-map-marker-alt icon"></i> Location <span class="required">*</span>
+              </label>
+              <input type="text" id="location" class="form-control" placeholder="City, Country" required>
+          </div>
+
+          <div class="form-group">
+              <label for="email">
+                  <i class="fas fa-envelope icon"></i> Email
+              </label>
+              <input type="email" id="email" class="form-control" placeholder="your@email.com">
+          </div>
+
+          <div class="form-group">
+              <label for="alternatePhone">
+                  <i class="fas fa-phone-alt icon"></i> Alternate Phone
+              </label>
+              <input type="tel" id="alternatePhone" class="form-control" placeholder="+91 9876543210">
+          </div>
+
+          <div class="form-group">
+              <label for="alternateEmail">
+                  <i class="fas fa-envelope-open icon"></i> Alternate Email
+              </label>
+              <input type="email" id="alternateEmail" class="form-control" placeholder="alternate@email.com">
+          </div>
+
+          <div class="btn-group">
+              <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-save"></i> Save Contact Info
+              </button>
+              <button type="button" id="remindLater" class="btn btn-secondary">
+                  <i class="fas fa-clock"></i> Remind Me Later
+              </button>
+          </div>
+      </form>
+
+      <!-- Contact Display Section -->
+      <div class="contact-display" id="contactDisplay" style="display: none;">
+          <h2><i class="fas fa-address-book"></i> Your Contact Information</h2>
+          <div id="contactInfoContainer"></div>
+      </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toastMessage">Contact information saved successfully!</span>
+  </div>
+
+  <script src="js/contact-information.js"></script>
+</body>
+</html>

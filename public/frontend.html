@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConnectArtist - Premium Artist Booking Platform</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --cosmic-black: #080808;
+      --galaxy-purple: #096cae;
+      --nebula-pink: #670140;
+      --golden-glow: #EAEAEA;
+      --starlight-silver: #dfe6e9;
+      --card-bg: rgba(30, 30, 36, 0.8);
+      --nav-bg: rgba(8, 8, 8, 0.95);
+      --radius: 16px;
+      --transition: all 0.3s ease;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      --glow: 0 0 15px rgba(157, 78, 221, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--cosmic-black);
+      color: var(--starlight-silver);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      padding: 0;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+    }
+
+    /* Header Styles */
+    header {
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      padding: 1rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow);
+      border-bottom: 1px solid rgba(157, 78, 221, 0.2);
+      gap: 2rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--golden-glow);
+      text-decoration: none;
+      font-family: 'Playfair Display', serif;
+      flex-shrink: 0;
+    }
+
+    .logo i {
+      color: var(--nebula-pink);
+    }
+
+    nav {
+      position: relative;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav a {
+      color: var(--starlight-silver);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 1.1rem;
+      transition: var(--transition);
+      padding: 0.5rem 1rem;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--golden-glow);
+      transition: var(--transition);
+    }
+
+    nav a:hover::after, nav a.active::after {
+      width: 100%;
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--golden-glow);
+    }
+
+    .auth-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .share-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      padding: 0.75em 2em;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      background: linear-gradient(90deg, var(--galaxy-purple) 0%, var(--nebula-pink) 100%);
+      color: #fff;
+      box-shadow: var(--glow);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      outline: none;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Organizer button styles (inserted per user request) */
+    .btn-organizer {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      padding: 0.6em 1.2em;
+      border-radius: 28px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(90deg, #0f62fe 0%, #670140 100%);
+      box-shadow: 0 8px 20px rgba(15,98,254,0.12), 0 2px 6px rgba(103,1,64,0.08);
+      border: none;
+      text-decoration: none;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn-organizer:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(15,98,254,0.18), 0 6px 12px rgba(103,1,64,0.12);
+    }
+
+    .btn::before,
+    .btn-primary::before,
+    .btn-secondary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.5s;
+    }
+
+    .btn:hover::before,
+    .btn-primary:hover::before,
+    .btn-secondary:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover,
+    .btn-primary:hover,
+    .btn-secondary:hover,
+    .share-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(157, 78, 221, 0.4);
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, var(--galaxy-purple) 0%, var(--nebula-pink) 100%);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--starlight-silver);
+      border: 2px solid var(--golden-glow);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: var(--golden-glow);
+      color: var(--cosmic-black);
+    }
+
+    #logoutButton {
+      margin-left: 0;
+      display: none;
+    }
+
+    #adminBtn {
+      display: none;
+      flex-shrink: 0;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 5%;
+      position: relative;
+      overflow: hidden;
+      margin-top: 80px;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 50% 50%, rgba(157, 78, 221, 0.1) 0%, transparent 60%);
+      z-index: -1;
+    }
+
+    .hero-content {
+      max-width: 600px;
+      z-index: 2;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(to right, var(--galaxy-purple), var(--nebula-pink));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+    }
+
+    .typewriter {
+      overflow: hidden;
+      border-right: 0.15em solid var(--golden-glow);
+      white-space: nowrap;
+      margin: 0 auto;
+      letter-spacing: 0.15em;
+      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: var(--golden-glow); }
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #c5d0e6;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 1.5s forwards;
+    }
+
+    .hero-buttons {
+      opacity: 0;
+      animation: fadeInUp 1s ease-out 2s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-image {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 45%;
+      max-width: 600px;
+      height: 400px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 3px solid var(--galaxy-purple);
+      background: #000;
+    }
+
+    .hero-image .slides {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-image .slides img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      animation: kenburnsFade 42s ease-in-out infinite;
+    }
+
+    .hero-image .slides img:nth-child(1) { animation-delay: 0s; }
+    .hero-image .slides img:nth-child(2) { animation-delay: 6s; }
+    .hero-image .slides img:nth-child(3) { animation-delay: 12s; }
+    .hero-image .slides img:nth-child(4) { animation-delay: 18s; }
+    .hero-image .slides img:nth-child(5) { animation-delay: 24s; }
+    .hero-image .slides img:nth-child(6) { animation-delay: 30s; }
+    .hero-image .slides img:nth-child(7) { animation-delay: 36s; }
+
+    @keyframes kenburnsFade {
+      0%   { opacity: 0; transform: scale(1); }
+      5%   { opacity: 1; transform: scale(1.03); }
+      25%  { opacity: 1; transform: scale(1.08); }
+      30%  { opacity: 0; transform: scale(1.1); }
+      100% { opacity: 0; transform: scale(1.1); }
+    }
+
+    /* Featured Artists */
+    .featured-artists {
+      padding: 5rem 5%;
+      background: linear-gradient(to bottom, rgba(8, 8, 8, 0.9), rgba(4, 4, 12, 0.95));
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 2.5rem;
+      position: relative;
+      color: var(--starlight-silver);
+    }
+
+    .section-title::after {
+      content: "";
+      display: block;
+      width: 100px;
+      height: 4px;
+      background: linear-gradient(to right, var(--galaxy-purple), var(--nebula-pink));
+      margin: 15px auto 0;
+      border-radius: 2px;
+    }
+
+    .artists-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .artist-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(157, 78, 221, 0.2);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .artist-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .artist-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+      border-color: var(--nebula-pink);
+    }
+
+    .artist-img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .artist-info {
+      padding: 1.5rem;
+    }
+
+    .artist-name {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--starlight-silver);
+    }
+
+    .artist-genre {
+      color: var(--golden-glow);
+      font-weight: 500;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .artist-desc {
+      color: #a0b1c8;
+      margin-bottom: 1.5rem;
+    }
+
+    /* How it Works */
+    .how-it-works {
+      padding: 5rem 5%;
+      background: linear-gradient(to bottom, rgba(4, 4, 12, 0.95), var(--cosmic-black));
+    }
+
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+
+    .step {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 2rem;
+      text-align: center;
+      max-width: 300px;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step:hover {
+      transform: translateY(-5px);
+      border-color: var(--galaxy-purple);
+      box-shadow: 0 15px 30px rgba(157, 78, 221, 0.3);
+    }
+
+    .step-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(157, 78, 221, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+      color: var(--galaxy-purple);
+      border: 2px solid var(--galaxy-purple);
+    }
+
+    .step h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--starlight-silver);
+    }
+
+    .step p {
+      color: #a0b1c8;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(4, 4, 8, 0.95);
+      padding: 3rem 5%;
+      border-top: 1px solid rgba(157, 78, 221, 0.2);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-logo {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--golden-glow);
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .footer-about p {
+      color: #a0b1c8;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-links a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--galaxy-purple);
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .social-links a:hover {
+      background: var(--galaxy-purple);
+      color: var(--starlight-silver);
+      transform: translateY(-3px);
+    }
+
+    .footer-heading {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: var(--starlight-silver);
+      position: relative;
+      padding-bottom: 0.5rem;
+    }
+
+    .footer-heading::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--galaxy-purple);
+      border-radius: 3px;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-links a {
+      color: #a0b1c8;
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .footer-links a:hover {
+      color: var(--golden-glow);
+      transform: translateX(5px);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: #a0b1c8;
+      font-size: 0.9rem;
+    }
+
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 5rem;
+      }
+
+      .hero-content {
+        max-width: 100%;
+        margin-bottom: 3rem;
+      }
+
+      .hero-image {
+        position: relative;
+        top: auto;
+        right: auto;
+        transform: none;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      nav ul {
+        gap: 1rem;
+      }
+
+      .typewriter {
+        white-space: normal;
+        border-right: none;
+        animation: none;
+      }
+
+      header {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .auth-buttons {
+        width: auto;
+        justify-content: flex-end;
+      }
+
+      .hero h1 {
+        font-size: 2.8rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      nav ul {
+        gap: 0.8rem;
+      }
+
+      nav a {
+        font-size: 1rem;
+        padding: 0.4rem 0.8rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .btn {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      .hero h1 {
+        font-size: 2.3rem;
+      }
+
+      .steps {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .artist-card, .step {
+        max-width: 100%;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+      }
+
+      nav ul {
+        gap: 0.5rem;
+      }
+
+      nav a {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.6rem;
+      }
+    }
+
+    /* Scroll animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Guide arrows */
+    .guide-arrow {
+      position: absolute;
+      top: calc(100% - 10px);
+      left: 36%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 80px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="url(%23arrowGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%239d4edd;stop-opacity:1" /><stop offset="50%" style="stop-color:%23ff477e;stop-opacity:1" /><stop offset="100%" style="stop-color:%23f9c74f;stop-opacity:1" /></linearGradient></defs><path d="M12 19V5M5 12l7-7 7 7"/></svg>') no-repeat center;
+      background-size: contain;
+      filter: drop-shadow(0 0 15px rgba(157, 78, 221, 0.9)) brightness(1.3);
+      animation: arrowBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite, fadeOut 10s forwards;
+      z-index: 1000;
+      display: none;
+    }
+
+    .guide-arrow.show {
+      display: block;
+    }
+
+    .guide-text {
+      position: absolute;
+      top: calc(100% + 50px);
+      left: calc(30% + 100px);
+      transform: translateX(-50%);
+      color: var(--galaxy-purple);
+      font-size: 22px;
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(78, 126, 221, 0.9), 0 0 18px rgba(255, 71, 126, 0.8);
+      animation: textPulse 0.8s ease-in-out infinite, fadeOut 10s forwards;
+      white-space: nowrap;
+      display: none;
+      z-index: 1000;
+    }
+
+    .guide-text.show {
+      display: block;
+    }
+
+    .guide-arrow-discover {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 35%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 80px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="url(%23arrowGradient)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23ff477e;stop-opacity:1" /><stop offset="50%" style="stop-color:%239d4edd;stop-opacity:1" /><stop offset="100%" style="stop-color:%23f9c74f;stop-opacity:1" /></linearGradient></defs><path d="M12 19V5M5 12l7-7 7 7"/></svg>') no-repeat center;
+      background-size: contain;
+      filter: drop-shadow(0 0 15px rgba(255, 71, 126, 0.9)) brightness(1.3);
+      animation: arrowBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite, fadeOut 10s forwards;
+      z-index: 1000;
+      display: none;
+    }
+
+    .guide-arrow-discover.show {
+      display: block;
+    }
+
+    .guide-text-discover {
+      position: absolute;
+      top: calc(100% + 70px);
+      left: calc(30% + 30px);
+      transform: translateX(-50%);
+      color: var(--nebula-pink);
+      font-size: 22px;
+      font-weight: 800;
+      text-shadow: 0 0 12px rgba(19, 51, 124, 0.9), 0 0 18px rgba(157, 78, 221, 0.8);
+      animation: textPulse 0.8s ease-in-out infinite, fadeOut 10s forwards;
+      white-space: nowrap;
+      display: none;
+      z-index: 1000;
+    }
+
+    .guide-text-discover.show {
+      display: block;
+    }
+
+    @keyframes arrowBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      20% { transform: translateX(-50%) translateY(-15px) rotate(5deg); }
+      40% { transform: translateX(-50%) translateY(0) rotate(-5deg); }
+      60% { transform: translateX(-50%) translateY(-10px) rotate(3deg); }
+      80% { transform: translateX(-50%) translateY(0) rotate(-3deg); }
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { opacity: 0; display: none; }
+    }
+
+    @keyframes textPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+
+/* ===== How It Works Section Animations ===== */
+.steps {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.step {
+  transition: transform 0.5s ease, box-shadow 0.4s ease, border-color 0.4s ease, opacity 0.5s ease;
+  opacity: 0;
+  transform: translateY(30px) scale(0.98);
+}
+
+/* Fade-in when visible */
+.step.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Hover micro-interaction */
+.step:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 15px 40px rgba(157, 78, 221, 0.4);
+  border-color: var(--galaxy-purple);
+}
+
+/* Icon glow */
+.step-icon {
+  transition: transform 0.4s ease, background 0.4s ease, color 0.4s ease;
+}
+
+.step:hover .step-icon {
+  transform: scale(1.15) rotate(5deg);
+  background: rgba(157, 78, 221, 0.15);
+  color: var(--nebula-pink);
+  border-color: var(--nebula-pink);
+}
+/* Unified button style for all secondary buttons */
+.btn-secondary,
+#btn-organizer,
+#organizerBtn {
+    background: transparent;
+    color: var(--starlight-silver);
+    border: 2px solid var(--golden-glow);
+    border-radius: 30px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    padding: 0.75em 2em;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.btn-secondary:hover,
+#btn-organizer:hover,
+#organizerBtn:hover {
+    background: var(--golden-glow);
+    color: var(--cosmic-black);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(157, 78, 221, 0.4);
+}
+
+/* Optional: shimmer animation like other buttons */
+.btn-secondary::before,
+#btn-organizer::before,
+#organizerBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+}
+
+.btn-secondary:hover::before,
+#btn-organizer:hover::before,
+#organizerBtn:hover::before {
+    left: 100%;
+}
+
+/* === Make post-login buttons visually identical to pre-login secondary buttons ===
+   Paste this AFTER your existing .btn-secondary / #btn-organizer / #organizerBtn rules.
+   This avoids changing HTML/JS and simply restyles the logout/admin/organizer dashboard buttons.
+*/
+
+/* Apply the same look to logout & admin buttons (post-login) */
+#logoutButton,
+#adminBtn {
+  background: transparent;
+  color: var(--starlight-silver);
+  border: 2px solid var(--golden-glow);
+  border-radius: 30px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.75em 2em;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: none; /* match pre-login baseline */
+}
+
+/* Hover should match the pre-login hover effect */
+#logoutButton:hover,
+#adminBtn:hover {
+  background: var(--golden-glow);
+  color: var(--cosmic-black);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(157, 78, 221, 0.4);
+}
+
+/* Add shimmer pseudo-element like other secondary buttons */
+#logoutButton::before,
+#adminBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+#logoutButton:hover::before,
+#adminBtn:hover::before {
+  left: 100%;
+}
+
+/* Ensure the Organizer dashboard button (if visible post-login) keeps the same style
+   — this duplicates the selector to be safe if your markup toggles between <a> and <button> */
+#organizerBtn,
+body .auth-buttons #organizerBtn {
+  /* if #organizerBtn currently uses a gradient style, override to match .btn-secondary */
+  background: transparent;
+  color: var(--starlight-silver);
+  border: 2px solid var(--golden-glow);
+  border-radius: 30px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 0.75em 2em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: none;
+}
+
+/* hover for organizerBtn */
+#organizerBtn:hover {
+  background: var(--golden-glow);
+  color: var(--cosmic-black);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(157, 78, 221, 0.4);
+}
+#organizerBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: 0.5s;
+}
+#organizerBtn:hover::before { left: 100%; }
+
+/* Keep auth-buttons spacing consistent after login */
+.auth-buttons { gap: 1rem; align-items: center; }
+
+/* Small-screen adjustments (match your responsive rules) */
+@media (max-width: 576px) {
+  #logoutButton,
+  #adminBtn,
+  #organizerBtn {
+    padding: 0.6rem 1rem;
+    font-size: 0.95rem;
+    border-radius: 24px;
+  }
+}
+/* === Compact Nav & Button Sizing (safe override) === */
+
+/* Nav links: slightly smaller text & padding */
+header nav a {
+  font-size: 0.9rem !important;
+  padding: 0.28rem 0.5rem !important;
+  white-space: nowrap;
+}
+
+/* Make nav spacing a bit tighter */
+header nav ul {
+  gap: 1rem !important;
+}
+
+/* Auth buttons: identical size & spacing */
+header .auth-buttons {
+  display: flex;
+  gap: 0.7rem !important;   /* equal space between buttons */
+  align-items: center;
+  flex-shrink: 0;
+}
+
+header .auth-buttons .btn,
+header .auth-buttons .btn-primary,
+header .auth-buttons .btn-secondary,
+header .auth-buttons .btn-organizer,
+header #logoutButton,
+header #adminBtn,
+header #organizerBtn {
+  font-size: 0.88rem !important;     /* smaller font for all buttons */
+  padding: 0.32rem 0.85rem !important; /* uniform padding */
+  border-radius: 18px !important;     /* consistent shape */
+  min-width: auto;
+  max-width: 180px;                   /* prevents overflow */
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* Ensure everything fits under screen width */
+@media (min-width: 1200px) {
+  header nav ul {
+    gap: 0.9rem !important;  /* slight extra tightening on big screens */
+  }
+  header .auth-buttons .btn {
+    font-size: 0.85rem !important;
+    padding: 0.3rem 0.8rem !important;
+  }
+}
+/* ===== Mobile Fixes ===== */
+@media (max-width: 576px) {
+
+  /* Header buttons smaller & equal */
+  .auth-buttons .btn,
+  #logoutButton, #adminBtn, #organizerBtn, .btn-organizer {
+    font-size: 0.8rem !important;
+    padding: 0.25rem 0.6rem !important;
+    border-radius: 14px !important;
+    max-width: 120px;
+  }
+  .auth-buttons { gap: 0.4rem !important; }
+
+  /* Prevent hero text from being hidden by fixed nav */
+  .hero {
+    margin-top: 110px !important; /* push hero content below navbar */
+    padding-top: 1rem !important;
+  }
+
+  /* Adjust hero heading and subtext sizes */
+  .hero h1 { font-size: 1.5rem !important; margin-bottom: 0.6rem; }
+  .hero p { font-size: 0.85rem !important; margin-bottom: 1rem; }
+
+  /* Hero image smaller for phones */
+  .hero-image {
+    width: 90% !important;
+    max-width: 360px !important;
+    height: 180px !important;
+    margin: 0.8rem auto 1rem;
+  }
+
+  /* Tighten spacing in sections */
+  .featured-artists { padding: 2rem 4% !important; }
+  .how-it-works { padding: 2.5rem 4% !important; }
+
+  /* Reduce gap between how it works and artist cards */
+  .how-it-works + .featured-artists {
+    margin-top: -1rem !important;
+  }
+
+  /* Steps smaller */
+  .step { padding: 1rem !important; }
+  .step-icon { width: 55px !important; height: 55px !important; font-size: 1.2rem !important; }
+
+  /* Footer stacked & compact */
+  footer { padding: 1.5rem 4% !important; }
+  .footer-content { grid-template-columns: 1fr !important; gap: 1rem !important; }
+  .footer-logo { font-size: 1.2rem !important; }
+  .footer-heading { font-size: 1rem !important; }
+  .copyright { font-size: 0.8rem !important; padding-top: 1rem; }
+}
+
+/* Extra small screens (<=420px) */
+@media (max-width: 420px) {
+  .auth-buttons .btn,
+  #logoutButton, #adminBtn, #organizerBtn, .btn-organizer {
+    font-size: 0.75rem !important;
+    padding: 0.22rem 0.5rem !important;
+    max-width: 105px;
+  }
+  nav a { font-size: 0.8rem !important; padding: 0.2rem 0.4rem !important; }
+  .hero h1 { font-size: 1.3rem !important; }
+  .hero p { font-size: 0.8rem !important; }
+  .hero-image { height: 160px !important; }
+}
+/* ===========================
+   Mobile-only fixes (≤576px)
+   =========================== */
+@media (max-width: 576px) {
+  /* --- push body content below fixed header --- */
+  :root { --header-h: 92px; }
+  body { padding-top: var(--header-h); }
+  .hero { margin-top: 0 !important; }
+
+  /* --- nav adjustments --- */
+  nav ul {
+    display: flex;
+    gap: 0.8rem !important;
+    overflow-x: auto;              /* allow sideways scroll instead of wrapping */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  nav ul::-webkit-scrollbar { display: none; }
+  nav li { flex: 0 0 auto; }
+  nav a {
+    font-size: 0.88rem !important;
+    padding: 0.26rem 0.45rem !important;
+    white-space: nowrap;
+  }
+
+  /* --- make all header buttons same size & fit 3 in row --- */
+  header .auth-buttons {
+    display: flex;
+    gap: 0.5rem !important;
+    flex-wrap: nowrap;
+    justify-content: center;
+    width: 100%;
+  }
+  header .auth-buttons .btn,
+  header .auth-buttons .btn-primary,
+  header .auth-buttons .btn-secondary,
+  header .auth-buttons .btn-organizer,
+  header #organizerBtn,
+  header #logoutButton,
+  header #adminBtn {
+    font-size: 0.9rem !important;
+    height: 36px !important;
+    padding: 0 10px !important;
+    border-radius: 16px !important;
+    max-width: 110px !important;   /* ensures 3 fit side by side */
+    flex: 1 1 auto;
+    margin-left: 0 !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  /* force organizer button style to match secondary for consistency */
+  header .auth-buttons .btn-organizer {
+    background: transparent !important;
+    color: var(--starlight-silver) !important;
+    border: 2px solid var(--golden-glow) !important;
+    box-shadow: none !important;
+  }
+
+  /* --- hero adjustments --- */
+  .hero {
+    margin-bottom: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+    text-align: center;
+  }
+  .hero h1 { font-size: 1.6rem !important; }
+  .hero p { font-size: 0.9rem !important; }
+  .hero-image {
+    width: 92% !important;
+    max-width: 400px !important;
+    height: 180px !important;
+    margin: 0.6rem auto 0.8rem !important;
+    position: relative !important;
+    right: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+  }
+
+  /* --- tighten gaps between sections --- */
+  .how-it-works { padding-top: 1.2rem !important; margin-top: 0 !important; }
+  .featured-artists { padding-top: 1.4rem !important; }
+  .steps { margin-top: 1rem !important; }
+
+  /* --- artist cards smaller --- */
+  .artists-grid { gap: 1rem !important; grid-template-columns: 1fr !important; }
+  .artist-card { margin: 0 auto; max-width: 100% !important; }
+  .artist-img { height: 170px !important; object-fit: cover; }
+
+  /* --- footer: make columns stack or shrink --- */
+  .footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .footer-links-container, .footer-about { text-align: center; }
+}
+/* --- Mobile hero spacing & smaller gap (paste at end of <style>) --- */
+@media (max-width: 576px) {
+  /* let hero shrink to its content instead of filling 100vh */
+  .hero {
+    min-height: auto !important;
+    height: auto !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.4rem !important;    /* small gap below hero */
+    padding-bottom: 0.6rem !important;
+    padding-top: 0.8rem !important;
+  }
+
+  /* ensure hero content is visible below fixed header (if you used body padding earlier this is safe) */
+  .hero-content { margin-top: 0 !important; }
+
+  /* make hero image compact and not absolutely positioned on phones */
+  .hero-image {
+    position: relative !important;
+    width: 92% !important;
+    max-width: 420px !important;
+    height: 170px !important;
+    margin: 0.6rem auto 0.8rem !important;
+    right: 0 !important;
+    top: 0 !important;
+    transform: none !important;
+  }
+
+  /* tighten space between hero and next sections */
+  .how-it-works { padding-top: 1rem !important; margin-top: 0 !important; }
+  .featured-artists { padding-top: 1.2rem !important; margin-top: 0 !important; }
+
+  /* slightly reduce step spacing */
+  .steps { margin-top: 0.6rem !important; gap: 1rem !important; }
+
+  /* Make sure artist cards are compact */
+  .artists-grid { grid-template-columns: 1fr !important; gap: 0.9rem !important; }
+  .artist-card { margin: 0 auto; max-width: 100% !important; }
+  .artist-img { height: 160px !important; object-fit: cover; }
+  /* ===== Smaller button text for all auth buttons ===== */
+header .auth-buttons .btn,
+header .auth-buttons .btn-primary,
+header .auth-buttons .btn-secondary,
+header .auth-buttons .btn-organizer,
+header #organizerBtn,
+header #logoutButton,
+header #adminBtn {
+  font-size: 0.8rem !important;   /* smaller text */
+  font-weight: 500 !important;    /* slightly lighter so it doesn’t look cramped */
+}
+
+}
+
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo">
+      <i class="fas fa-microphone-alt"></i>
+      ConnectArtist
+    </a>
+
+    <nav>
+      <ul>
+        <li><a href="/frontend.html" class="active">Home</a></li>
+        <li><a href="discover.html">Discover</a></li>
+        <li><a href="/profile.html">Profile</a></li>
+        <li><a href="/community.html">Community</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+      <div class="guide-arrow-discover" aria-hidden="true"></div>
+      <div class="guide-text-discover" aria-hidden="true">Find Your Profile Here</div>
+    </nav>
+
+    <div class="guide-arrow" aria-hidden="true"></div>
+    <div class="guide-text" aria-hidden="true">Let's Build Your Profile</div>
+
+    <!-- Auth / Organizer buttons (replace existing auth-buttons + standalone organizerBtn/logout/adminBtn) -->
+    <div class="auth-buttons" id="authButtons" style="align-items:center;">
+      <!-- Organizer login (landing page) -->
+      <a href="/organizerlogin.html" class="btn-organizer" id="btn-organizer" title="Login as Organizer">
+        <i class="fas fa-user-tie" style="margin-right:8px;"></i>
+        Login as Organizer
+      </a>
+
+      <!-- Standard Login -->
+      <a href="/login.html" class="btn btn-secondary" id="loginBtn">Login as Artist</a>
+
+      <!-- Organizer dashboard trigger (kept as a button because frontend JS attaches a click handler to #organizerBtn) -->
+      <button id="organizerBtn" class="btn btn-primary" style="margin-left:6px;">Organizer dashboard</button>
+
+      <!-- Logout (hidden by default, shown when logged in) -->
+      <button id="logoutButton" class="btn btn-primary" style="display: none; margin-left:6px;">Logout</button>
+
+      <!-- Admin (hidden by default) -->
+      <button id="adminBtn" style="display:none; margin-left:6px;" onclick="window.location.href='admin.html'">Admin Dashboard</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Showcase Your Talent to the World</h1>
+      <div class="typewriter">Book Artists. Experience Concerts. Feel the Vibe.</div>
+      <p>ConnectArtist is the premium platform for musicians, singers, and performers to create stunning profiles, share their work, and connect with fans and industry professionals.</p>
+      <div class="hero-buttons">
+        <a href="/login.html" class="btn btn-primary">Get Started</a>
+      </div>
+    </div>
+
+    <div class="hero-image">
+      <div class="slides">
+        <img src="https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop" alt="Singer performing with audience">
+        <img src="https://images.pexels.com/photos/167636/pexels-photo-167636.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop" alt="Concert with artist and vibrant crowd">
+        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=1600&h=900&q=80" alt="Festival lights and crowd ambience">
+        <img src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1600&h=900&fit=crop" alt="Indian singer on stage with crowd">
+        <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=1600&h=900&q=80" alt="Singer with mic in dramatic lighting">
+        <img src="https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?auto=format&fit=crop&w=1600&h=900&q=80" alt="Rock concert crowd with stage lights">
+        <img src="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1600&h=900&q=80" alt="Cheering audience with lights on artist">
+      </div>
+    </div>
+
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+
+    <div class="steps">
+      <!-- Step 1 -->
+      <div class="step" id="create-account-card">
+        <div class="step-icon">
+          <i class="fas fa-user-plus"></i>
+        </div>
+        <h3>Create Account</h3>
+        <p>Sign up in seconds with your email or social media accounts.</p>
+      </div>
+      <!-- Step 2 -->
+      <div class="step" id="build-profile-card">
+        <div class="step-icon">
+          <i class="fas fa-id-card"></i>
+        </div>
+        <h3>Build Profile</h3>
+        <p>Create a stunning artist profile with photos, bio, and your best work.</p>
+      </div>
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-icon">
+          <i class="fas fa-share-alt"></i>
+        </div>
+        <h3>Share & Connect</h3>
+        <p>Share your profile, connect with fans, and get discovered.</p>
+        <button onclick="shareWebsite()" class="btn btn-primary mt-3">Share Now</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-about">
+        <div class="footer-logo">
+          <i class="fas fa-microphone-alt"></i> ConnectArtist
+        </div>
+        <p>The ultimate platform for artists to showcase their talent, connect with fans, and grow their audience worldwide.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="https://www.instagram.com/connectartist?igsh=MWEzN2xuYWtmY2ppOQ=="><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-spotify"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-links-container">
+        <h4 class="footer-heading">Quick Links</h4>
+        <ul class="footer-links">
+          <li><a href="frontend.html">Home</a></li>
+          <li><a href="discover.html">Discover Artists</a></li>
+          <li><a href="community.html">Community</a></li>
+          <li><a href="community.html">Events</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-container">
+        <h4 class="footer-heading">For Artists</h4>
+        <ul class="footer-links">
+          <li><a href="profile.html">Create Profile</a></li>
+          <li><a href="#">Upload Music</a></li>
+          <li><a href="#">Promote Your Work</a></li>
+          <li><a href="#">Artist Resources</a></li>
+          <li><a href="#">Success Stories</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links-container">
+        <h4 class="footer-heading">Support</h4>
+        <ul class="footer-links">
+          <li><a href="/contact.html">Contact Us</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a></li>
+          <li><a href="/terms.html">Terms of Service</a></li>
+          <li><a href="/refund.html">Refund Policy</a></li>
+
+        </ul>
+      </div>
+    </div>
+
+    <div class="copyright">
+      &copy; 2025 ConnectArtist. All rights reserved. Designed with ❤️ for artists worldwide.
+    </div>
+  </footer>
+
+
+  <script>
+  // API Integration with MongoDB Backend
+  const API_BASE_URL = '/api';
+
+    // DOM Elements
+    const authButtons = document.querySelector('.auth-buttons');
+    const artistsGrid = document.querySelector('.artists-grid');
+
+    // Check if user is logged in
+    async function checkAuthStatus() {
+      // If user just logged out in this tab, treat as logged-out for a short grace period
+      try {
+        const loggedOutAt = parseInt(sessionStorage.getItem('loggedOutAt') || '0', 10);
+        if (loggedOutAt && (Date.now() - loggedOutAt) < 8000) {
+          // clear the flag and show logged-out UI immediately to avoid re-login flicker
+          sessionStorage.removeItem('loggedOutAt');
+          showLoggedOutUI();
+          return;
+        }
+      } catch (e) { /* ignore sessionStorage errors */ }
+
+      // Get all button elements
+      const authButtonsContainer = document.getElementById('authButtons');
+      const loginBtn = document.getElementById('loginBtn');
+      const btnOrganizer = document.getElementById('btn-organizer');
+      const organizerBtn = document.getElementById('organizerBtn');
+      const logoutButton = document.getElementById('logoutButton');
+      const adminBtn = document.getElementById('adminBtn');
+
+      const guideArrow = document.querySelector('.guide-arrow');
+      const guideText = document.querySelector('.guide-text');
+      const guideArrowDiscover = document.querySelector('.guide-arrow-discover');
+      const guideTextDiscover = document.querySelector('.guide-text-discover');
+
+      function showLoggedInUI(user = null) {
+        // Hide regular login button but keep organizer buttons visible
+        if (loginBtn) loginBtn.style.display = 'none';
+
+        // Keep organizer buttons visible as they have separate auth flow
+        if (btnOrganizer) btnOrganizer.style.display = 'flex';
+        if (organizerBtn) organizerBtn.style.display = 'flex';
+
+        if (logoutButton) {
+          logoutButton.style.display = 'block';
+          logoutButton.onclick = logout;
+        }
+        if (guideArrow) guideArrow.style.display = 'none';
+        if (guideText) guideText.style.display = 'none';
+
+        // Show admin button if user has admin or admin-create role
+        if (adminBtn) {
+          adminBtn.style.display = (user && (user.role === 'admin' || user.role === 'admin-create')) ? 'inline-block' : 'none';
+        }
+      }
+
+      function showLoggedOutUI() {
+        if (loginBtn) loginBtn.style.display = 'flex';
+        if (btnOrganizer) btnOrganizer.style.display = 'flex';
+        if (organizerBtn) organizerBtn.style.display = 'flex';
+        if (logoutButton) logoutButton.style.display = 'none';
+        if (adminBtn) adminBtn.style.display = 'none';
+        if (guideArrow) guideArrow.style.display = 'flex';
+        if (guideText) guideText.style.display = 'flex';
+      }
+
+      // First, try server-side session via httpOnly cookie
+      try {
+        const resp = await fetch(`${API_BASE_URL}/auth/me`, { credentials: 'include' });
+        if (resp.ok) {
+          const body = await resp.json();
+          const user = body && body.user ? body.user : null;
+
+          // Consider logged-in
+          showLoggedInUI(user);
+
+          // show profile guide if profile exists
+          try {
+            const profileResp = await fetch(`${API_BASE_URL}/profile`, { credentials: 'include' });
+            if (profileResp.ok) {
+              const profile = await profileResp.json();
+              if (profile && profile.userId) {
+                if (guideArrowDiscover) guideArrowDiscover.classList.add('show');
+                if (guideTextDiscover) guideTextDiscover.classList.add('show');
+                setTimeout(() => { if (guideArrowDiscover) guideArrowDiscover.classList.remove('show'); if (guideTextDiscover) guideTextDiscover.classList.remove('show'); }, 25000);
+              }
+            }
+          } catch (e) { /* ignore profile fetch errors */ }
+
+          // set localStorage from server info if missing (help other scripts)
+          try {
+            if (user) {
+              if (!localStorage.getItem('userId') && user._id) localStorage.setItem('userId', user._id);
+              if (!localStorage.getItem('role') && user.role) localStorage.setItem('role', user.role);
+              if (!localStorage.getItem('userEmail') && user.email) localStorage.setItem('userEmail', user.email);
+            }
+          } catch (e) { /* ignore localStorage errors */ }
+          return;
+        }
+      } catch (e) {
+        console.warn('auth/me check failed', e);
+      }
+
+      // Fallback: check localStorage token (older flows)
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('userId');
+      const role = localStorage.getItem('role');
+
+      if (token && userId) {
+        showLoggedInUI({ role }); // Pass minimal user object with role
+
+        // try to fetch profile using bearer
+        try {
+          const response = await fetch(`${API_BASE_URL}/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
+          if (response.ok) {
+            const profile = await response.json();
+            if (profile && profile.userId) {
+              if (guideArrowDiscover) guideArrowDiscover.classList.add('show');
+              if (guideTextDiscover) guideTextDiscover.classList.add('show');
+              setTimeout(() => { if (guideArrowDiscover) guideArrowDiscover.classList.remove('show'); if (guideTextDiscover) guideTextDiscover.classList.remove('show'); }, 25000);
+            }
+          }
+        } catch (err) { console.error('Error checking profile with bearer token:', err); }
+        return;
+      }
+
+      // not logged in at all
+      showLoggedOutUI();
+      if (guideArrow) guideArrow.classList.add('show');
+      if (guideText) guideText.classList.add('show');
+      setTimeout(() => { if (guideArrow) guideArrow.classList.remove('show'); if (guideText) guideText.classList.remove('show'); }, 22000);
+      setTimeout(() => { if (guideArrow) guideArrow.classList.remove('show'); if (guideText) guideText.classList.remove('show'); }, 22000);
+    }
+
+    // Check if user is logged in as organizer
+    async function checkOrganizerStatus() {
+      try {
+        const resp = await fetch(`${API_BASE_URL}/auth/me`, { credentials: 'include' });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.user && data.user.role === 'organizer') {
+            // Show logout instead of login for organizer
+            if (btnOrganizer) {
+              btnOrganizer.textContent = 'Logout as Organizer';
+              btnOrganizer.href = '#';
+              btnOrganizer.onclick = logoutOrganizer;
+            }
+            return true;
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to check organizer status:', err);
+      }
+      // Reset to login state if not logged in
+      if (btnOrganizer) {
+        btnOrganizer.textContent = 'Login as Organizer';
+        btnOrganizer.href = '/organizerlogin.html';
+        btnOrganizer.onclick = onOrganizerClick;
+      }
+      return false;
+    }
+
+    // Organizer button click handler: check server session and redirect appropriately
+    async function onOrganizerClick() {
+      try {
+        // call /api/auth/me with credentials to use httpOnly cookie if present
+        const resp = await fetch(`${API_BASE_URL}/auth/me`, { credentials: 'include' });
+        if (resp.ok) {
+          // user is authenticated — open the organizer dashboard page
+          window.location.href = '/organizerdashboard.html';
+          return;
+        }
+      } catch (err) {
+        // ignore and fallback to starting OAuth
+      }
+  // not authenticated — start organizer-specific OAuth flow; server will set cookie/token on callback
+  // use the organizer entrypoint and pass explicit redirect to organizer dashboard
+  window.location.href = `/api/auth/google/organizer?redirect=${encodeURIComponent('/organizerdashboard.html')}`;
+    }
+
+    // Organizer logout function
+    async function logoutOrganizer() {
+      try {
+        // Clear organizer-specific storage
+        localStorage.removeItem('organizerToken');
+        localStorage.removeItem('organizerId');
+        // Redirect to server logout with frontend.html redirect
+        window.location.href = `${API_BASE_URL}/auth/logout?redirect=/frontend.html`;
+      } catch(e) {
+        console.error('Error during organizer logout:', e);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const organizerBtn = document.getElementById('organizerBtn');
+      const logoutButton = document.getElementById('logoutButton');
+      if (organizerBtn) organizerBtn.addEventListener('click', onOrganizerClick);
+      if (logoutButton) logoutButton.addEventListener('click', logout);
+
+      // Fix: if server incorrectly redirects to '/organizer/dashboard' (without .html),
+      // normalize it to the actual static page.
+      const badPaths = ['/organizer/dashboard', '/organizer/dashboard/'];
+      if (badPaths.includes(window.location.pathname)) {
+        window.location.replace('/organizerdashboard.html');
+        return; // stop further processing while redirecting
+      }
+
+      // Run initial auth checks to update header
+      await Promise.all([
+        checkAuthStatus(),
+        checkOrganizerStatus()
+      ]);
+
+      // Check URL parameters for redirect from organizer login
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectParam = urlParams.get('redirect') || urlParams.get('redirectTo') || urlParams.get('organizerRedirect');
+      if (redirectParam) {
+        // normalize any server-provided redirect that points to organizer dashboard
+        if (redirectParam.includes('organizer/dashboard') || redirectParam.includes('organizerdashboard')) {
+          window.location.href = '/organizerdashboard.html';
+          return;
+        }
+        // if the server returned a direct organizerdashboard path
+        if (redirectParam === '/organizerdashboard.html') {
+          window.location.href = '/organizerdashboard.html';
+          return;
+        }
+      }
+
+      if (urlParams.get('organizerLogin') === 'success' || urlParams.get('organizer') === 'success') {
+        window.location.href = '/organizerdashboard.html';
+      }
+    });
+
+    // Logout function
+    function logout() {
+      try { localStorage.removeItem('token'); localStorage.removeItem('userId'); localStorage.removeItem('role'); localStorage.removeItem('userEmail'); } catch(e){}
+      // Navigate to server logout (GET) so server clears httpOnly cookie via redirect response
+      window.location.href = `${API_BASE_URL}/auth/logout?redirect=/frontend.html`;
+    }
+
+    // Share website function
+    function shareWebsite() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'ConnectArtist',
+          text: 'Check out this amazing platform for artists to showcase their talent!',
+          url: window.location.href
+        })
+        .then(() => console.log('Successful share'))
+        .catch((error) => console.log('Error sharing:', error));
+      } else {
+        alert('Web Share API not supported in your browser. Copy the URL to share: ' + window.location.href);
+      }
+    }
+
+    // Load featured artists
+    async function loadFeaturedArtists() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/artists/featured`);
+        const artists = await response.json();
+
+        artistsGrid.innerHTML = '';
+
+        artists.forEach(artist => {
+          const card = document.createElement('div');
+          card.className = 'artist-card';
+          card.innerHTML = `
+            <img src="${artist.imageUrl}" alt="${artist.name}" class="artist-img">
+            <div class="artist-info">
+              <h3 class="artist-name">${artist.name}</h3>
+              <span class="artist-genre">${artist.genre}</span>
+              <p class="artist-desc">${artist.description}</p>
+              <a href="/artist.html?id=${artist._id}" class="btn btn-primary">View Profile</a>
+            </div>
+          `;
+          artistsGrid.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Error loading featured artists:', error);
+        // Fallback content if API fails
+        artistsGrid.innerHTML = `
+          <div class="artist-card">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Singer" class="artist-img">
+            <div class="artist-info">
+              <h3 class="artist-name">Ava Martinez</h3>
+              <span class="artist-genre">Pop / R&B</span>
+              <p class="artist-desc">Award-winning vocalist with a soulful voice that captivates audiences worldwide.</p>
+              <a href="/artist.html" class="btn btn-primary">View Profile</a>
+            </div>
+          </div>
+          <div class="artist-card">
+            <img src="https://images.unsplash.com/photo-1511735111819-9a3f7709049c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="DJ" class="artist-img">
+            <div class="artist-info">
+              <h3 class="artist-name">DJ Nova</h3>
+              <span class="artist-genre">Electronic / Dance</span>
+              <p class="artist-desc">Internationally renowned DJ known for energetic sets and innovative sound design.</p>
+              <a href="/artist.html" class="btn btn-primary">View Profile</a>
+            </div>
+          </div>
+          <div class="artist-card">
+            <img src="https://images.unsplash.com/photo-1516280030429-27679b3dc9cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Band" class="artist-img">
+            <div class="artist-info">
+              <h3 class="artist-name">Midnight Echo</h3>
+              <span class="artist-genre">Rock / Alternative</span>
+              <p class="artist-desc">High-energy rock band with a unique sound that blends classic and modern influences.</p>
+              <a href="/artist.html" class="btn btn-primary">View Profile</a>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Initialize animations on scroll
+    function initScrollAnimations() {
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, observerOptions);
+
+      // Observe artist cards and steps
+      document.querySelectorAll('.artist-card, .step').forEach(el => {
+        observer.observe(el);
+      });
+    }
+
+    // Initialize the page (load features once DOM is ready)
+    document.addEventListener('DOMContentLoaded', () => {
+      checkAuthStatus();
+      loadFeaturedArtists();
+      initScrollAnimations();
+    });
+
+  </script>
+  <script src="/js/sessionAuth.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test YOUR EVENTS for Real Artist (Pushp Sharma)</title>
+</head>
+<body>
+    <h1>Testing YOUR EVENTS for Real Artist: Pushp Sharma</h1>
+    <p>Artist ID: 68b917970861b56e3644d863</p>
+    <div id="test-results"></div>
+    <div id="events-wrapper" style="border: 1px solid #ccc; padding: 20px; margin: 20px 0;">
+        <h2>YOUR EVENTS Section:</h2>
+        <div id="your-events-content"></div>
+    </div>
+
+    <script>
+        // Set up authentication in localStorage for the real artist
+        const artistId = '68b917970861b56e3644d863';
+        const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGI5MTc5NzA4NjFiNTZlMzY0NGQ4NjMiLCJlbWFpbCI6InB1c2hwc2hhcjFAZ21haWwuY29tIiwicm9sZSI6ImFydGlzdCIsInNlc3Npb25Sb2xlIjoiYXJ0aXN0IiwiaWF0IjoxNzU4MzAzMTA2LCJleHAiOjE3NTg5MDc5MDZ9.mbM6WoF4a0jm1WyQVJsScJV2jwY95r2IiVXhruLWlNc';
+        
+        localStorage.setItem('token', token);
+        localStorage.setItem('userId', artistId);
+
+        console.log('Authentication set up for real artist Pushp Sharma');
+
+        // Test function similar to loadArtistBookings
+        async function testLoadArtistBookings() {
+            const wrapper = document.getElementById('your-events-content');
+            const results = document.getElementById('test-results');
+            
+            results.innerHTML = '<p>Testing YOUR EVENTS functionality for real artist...</p>';
+
+            // Debug auth check (same logic as in card.html)
+            const loggedUserId = localStorage.getItem('userId') || null;
+            console.log('YOUR EVENTS Debug:', { 
+                artistId, 
+                loggedUserId, 
+                match: String(loggedUserId) === String(artistId),
+                token: !!localStorage.getItem('token')
+            });
+
+            // Check if user should see their events
+            if (!loggedUserId || String(loggedUserId) !== String(artistId)) {
+                console.log('YOUR EVENTS: Would hide section - user not owner');
+                results.innerHTML = '<p style="color: red;">❌ Auth check failed - would hide section</p>';
+                wrapper.innerHTML = '<div class="empty">Section would be hidden - not the artist owner.</div>';
+                return;
+            }
+
+            console.log('YOUR EVENTS: Would show section - user is owner');
+            results.innerHTML = '<p style="color: green;">✅ Auth check passed - section would be visible</p>';
+
+            try {
+                const token = localStorage.getItem('token');
+                
+                if (!token) {
+                    wrapper.innerHTML = '<div class="empty">Sign in to view your bookings.</div>';
+                    return;
+                }
+                
+                const url = `/api/bookings`;
+                console.log('Debug: Making API call to:', url);
+                
+                const res = await fetch(url, {
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    credentials: 'include'
+                });
+
+                console.log('Debug: Response status:', res.status);
+
+                if (res.status === 401 || res.status === 403) {
+                    console.log('Debug: Authentication failed');
+                    wrapper.innerHTML = '<div class="empty">Not authorized. Please sign in again.</div>';
+                    results.innerHTML += '<p style="color: red;">❌ API Authentication failed</p>';
+                    return;
+                }
+
+                const json = await res.json();
+                const allBookings = (json && (json.bookings || json.data)) || [];
+                
+                // Filter bookings for this specific artist
+                const bookings = allBookings.filter(b => String(b.artistId) === String(artistId));
+                
+                console.log('Debug: All bookings count:', allBookings.length);
+                console.log('Debug: Filtered artist bookings:', bookings.length);
+
+                results.innerHTML += `<p style="color: green;">✅ API SUCCESS! Found ${allBookings.length} total bookings, ${bookings.length} for this artist</p>`;
+
+                if (!bookings || bookings.length === 0) {
+                    console.log('Debug: No bookings found for this artist');
+                    wrapper.innerHTML = '<div class="empty">No bookings yet. When organizers book you, they will appear here.</div>';
+                    return;
+                }
+
+                // Build HTML list
+                const items = bookings.map((b, index) => {
+                    const bookingId = b._id;
+                    const eventDate = b.eventDate ? new Date(b.eventDate).toLocaleDateString() : 'TBD';
+                    const venue = b.venue || 'Venue TBD';
+                    const organizerName = b.organizerName || 'Unknown Organizer';
+                    const status = b.status || 'pending';
+                    const price = b.price ? `₹${b.price.toLocaleString()}` : 'Price TBD';
+
+                    return `
+                        <div class="event-item" style="border: 1px solid #ddd; padding: 15px; margin: 10px 0; background: #f9f9f9;">
+                            <h3>Booking #${index + 1} - ${eventDate}</h3>
+                            <p><strong>Venue:</strong> ${venue}</p>
+                            <p><strong>Organizer:</strong> ${organizerName}</p>
+                            <p><strong>Status:</strong> ${status}</p>
+                            <p><strong>Price:</strong> ${price}</p>
+                            <p><strong>Booking ID:</strong> ${bookingId}</p>
+                            <div style="margin-top: 10px;">
+                                <button onclick="alert('Download booking PDF for ${bookingId}')" style="margin-right: 10px;">Download Booking PDF</button>
+                                <button onclick="alert('Download contact PDF for ${bookingId}')">Download Contact PDF</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                wrapper.innerHTML = `<div>${items}</div>`;
+
+            } catch (err) {
+                console.error('Error in loadArtistBookings:', err);
+                wrapper.innerHTML = '<div class="empty">Error loading bookings. Please try again.</div>';
+                results.innerHTML += `<p style="color: red;">❌ ERROR: ${err.message}</p>`;
+            }
+        }
+
+        // Run the test when page loads
+        window.addEventListener('load', () => {
+            console.log('Page loaded, starting test for real artist...');
+            testLoadArtistBookings();
+        });
+    </script>
+</body>
+</html>

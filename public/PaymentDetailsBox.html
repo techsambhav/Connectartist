@@ -1,0 +1,934 @@
+<html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Setup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base Styles */
+        :root {
+            --primary-color: #4a6fa5;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --error-color: #f44336;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #ddd;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --card-bg: #ffffff;
+            --section-bg: #f9f9f9;
+        }
+        
+        body {
+            background-color: var(--section-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .payment-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+        }
+        
+        .payment-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .payment-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .payment-header p {
+            color: #666;
+        }
+        
+        /* Payment Methods Section */
+        .payment-methods {
+            margin-bottom: 2rem;
+        }
+        
+        .payment-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .payment-option {
+            flex: 1;
+            min-width: 200px;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-option:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+        
+        .payment-option input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        .payment-option label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* Payment Details Cards */
+        .saved-payments {
+            margin-top: 2rem;
+        }
+        
+        .payment-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--box-shadow);
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+        }
+        
+        .payment-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .payment-type {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .payment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-edit {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-delete {
+            background-color: var(--error-color);
+            color: white;
+        }
+        
+        .btn-save {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+        }
+        
+        .btn-cancel {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+        }
+        
+        .payment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .detail-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        /* Form Styles */
+        .payment-form {
+            background-color: var(--section-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        /* UPI QR Code Section */
+        .upi-qr-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .qr-upload {
+            margin-top: 1rem;
+        }
+        
+        .qr-preview {
+            max-width: 200px;
+            margin: 1rem auto;
+            display: none;
+        }
+        
+        .qr-preview img {
+            width: 100%;
+            height: auto;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Status Messages */
+        .status-message {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .success-message {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+        
+        .error-message {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .payment-container {
+                padding: 1rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .payment-details {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1><i class="fas fa-wallet"></i> Payment Setup</h1>
+            <p>To receive your booking fees, please set up your preferred payment methods</p>
+        </div>
+        
+        <!-- Status Message -->
+        <div id="statusMessage" class="status-message"></div>
+        
+        <!-- Payment Options Selection -->
+        <div class="payment-methods">
+            <h2><i class="fas fa-credit-card"></i> Select Payment Methods</h2>
+            <p>You can choose one or multiple payment options</p>
+            
+            <div class="payment-options">
+                <div class="payment-option" id="upiOption">
+                    <label>
+                        <input type="checkbox" id="enableUpi" name="paymentMethods" value="upi">
+                        <i class="fas fa-mobile-alt"></i> UPI Payment
+                    </label>
+                </div>
+                
+                <div class="payment-option" id="bankOption">
+                    <label>
+                        <input type="checkbox" id="enableBank" name="paymentMethods" value="bank">
+                        <i class="fas fa-university"></i> Bank Transfer
+                    </label>
+                </div>
+                
+                <div class="payment-option" id="cashOption">
+                    <label>
+                        <input type="checkbox" id="enableCash" name="paymentMethods" value="cash">
+                        <i class="fas fa-money-bill-wave"></i> Cash Payment
+                    </label>
+                </div>
+            </div>
+            
+            <p class="cash-note"><i class="fas fa-info-circle"></i> For cash payments, you'll need to arrange payment directly with the event organizer.</p>
+        </div>
+        
+        <!-- UPI Payment Form (Initially hidden) -->
+        <div id="upiForm" class="payment-form" style="display: none;">
+            <h3><i class="fas fa-mobile-alt"></i> UPI Payment Details</h3>
+            
+            <div class="form-group">
+                <label for="upiId">UPI ID</label>
+                <input type="text" id="upiId" name="upiId" placeholder="yourname@upi">
+            </div>
+            
+            <div class="upi-qr-section">
+                <h4><i class="fas fa-qrcode"></i> UPI QR Code (Optional)</h4>
+                <p>Upload your UPI QR code for easier payments</p>
+                
+                <div class="qr-upload">
+                    <input type="file" id="qrCodeUpload" accept="image/*">
+                </div>
+                
+                <div class="qr-preview" id="qrPreview">
+                    <img id="qrImage" src="" alt="UPI QR Code">
+                    <button class="btn btn-delete" id="removeQr"><i class="fas fa-trash"></i> Remove QR</button>
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-cancel" id="cancelUpi"><i class="fas fa-times"></i> Cancel</button>
+                <button class="btn btn-save" id="saveUpi"><i class="fas fa-save"></i> Save UPI Details</button>
+            </div>
+        </div>
+        
+        <!-- Bank Transfer Form (Initially hidden) -->
+        <div id="bankForm" class="payment-form" style="display: none;">
+            <h3><i class="fas fa-university"></i> Bank Transfer Details</h3>
+            
+            <div class="form-group">
+                <label for="bankName">Bank Name</label>
+                <input type="text" id="bankName" name="bankName" placeholder="e.g. State Bank of India">
+            </div>
+            
+            <div class="form-group">
+                <label for="accountNumber">Account Number</label>
+                <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter your account number">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="accountHolder">Account Holder Name</label>
+                    <input type="text" id="accountHolder" name="accountHolder" placeholder="As it appears on your bank account">
+                </div>
+                
+                <div class="form-group">
+                    <label for="ifscCode">IFSC Code</label>
+                    <input type="text" id="ifscCode" name="ifscCode" placeholder="e.g. SBIN0001234">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-cancel" id="cancelBank"><i class="fas fa-times"></i> Cancel</button>
+                <button class="btn btn-save" id="saveBank"><i class="fas fa-save"></i> Save Bank Details</button>
+            </div>
+        </div>
+
+        <!-- Cash Payment Form (Initially hidden) -->
+        <div id="cashForm" class="payment-form" style="display: none;">
+            <h3><i class="fas fa-money-bill-wave"></i> Cash Payment Setup</h3>
+            
+            <div class="form-group">
+                <p><i class="fas fa-info-circle"></i> By enabling cash payments, customers can pay you directly at the time of service.</p>
+            </div>
+            
+            <div class="form-actions">
+                <button class="btn btn-cancel" id="cancelCash"><i class="fas fa-times"></i> Cancel</button>
+                <button class="btn btn-save" id="saveCash"><i class="fas fa-save"></i> Enable Cash Payments</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Saved Payment Methods -->
+    <div class="saved-payments">
+        <h2><i class="fas fa-list"></i> Your Payment Methods</h2>
+        
+        <!-- UPI Payment Card (Example) -->
+        <div class="payment-card fade-in" id="upiPaymentCard" style="display: none;">
+            <div class="payment-card-header">
+                <div class="payment-type">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>UPI Payment</span>
+                </div>
+                <div class="payment-actions">
+                    <button class="btn btn-edit" id="editUpi"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-delete" id="deleteUpi"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+            </div>
+            <div class="payment-details">
+                <div class="detail-item">
+                    <div class="detail-label">UPI ID</div>
+                    <div class="detail-value" id="savedUpiId">yourname@upi</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">QR Code</div>
+                    <div class="detail-value">
+                        <img id="savedQrCode" src="" alt="UPI QR Code" style="max-width: 100px; display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bank Transfer Card (Example) -->
+        <div class="payment-card fade-in" id="bankPaymentCard" style="display: none;">
+            <div class="payment-card-header">
+                <div class="payment-type">
+                    <i class="fas fa-university"></i>
+                    <span>Bank Transfer</span>
+                </div>
+                <div class="payment-actions">
+                    <button class="btn btn-edit" id="editBank"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-delete" id="deleteBank"><i class="fas fa-trash"></i> Delete</button>
+                </div>
+            </div>
+            <div class="payment-details">
+                <div class="detail-item">
+                    <div class="detail-label">Bank Name</div>
+                    <div class="detail-value" id="savedBankName">State Bank of India</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Account Number</div>
+                    <div class="detail-value" id="savedAccountNumber">•••• 7890</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Account Holder</div>
+                    <div class="detail-value" id="savedAccountHolder">John Doe</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">IFSC Code</div>
+                    <div class="detail-value" id="savedIfscCode">SBIN0001234</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cash Payment Card (Example) -->
+        <div class="payment-card fade-in" id="cashPaymentCard" style="display: none;">
+            <div class="payment-card-header">
+                <div class="payment-type">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Cash Payment</span>
+                </div>
+                <div class="payment-actions">
+                    <button class="btn btn-delete" id="deleteCash"><i class="fas fa-trash"></i> Remove</button>
+                </div>
+            </div>
+            <div class="payment-details">
+                <div class="detail-item">
+                    <div class="detail-label">Payment Method</div>
+                    <div class="detail-value">Cash on delivery</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Note</div>
+                    <div class="detail-value">You'll need to arrange payment directly with the event organizer</div>
+                </div>
+            </div>
+        </div>
+        
+    <!-- Your Payment Method (Primary selector) removed -->
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const upiOption = document.getElementById('upiOption');
+        const bankOption = document.getElementById('bankOption');
+        const cashOption = document.getElementById('cashOption');
+        const enableUpi = document.getElementById('enableUpi');
+        const enableBank = document.getElementById('enableBank');
+        const enableCash = document.getElementById('enableCash');
+        
+        const upiForm = document.getElementById('upiForm');
+        const bankForm = document.getElementById('bankForm');
+        
+        const upiPaymentCard = document.getElementById('upiPaymentCard');
+        const bankPaymentCard = document.getElementById('bankPaymentCard');
+        const cashPaymentCard = document.getElementById('cashPaymentCard');
+        
+        const statusMessage = document.getElementById('statusMessage');
+        
+        // QR Code Upload
+        const qrCodeUpload = document.getElementById('qrCodeUpload');
+        const qrPreview = document.getElementById('qrPreview');
+        const qrImage = document.getElementById('qrImage');
+        const removeQr = document.getElementById('removeQr');
+        const savedQrCode = document.getElementById('savedQrCode');
+        
+        // Payment method selection
+        [upiOption, bankOption, cashOption].forEach(option => {
+            option.addEventListener('click', function(e) {
+                // Don't toggle if clicking on the checkbox directly
+                if (e.target.tagName !== 'INPUT') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                    this.classList.toggle('selected', checkbox.checked);
+                    
+                    // Show/hide forms based on selection
+                    if (checkbox === enableUpi) {
+                        upiForm.style.display = checkbox.checked ? 'block' : 'none';
+                    } else if (checkbox === enableBank) {
+                        bankForm.style.display = checkbox.checked ? 'block' : 'none';
+                    }
+                }
+            });
+        });
+        
+        // Checkbox changes
+        [enableUpi, enableBank, enableCash].forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const parent = this.closest('.payment-option');
+                parent.classList.toggle('selected', this.checked);
+                
+                if (this === enableUpi) {
+                    upiForm.style.display = this.checked ? 'block' : 'none';
+                } else if (this === enableBank) {
+                    bankForm.style.display = this.checked ? 'block' : 'none';
+                }
+            });
+        });
+        
+        // QR Code Upload Handling
+        qrCodeUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    qrImage.src = event.target.result;
+                    qrPreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        removeQr.addEventListener('click', function() {
+            qrImage.src = '';
+            qrPreview.style.display = 'none';
+            qrCodeUpload.value = '';
+        });
+        
+        // Save UPI Details
+        document.getElementById('saveUpi').addEventListener('click', function() {
+            const upiId = document.getElementById('upiId').value;
+            
+            if (!upiId) {
+                showStatusMessage('Please enter your UPI ID', 'error');
+                return;
+            }
+            
+            // Validate UPI ID format
+            if (!isValidUpiId(upiId)) {
+                showStatusMessage('Please enter a valid UPI ID (e.g., yourname@upi)', 'error');
+                return;
+            }
+            
+            // Save to "database" (in a real app, this would be an API call)
+            savePaymentMethod({
+                type: 'upi',
+                upiId: upiId,
+                qrCode: qrImage.src || null
+            });
+            
+            // Update the saved details display
+            document.getElementById('savedUpiId').textContent = upiId;
+            
+            if (qrImage.src) {
+                savedQrCode.src = qrImage.src;
+                savedQrCode.style.display = 'block';
+            } else {
+                savedQrCode.style.display = 'none';
+            }
+            
+            // Show the payment card
+            upiPaymentCard.style.display = 'block';
+            
+            // Hide the form
+            upiForm.style.display = 'none';
+            enableUpi.checked = false;
+            upiOption.classList.remove('selected');
+            
+            showStatusMessage('UPI payment details saved successfully!', 'success');
+        });
+        
+        // Save Bank Details
+        document.getElementById('saveBank').addEventListener('click', function() {
+            const bankName = document.getElementById('bankName').value;
+            const accountNumber = document.getElementById('accountNumber').value;
+            const accountHolder = document.getElementById('accountHolder').value;
+            const ifscCode = document.getElementById('ifscCode').value;
+            
+            if (!bankName || !accountNumber || !accountHolder || !ifscCode) {
+                showStatusMessage('Please fill all bank details', 'error');
+                return;
+            }
+            
+            // Validate IFSC code format
+            if (!isValidIfsc(ifscCode)) {
+                showStatusMessage('Please enter a valid IFSC code (11 characters, alphanumeric)', 'error');
+                return;
+            }
+            
+            // Save to "database"
+            savePaymentMethod({
+                type: 'bank',
+                bankName: bankName,
+                accountNumber: accountNumber,
+                accountHolder: accountHolder,
+                ifscCode: ifscCode
+            });
+            
+            // Update the saved details display
+            document.getElementById('savedBankName').textContent = bankName;
+            document.getElementById('savedAccountNumber').textContent = maskAccountNumber(accountNumber);
+            document.getElementById('savedAccountHolder').textContent = accountHolder;
+            document.getElementById('savedIfscCode').textContent = ifscCode;
+            
+            // Show the payment card
+            bankPaymentCard.style.display = 'block';
+            
+            // Hide the form
+            bankForm.style.display = 'none';
+            enableBank.checked = false;
+            bankOption.classList.remove('selected');
+            
+            showStatusMessage('Bank transfer details saved successfully!', 'success');
+        });
+        
+        // Save Cash Payment
+        enableCash.addEventListener('change', function() {
+            if (this.checked) {
+                // For cash payment, we just show the card immediately
+                savePaymentMethod({
+                    type: 'cash'
+                });
+                
+                cashPaymentCard.style.display = 'block';
+                showStatusMessage('Cash payment option added', 'success');
+            } else {
+                // Remove cash payment
+                removePaymentMethod('cash');
+                cashPaymentCard.style.display = 'none';
+                showStatusMessage('Cash payment option removed', 'success');
+            }
+        });
+        
+        // Edit UPI Details
+        document.getElementById('editUpi').addEventListener('click', function() {
+            // Populate form with existing values
+            document.getElementById('upiId').value = document.getElementById('savedUpiId').textContent;
+            
+            if (savedQrCode.src) {
+                qrImage.src = savedQrCode.src;
+                qrPreview.style.display = 'block';
+            }
+            
+            // Show form
+            upiForm.style.display = 'block';
+            enableUpi.checked = true;
+            upiOption.classList.add('selected');
+            
+            // Hide card temporarily
+            upiPaymentCard.style.display = 'none';
+        });
+        
+        // Edit Bank Details
+        document.getElementById('editBank').addEventListener('click', function() {
+            // Populate form with existing values
+            document.getElementById('bankName').value = document.getElementById('savedBankName').textContent;
+            
+            // In a real app, you would need to store the full account number to edit it
+            document.getElementById('accountNumber').value = ''; // Can't show full number for security
+            document.getElementById('accountHolder').value = document.getElementById('savedAccountHolder').textContent;
+            document.getElementById('ifscCode').value = document.getElementById('savedIfscCode').textContent;
+            
+            // Show form
+            bankForm.style.display = 'block';
+            enableBank.checked = true;
+            bankOption.classList.add('selected');
+            
+            // Hide card temporarily
+            bankPaymentCard.style.display = 'none';
+        });
+        
+        // Delete UPI
+        document.getElementById('deleteUpi').addEventListener('click', function() {
+            if (confirm('Are you sure you want to remove your UPI payment details?')) {
+                removePaymentMethod('upi');
+                upiPaymentCard.style.display = 'none';
+                showStatusMessage('UPI payment details removed', 'success');
+            }
+        });
+        
+        // Delete Bank
+        document.getElementById('deleteBank').addEventListener('click', function() {
+            if (confirm('Are you sure you want to remove your bank transfer details?')) {
+                removePaymentMethod('bank');
+                bankPaymentCard.style.display = 'none';
+                showStatusMessage('Bank transfer details removed', 'success');
+            }
+        });
+        
+        // Delete Cash
+        document.getElementById('deleteCash').addEventListener('click', function() {
+            if (confirm('Are you sure you want to remove cash payment option?')) {
+                enableCash.checked = false;
+                cashOption.classList.remove('selected');
+                removePaymentMethod('cash');
+                cashPaymentCard.style.display = 'none';
+                showStatusMessage('Cash payment option removed', 'success');
+            }
+        });
+        
+        // Cancel buttons
+        document.getElementById('cancelUpi').addEventListener('click', function() {
+            upiForm.style.display = 'none';
+            enableUpi.checked = false;
+            upiOption.classList.remove('selected');
+            
+            // If we were editing, show the card again
+            if (upiPaymentCard.style.display === 'none') {
+                upiPaymentCard.style.display = 'block';
+            }
+        });
+        
+        document.getElementById('cancelBank').addEventListener('click', function() {
+            bankForm.style.display = 'none';
+            enableBank.checked = false;
+            bankOption.classList.remove('selected');
+            
+            // If we were editing, show the card again
+            if (bankPaymentCard.style.display === 'none') {
+                bankPaymentCard.style.display = 'block';
+            }
+        });
+        
+        // Helper functions
+        function showStatusMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type + '-message';
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function isValidUpiId(upiId) {
+            // Simple UPI ID validation
+            return /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+$/.test(upiId);
+        }
+        
+        function isValidIfsc(ifsc) {
+            // IFSC code validation (11 characters, alphanumeric)
+            return /^[A-Za-z]{4}0[A-Za-z0-9]{6}$/.test(ifsc);
+        }
+        
+        function maskAccountNumber(accountNumber) {
+            // Show only last 4 digits
+            if (accountNumber.length > 4) {
+                return '•••• ' + accountNumber.slice(-4);
+            }
+            return accountNumber;
+        }
+        
+        // Simulated database functions
+        function savePaymentMethod(data) {
+            // In a real app, this would be an API call to your backend
+            console.log('Saving payment method:', data);
+            // Store in localStorage for demo purposes
+            localStorage.setItem('paymentMethod_' + data.type, JSON.stringify(data));
+        }
+        
+        function removePaymentMethod(type) {
+            // In a real app, this would be an API call to your backend
+            console.log('Removing payment method:', type);
+            // Remove from localStorage for demo purposes
+            localStorage.removeItem('paymentMethod_' + type);
+        }
+        
+        // Load saved payment methods on page load
+        function loadSavedPaymentMethods() {
+            // Check for UPI
+            const upiData = localStorage.getItem('paymentMethod_upi');
+            if (upiData) {
+                const data = JSON.parse(upiData);
+                document.getElementById('savedUpiId').textContent = data.upiId;
+                if (data.qrCode) {
+                    savedQrCode.src = data.qrCode;
+                    savedQrCode.style.display = 'block';
+                }
+                upiPaymentCard.style.display = 'block';
+                enableUpi.checked = true;
+                upiOption.classList.add('selected');
+            }
+            
+            // Check for Bank
+            const bankData = localStorage.getItem('paymentMethod_bank');
+            if (bankData) {
+                const data = JSON.parse(bankData);
+                document.getElementById('savedBankName').textContent = data.bankName;
+                document.getElementById('savedAccountNumber').textContent = maskAccountNumber(data.accountNumber);
+                document.getElementById('savedAccountHolder').textContent = data.accountHolder;
+                document.getElementById('savedIfscCode').textContent = data.ifscCode;
+                bankPaymentCard.style.display = 'block';
+                enableBank.checked = true;
+                bankOption.classList.add('selected');
+            }
+            
+            // Check for Cash
+            const cashData = localStorage.getItem('paymentMethod_cash');
+            if (cashData) {
+                cashPaymentCard.style.display = 'block';
+                enableCash.checked = true;
+                cashOption.classList.add('selected');
+            }
+        }
+        
+        // Initialize the page
+        loadSavedPaymentMethods();
+        initPrimaryPaymentUI();
+    });
+
+    // Primary payment UI: renders available saved methods and allows selecting one as primary
+    function initPrimaryPaymentUI() {
+        const yourPaymentList = document.getElementById('yourPaymentList');
+        const savePrimaryBtn = document.getElementById('savePrimaryPayment');
+
+        // Defensive: if the expected container isn't present, skip initialization
+        if (!yourPaymentList) {
+            console.warn('initPrimaryPaymentUI: #yourPaymentList not found — skipping primary payment UI initialization.');
+            return;
+        }
+
+        function getAvailableMethods() {
+            const methods = [];
+            if (localStorage.getItem('paymentMethod_upi')) methods.push({ key: 'upi', label: 'UPI Payment' });
+            if (localStorage.getItem('paymentMethod_bank')) methods.push({ key: 'bank', label: 'Bank Transfer' });
+            if (localStorage.getItem('paymentMethod_cash')) methods.push({ key: 'cash', label: 'Cash Payment' });
+            return methods;
+        }
+
+        function renderOptions() {
+            const methods = getAvailableMethods();
+            yourPaymentList.innerHTML = '';
+            if (!methods.length) {
+                yourPaymentList.innerHTML = '<div class="detail-item">No payment methods saved. Add one above to select it as primary.</div>';
+                return;
+            }
+
+            const primary = localStorage.getItem('primaryPaymentMethod');
+            methods.forEach(m => {
+                const id = 'primary_' + m.key;
+                const item = document.createElement('label');
+                item.style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.gap = '0.5rem';
+                item.style.cursor = 'pointer';
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'primaryPayment';
+                radio.id = id;
+                radio.value = m.key;
+                if (primary === m.key) radio.checked = true;
+
+                const span = document.createElement('span');
+                span.textContent = m.label;
+
+                item.appendChild(radio);
+                item.appendChild(span);
+                yourPaymentList.appendChild(item);
+            });
+        }
+
+        if (savePrimaryBtn) {
+            savePrimaryBtn.addEventListener('click', function() {
+                const selected = document.querySelector('input[name="primaryPayment"]:checked');
+                if (!selected) {
+                    showStatusMessage('Please select a primary payment method before saving', 'error');
+                    return;
+                }
+                localStorage.setItem('primaryPaymentMethod', selected.value);
+                showStatusMessage('Primary payment method saved', 'success');
+            });
+        } else {
+            console.warn('initPrimaryPaymentUI: #savePrimaryPayment not found — save action disabled.');
+        }
+
+        renderOptions();
+    }
+  
+</script>
+</body>
+</html>

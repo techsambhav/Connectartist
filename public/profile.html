@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectArtist - Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4A90E2; /* Light blue */
+            --secondary: #50C878; /* Green accent */
+            --dark: #1e272e;
+            --light: #ffffff;
+            --text: #2D3748;
+            --text-light: #718096;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --radius: 12px;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        /* Header Styles */
+        header {
+            background: var(--card-bg);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+        }
+        
+        nav a:hover {
+            color: var(--primary);
+        }
+        
+        .logout-btn {
+            display: none;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            font-size: 1.1rem;
+        }
+        
+        .logout-btn:hover {
+            background: #3b7cc7;
+        }
+        
+        /* Main Container */
+        .profile-container {
+            padding: 3rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Not Logged In State */
+        .not-logged-in {
+            text-align: center;
+            padding: 3rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .not-logged-in p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+        
+        .redirect-message {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            display: block;
+        }
+        
+        /* Profile View State */
+        .profile-view {
+            display: none;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .profile-header {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        
+        .profile-avatar-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.2);
+            transition: var(--transition);
+        }
+        
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+        
+        .edit-avatar {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+        
+        .profile-details {
+            margin-top: 1rem;
+        }
+        
+        .profile-details h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        
+        .profile-details p {
+            font-size: 1rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+        
+        .artist-type {
+            display: inline-block;
+            background: rgba(80, 200, 120, 0.1);
+            color: var(--secondary);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            margin: 0.5rem 0;
+        }
+        
+        .profile-media {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .media-section {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .media-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .media-section h3 i {
+            color: var(--primary);
+        }
+        
+        .media-upload {
+            border: 2px dashed #ddd;
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+        
+        .media-upload:hover {
+            border-color: var(--primary);
+            background: rgba(74, 144, 226, 0.05);
+        }
+        
+        .media-upload i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .media-upload p {
+            color: var(--text-light);
+        }
+        
+        .media-preview {
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .media-preview video, .media-preview audio {
+            width: 100%;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+        }
+        
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .media-item {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            aspect-ratio: 1;
+        }
+        
+        .media-item img, .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .media-item .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .add-more-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(74, 144, 226, 0.1);
+            color: var(--primary);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: var(--transition);
+        }
+        
+        .add-more-btn:hover {
+            background: rgba(74, 144, 226, 0.2);
+        }
+        
+        .edit-profile-btn {
+            padding: 0.8rem 1.8rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 1.5rem;
+        }
+        
+        .edit-profile-btn:hover {
+            background: #3b7cc7;
+            transform: translateY(-2px);
+        }
+        
+        /* Build Profile State */
+        .build-profile {
+            display: none;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .build-profile h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+            font-weight: 500;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: var(--radius);
+            border: 1px solid #ddd;
+            background: white;
+            color: var(--text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            outline: none;
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 1rem;
+            background: rgba(74, 144, 226, 0.05);
+            border-radius: var(--radius);
+            color: var(--text-light);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px dashed #ddd;
+        }
+        
+        .file-input-label:hover {
+            border-color: var(--primary);
+            background: rgba(74, 144, 226, 0.1);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-status {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .save-profile-btn {
+            padding: 0.9rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .save-profile-btn:hover {
+            background: #3b7cc7;
+            transform: translateY(-2px);
+        }
+        
+        .view-profile-btn {
+            padding: 0.9rem;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .view-profile-btn:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+        
+        /* Progress Bar Styles */
+        .progress-container {
+            margin-top: 1.5rem;
+            width: 100%;
+            display: none;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: #e6ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            width: 0%;
+            transition: width 0.4s ease-in-out;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.2) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(255, 255, 255, 0.2) 50%,
+                rgba(255, 255, 255, 0.2) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 30px 30px;
+            animation: moveStripes 2s linear infinite;
+        }
+        
+        @keyframes moveStripes {
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 0; }
+        }
+        
+        .progress-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-top: 0.75rem;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            animation: pulseText 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .progress-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .progress-container.active::before {
+            opacity: 1;
+        }
+        
+        /* Alert Modal */
+        .alert-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .alert-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .alert-message {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+        
+        .alert-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        
+        .alert-btn:hover {
+            background: #3b7cc7;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .profile-header {
+                padding: 1.5rem;
+            }
+            
+            .profile-avatar-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .progress-container {
+                padding: 0.75rem;
+            }
+            
+            .progress-bar {
+                height: 20px;
+            }
+            
+            .progress-text {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="frontend.html" class="logo">
+            <i class="fas fa-microphone-alt"></i>
+            ConnectArtist
+        </a>
+        <nav class="nav-links">
+            <a href="frontend.html">Back to Home</a>
+            <div id="authButtons">
+                <a href="login.html">Login</a>
+                <a href="signup.html">Signup</a>
+                <a href="#" class="instagram-login"><i class="fab fa-instagram"></i> Login with Instagram</a>
+            </div>
+            <button class="logout-btn" id="logoutBtn">Logout</button>
+        </nav>
+    </header>
+
+    <!-- Main Profile Container -->
+    <div class="profile-container" id="profileContainer">
+        <!-- Not Logged In State -->
+        <div class="not-logged-in" id="notLoggedIn">
+            <h2>Profile Access Required</h2>
+            <p>You need to login to view or build your artist profile.</p>
+            <span class="redirect-message" id="redirectMessage"></span>
+            <div style="margin-top: 2rem;">
+                <a href="login.html" class="save-profile-btn">Login Now</a>
+            </div>
+        </div>
+
+        <!-- Profile View State -->
+        <div class="profile-view" id="profileView">
+            <div class="profile-header">
+                <div class="profile-avatar-container">
+                    <img src="https://via.placeholder.com/150" alt="Profile Avatar" class="profile-avatar" id="profileAvatar">
+                    <div class="edit-avatar" onclick="showBuildProfile()">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                </div>
+                <div class="profile-details">
+                    <h2 id="displayName">Your Name</h2>
+                    <span class="artist-type" id="artistType">Artist</span>
+                    <p id="bio">Tell us about yourself...</p>
+                    <p id="location">Your location...</p>
+                </div>
+                <button class="edit-profile-btn" onclick="showBuildProfile()">Edit Profile</button>
+            </div>
+            
+            <div class="profile-media">
+                <div class="media-section">
+                    <h3><i class="fas fa-images"></i> Your Photos</h3>
+                    <div class="media-upload" onclick="document.getElementById('photosInput').click()">
+                        <i class="fas fa-plus-circle"></i>
+                        <p>Add your photos</p>
+                    </div>
+                    <div class="media-grid" id="photosGrid"></div>
+                    <button class="add-more-btn" onclick="document.getElementById('photosInput').click()">
+                        <i class="fas fa-plus"></i> Add More Photos
+                    </button>
+                </div>
+                
+                <div class="media-section">
+                    <h3><i class="fas fa-music"></i> Your Music</h3>
+                    <div class="media-upload" onclick="document.getElementById('audioInput').click()">
+                        <i class="fas fa-plus-circle"></i>
+                        <p>Add your song</p>
+                    </div>
+                    <div class="media-preview" id="audioPreview">
+                        <audio controls id="audioPlayer">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    <div class="media-grid" id="audioGrid"></div>
+                    <button class="add-more-btn" onclick="document.getElementById('audioInput').click()">
+                        <i class="fas fa-plus"></i> Add More Audio
+                    </button>
+                </div>
+                
+                <div class="media-section">
+                    <h3><i class="fas fa-video"></i> Your Videos</h3>
+                    <div class="media-upload" onclick="document.getElementById('videoInput').click()">
+                        <i class="fas fa-plus-circle"></i>
+                        <p>Add your video</p>
+                    </div>
+                    <div class="media-preview" id="videoPreview">
+                        <video controls id="videoPlayer">
+                            Your browser does not support the video element.
+                        </video>
+                    </div>
+                    <div class="media-grid" id="videoGrid"></div>
+                    <button class="add-more-btn" onclick="document.getElementById('videoInput').click()">
+                        <i class="fas fa-plus"></i> Add More Videos
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Build Profile State -->
+        <div class="build-profile" id="buildProfile">
+            <h2>Build Your Profile</h2>
+            <form id="profileForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label">Display Name</label>
+                    <input type="text" class="form-input" id="displayNameInput" placeholder="Enter your artist name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Bio</label>
+                    <textarea class="form-textarea" id="bioInput" placeholder="Tell us about yourself and your art"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Artist Type</label>
+                    <select class="form-select" id="artistTypeInput" required onchange="toggleCustomArtistType()">
+                        <option value="">Select your art form</option>
+                        <option value="Musician">Musician</option>
+                        <option value="Singer">Singer</option>
+                        <option value="DJ">DJ</option>
+                        <option value="Comedian">Comedian</option>
+                        <option value="Magician">Magician</option>
+                        <option value="Dancer">Dancer</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input type="text" class="form-input" id="customArtistTypeInput" placeholder="Enter your custom artist type" style="display: none; margin-top: 0.5rem;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Booking Price (₹)</label>
+                    <input type="number" class="form-input" id="priceInput" min="0" placeholder="Set your booking price" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" id="locationInput" placeholder="Enter your city or location" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Profile Picture</label>
+                    <label for="avatarInput" class="file-input-label">
+                        <i class="fas fa-camera"></i> Click to upload profile picture
+                    </label>
+                    <input type="file" class="file-input" id="avatarInput" accept="image/*">
+                    <div class="upload-status" id="avatarUploadStatus"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Photos</label>
+                    <label for="photosInput" class="file-input-label">
+                        <i class="fas fa-images"></i> Click to upload your photos
+                    </label>
+                    <input type="file" class="file-input" id="photosInput" accept="image/*" multiple>
+                    <div class="upload-status" id="photosUploadStatus"></div>
+                    <div class="media-grid" id="buildPhotosGrid"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Song (Audio)</label>
+                    <label for="audioInput" class="file-input-label">
+                        <i class="fas fa-music"></i> Click to upload your best song
+                    </label>
+                    <input type="file" class="file-input" id="audioInput" accept="audio/*">
+                    <div class="upload-status" id="audioUploadStatus"></div>
+                    <div class="media-grid" id="buildAudioGrid"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Your Performance (Video)</label>
+                    <label for="videoInput" class="file-input-label">
+                        <i class="fas fa-video"></i> Click to upload a performance video
+                    </label>
+                    <input type="file" class="file-input" id="videoInput" accept="video/*">
+                    <div class="upload-status" id="videoUploadStatus"></div>
+                    <div class="media-grid" id="buildVideoGrid"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Banner Image</label>
+                    <label for="bannerInput" class="file-input-label">
+                        <i class="fas fa-image"></i> Click to upload banner image
+                    </label>
+                    <input type="file" class="file-input" id="bannerInput" accept="image/*">
+                    <div class="upload-status" id="bannerUploadStatus"></div>
+                    <div class="media-grid" id="buildBannerGrid"></div>
+                </div>
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" id="progressBarFill"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Uploading: 0%</p>
+                </div>
+                <button type="submit" class="save-profile-btn">Save Profile</button>
+                <button type="button" class="view-profile-btn" onclick="showProfileView()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div class="alert-modal" id="alertModal">
+        <div class="alert-content">
+            <p class="alert-message" id="alertMessage"></p>
+            <button class="alert-btn" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Reset form fields and media grids
+        function resetProfileForm() {
+            const fields = [
+                'displayNameInput', 'bioInput', 'artistTypeInput', 'priceInput',
+                'avatarInput', 'photosInput', 'audioInput', 'videoInput', 'bannerInput',
+                'customArtistTypeInput', 'locationInput'
+            ];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+                        el.value = '';
+                    }
+                }
+            });
+
+            const grids = ['buildPhotosGrid', 'buildAudioGrid', 'buildVideoGrid', 'buildBannerGrid'];
+            grids.forEach(id => {
+                const grid = document.getElementById(id);
+                if (grid) grid.innerHTML = '';
+            });
+
+            const statuses = ['avatarUploadStatus', 'photosUploadStatus', 'audioUploadStatus', 'videoUploadStatus', 'bannerUploadStatus'];
+            statuses.forEach(id => {
+                const status = document.getElementById(id);
+                if (status) {
+                    status.textContent = '';
+                    status.style.display = 'none';
+                }
+            });
+
+            document.getElementById('displayName').textContent = 'Your Name';
+            document.getElementById('artistType').textContent = 'Artist';
+            document.getElementById('bio').textContent = 'Tell us about yourself...';
+            document.getElementById('location').textContent = 'Your location...';
+            document.getElementById('profileAvatar').src = 'https://via.placeholder.com/150';
+            const viewGrids = ['photosGrid', 'audioGrid', 'videoGrid'];
+            viewGrids.forEach(id => {
+                const grid = document.getElementById(id);
+                if (grid) grid.innerHTML = '';
+            });
+
+            const customArtistTypeInput = document.getElementById('customArtistTypeInput');
+            if (customArtistTypeInput) {
+                customArtistTypeInput.style.display = 'none';
+                customArtistTypeInput.required = false;
+            }
+        }
+
+    // detect adminCreate mode from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const adminCreate = urlParams.get('adminCreate') === 'true';
+    const adminUserId = urlParams.get('userId') || null;
+
+        // Check login status (supports admin-created profile flow)
+        function checkLoginStatus() {
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const profileView = document.getElementById('profileView');
+            const buildProfile = document.getElementById('buildProfile');
+            const authButtons = document.getElementById('authButtons');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            if (adminCreate && adminUserId) {
+                // admin-driven: show the builder so admin can fill details for the generated user
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (authButtons) authButtons.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+                if (buildProfile) buildProfile.style.display = 'block';
+                if (profileView) profileView.style.display = 'none';
+                return;
+            }
+
+            if (!token || !userId) {
+                if (notLoggedIn) notLoggedIn.style.display = 'block';
+                if (profileView) profileView.style.display = 'none';
+                if (buildProfile) buildProfile.style.display = 'none';
+                if (authButtons) authButtons.style.display = 'flex';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+
+                resetProfileForm();
+                localStorage.removeItem('profileData');
+
+                let count = 4;
+                const redirectMessage = document.getElementById('redirectMessage');
+                if (redirectMessage) redirectMessage.textContent = `Redirecting to login page in ${count} seconds...`;
+
+                const timer = setInterval(() => {
+                    count--;
+                    if (redirectMessage) redirectMessage.textContent = `Redirecting to login page in ${count} seconds...`;
+                    if (count <= 0) {
+                        clearInterval(timer);
+                        window.location.href = 'login.html';
+                    }
+                }, 1000);
+            } else {
+                if (notLoggedIn) notLoggedIn.style.display = 'none';
+                if (authButtons) authButtons.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'block';
+                loadProfile(userId);
+            }
+        }
+
+        // API base helper (supports file:// and same-origin)
+        function getApiUrl(path) {
+            try {
+                if (window.location.origin && window.location.origin.startsWith('http')) {
+                    return path; // same-origin
+                }
+            } catch (e) {}
+            return 'https://localhost:5000' + path;
+        }
+
+        // Load profile data for a specific user
+        async function loadProfile() {
+            const profileView = document.getElementById('profileView');
+            const buildProfile = document.getElementById('buildProfile');
+
+            let profileData = {};
+            const token = localStorage.getItem('token');
+
+            if (token) {
+                try {
+                    const resp = await fetch(getApiUrl('/api/profile' + (token ? ('?token=' + encodeURIComponent(token)) : '')), {
+                        method: 'GET',
+                        headers: { 'Authorization': 'Bearer ' + token },
+                        credentials: 'include'
+                    });
+                    if (resp.ok) {
+                        profileData = await resp.json();
+                        if (profileData.profile) profileData = profileData.profile;
+                        localStorage.setItem('profileData', JSON.stringify(profileData));
+                    } else {
+                        console.warn('Failed to fetch profile from server, falling back to localStorage');
+                        const profileJson = localStorage.getItem('profileData');
+                        profileData = (typeof profileJson === 'string' && profileJson.trim() !== '') ? JSON.parse(profileJson) : {};
+                    }
+                } catch (err) {
+                    console.error('Error fetching profile from server:', err);
+                    const profileJson = localStorage.getItem('profileData');
+                    profileData = (typeof profileJson === 'string' && profileJson.trim() !== '') ? JSON.parse(profileJson) : {};
+                }
+            } else {
+                const profileJson = localStorage.getItem('profileData');
+                profileData = (typeof profileJson === 'string' && profileJson.trim() !== '') ? JSON.parse(profileJson) : {};
+            }
+
+            if (profileData && profileData.displayName) {
+                profileView.style.display = 'flex';
+                buildProfile.style.display = 'none';
+
+                document.getElementById('displayName').textContent = profileData.displayName;
+                document.getElementById('artistType').textContent = (profileData.artistType || profileData.genre) || 'Artist';
+                document.getElementById('bio').textContent = profileData.bio || 'Tell us about yourself...';
+                document.getElementById('profileAvatar').src = profileData.avatarUrl || 'https://via.placeholder.com/150';
+
+                const photosGrid = document.getElementById('photosGrid');
+                photosGrid.innerHTML = '';
+                if (profileData.photos && profileData.photos.length > 0) {
+                    profileData.photos.forEach((photo, index) => {
+                        const photoItem = document.createElement('div');
+                        photoItem.className = 'media-item';
+                        photoItem.innerHTML = `
+                            <img src="${photo.url}" alt="Photo ${index + 1}">
+                            <button class="delete-btn" onclick="deleteMediaItem('photos', ${index})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        photosGrid.appendChild(photoItem);
+                    });
+                }
+
+                const audioGrid = document.getElementById('audioGrid');
+                audioGrid.innerHTML = '';
+                if (profileData.audios && profileData.audios.length > 0) {
+                    profileData.audios.forEach((audio, index) => {
+                        const audioItem = document.createElement('div');
+                        audioItem.className = 'media-item';
+                        audioItem.innerHTML = `
+                            <audio controls src="${audio.url}"></audio>
+                            <button class="delete-btn" onclick="deleteMediaItem('audios', ${index})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        audioGrid.appendChild(audioItem);
+                    });
+                }
+
+                const videoGrid = document.getElementById('videoGrid');
+                videoGrid.innerHTML = '';
+                if (profileData.videos && profileData.videos.length > 0) {
+                    profileData.videos.forEach((video, index) => {
+                        const videoItem = document.createElement('div');
+                        videoItem.className = 'media-item';
+                        videoItem.innerHTML = `
+                            <video controls src="${video.url}"></video>
+                            <button class="delete-btn" onclick="deleteMediaItem('videos', ${index})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        videoGrid.appendChild(videoItem);
+                    });
+                }
+            } else {
+                showBuildProfile();
+            }
+        }
+
+        // Show build profile form
+        function showBuildProfile() {
+            const userId = localStorage.getItem('userId');
+            const profileData = JSON.parse(localStorage.getItem(`profileData_${userId}`)) || {};
+
+            document.getElementById('profileView').style.display = 'none';
+            document.getElementById('buildProfile').style.display = 'block';
+
+            resetProfileForm();
+
+            document.getElementById('displayNameInput').value = profileData.displayName || '';
+            document.getElementById('bioInput').value = profileData.bio || '';
+            document.getElementById('priceInput').value = profileData.price || '';
+            document.getElementById('locationInput').value = profileData.location || '';
+
+            const artistTypeInput = document.getElementById('artistTypeInput');
+            const customArtistTypeInput = document.getElementById('customArtistTypeInput');
+            if (profileData.artistType && !['Musician', 'Singer', 'DJ', 'Comedian', 'Magician', 'Dancer'].includes(profileData.artistType)) {
+                artistTypeInput.value = 'Other';
+                customArtistTypeInput.value = profileData.artistType || '';
+                customArtistTypeInput.style.display = 'block';
+                customArtistTypeInput.required = true;
+            } else {
+                artistTypeInput.value = profileData.artistType || '';
+                customArtistTypeInput.style.display = 'none';
+                customArtistTypeInput.required = false;
+            }
+
+            const buildPhotosGrid = document.getElementById('buildPhotosGrid');
+            buildPhotosGrid.innerHTML = '';
+            if (profileData.photos && profileData.photos.length > 0) {
+                profileData.photos.forEach((photo, index) => {
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'media-item';
+                    photoItem.innerHTML = `
+                        <img src="${photo.url}" alt="Photo ${index + 1}">
+                        <button class="delete-btn" onclick="deleteMediaItem('photos', ${index}, true)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    buildPhotosGrid.appendChild(photoItem);
+                });
+            }
+
+            const buildAudioGrid = document.getElementById('buildAudioGrid');
+            buildAudioGrid.innerHTML = '';
+            if (profileData.audios && profileData.audios.length > 0) {
+                profileData.audios.forEach((audio, index) => {
+                    const audioItem = document.createElement('div');
+                    audioItem.className = 'media-item';
+                    audioItem.innerHTML = `
+                        <audio controls src="${audio.url}"></audio>
+                        <button class="delete-btn" onclick="deleteMediaItem('audios', ${index}, true)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    buildAudioGrid.appendChild(audioItem);
+                });
+            }
+
+            const buildVideoGrid = document.getElementById('buildVideoGrid');
+            buildVideoGrid.innerHTML = '';
+            if (profileData.videos && profileData.videos.length > 0) {
+                profileData.videos.forEach((video, index) => {
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'media-item';
+                    videoItem.innerHTML = `
+                        <video controls src="${video.url}"></video>
+                        <button class="delete-btn" onclick="deleteMediaItem('videos', ${index}, true)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    buildVideoGrid.appendChild(videoItem);
+                });
+            }
+
+            const buildBannerGrid = document.getElementById('buildBannerGrid');
+            buildBannerGrid.innerHTML = '';
+            if (profileData.banner && profileData.banner.url) {
+                const bannerItem = document.createElement('div');
+                bannerItem.className = 'media-item';
+                bannerItem.innerHTML = `
+                    <img src="${profileData.banner.url}" alt="Banner Image">
+                    <button class="delete-btn" onclick="deleteMediaItem('banner', 0, true)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                buildBannerGrid.appendChild(bannerItem);
+            }
+        }
+
+        // Show profile view
+        function showProfileView() {
+            document.getElementById('buildProfile').style.display = 'none';
+            loadProfile(localStorage.getItem('userId'));
+        }
+
+        // Delete media item
+        function deleteMediaItem(type, index, isBuildMode = false) {
+            const userId = localStorage.getItem('userId');
+            const profileData = JSON.parse(localStorage.getItem(`profileData_${userId}`)) || {};
+            if (type === 'banner') {
+                profileData.banner = null;
+            } else if (profileData[type] && profileData[type][index]) {
+                profileData[type].splice(index, 1);
+            }
+            localStorage.setItem(`profileData_${userId}`, JSON.stringify(profileData));
+            
+            if (isBuildMode) {
+                showBuildProfile();
+            } else {
+                loadProfile(userId);
+            }
+        }
+
+        // Toggle custom artist type input visibility
+        function toggleCustomArtistType() {
+            const artistTypeInput = document.getElementById('artistTypeInput');
+            const customArtistTypeInput = document.getElementById('customArtistTypeInput');
+            if (artistTypeInput.value === 'Other') {
+                customArtistTypeInput.style.display = 'block';
+                customArtistTypeInput.required = true;
+            } else {
+                customArtistTypeInput.style.display = 'none';
+                customArtistTypeInput.required = false;
+                customArtistTypeInput.value = '';
+            }
+        }
+
+        // Simulate upload progress based on file sizes
+        function showUploadProgress(formData, callback) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressContainer.style.display = 'block';
+            progressBarFill.style.width = '0%';
+            progressText.textContent = 'Uploading: 0%';
+            
+            let totalSize = 0;
+            for (let [key, value] of formData.entries()) {
+                if (value instanceof File) {
+                    totalSize += value.size;
+                }
+            }
+            
+            const estimatedTimePerMB = 100;
+            const totalTime = (totalSize / (1024 * 1024)) * estimatedTimePerMB;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += (100 / (totalTime / 100));
+                if (progress >= 99) {
+                    progress = 99;
+                    clearInterval(interval);
+                }
+                progressBarFill.style.width = `${progress}%`;
+                progressText.textContent = `Uploading: ${Math.round(progress)}%`;
+            }, 100);
+            
+            callback().then(() => {
+                clearInterval(interval);
+                progressBarFill.style.width = '100%';
+                progressText.textContent = 'Uploading: 100%';
+                setTimeout(() => {
+                    progressContainer.style.display = 'none';
+                }, 1000);
+            }).catch(() => {
+                clearInterval(interval);
+                progressContainer.style.display = 'none';
+            });
+        }
+
+        // Handle profile form submission
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const displayName = document.getElementById('displayNameInput').value.trim();
+            const bio = document.getElementById('bioInput').value.trim();
+            const artistTypeInput = document.getElementById('artistTypeInput').value;
+            const customArtistTypeInput = document.getElementById('customArtistTypeInput').value.trim();
+            const artistType = artistTypeInput === 'Other' ? customArtistTypeInput : artistTypeInput;
+            const price = document.getElementById('priceInput').value;
+            const location = document.getElementById('locationInput').value.trim();
+            // prefer adminUserId when adminCreate mode is active
+            const userId = localStorage.getItem('userId') || 'demo-user';
+
+            const formData = new FormData();
+            formData.append('displayName', displayName);
+            formData.append('bio', bio);
+            formData.append('artistType', artistType);
+            formData.append('price', price);
+            formData.append('location', location);
+            // do not send userId; server derives from auth token
+
+            const avatarFile = document.getElementById('avatarInput').files[0];
+            if (avatarFile) formData.append('avatar', avatarFile);
+
+            const photosFiles = document.getElementById('photosInput').files;
+            for (let i = 0; i < photosFiles.length; i++) {
+                formData.append('photos', photosFiles[i]);
+            }
+
+            const audioFiles = document.getElementById('audioInput').files;
+            for (let i = 0; i < audioFiles.length; i++) {
+                formData.append('audios', audioFiles[i]);
+            }
+
+            const videoFiles = document.getElementById('videoInput').files;
+            for (let i = 0; i < videoFiles.length; i++) {
+                formData.append('videos', videoFiles[i]);
+            }
+
+            const bannerFile = document.getElementById('bannerInput').files[0];
+            if (bannerFile) {
+                formData.append('bannerImage', bannerFile);
+            }
+
+            // Fallback: include token in form body so backend can authenticate even if headers/cookies are stripped
+            const authToken = localStorage.getItem('token');
+            if (authToken) formData.append('token', authToken);
+
+        showUploadProgress(formData, async () => {
+                try {
+            // Always require Authorization for saving profile
+            const headers = {};
+            const authToken = localStorage.getItem('token');
+            if (authToken) headers['Authorization'] = 'Bearer ' + authToken;
+
+                    const response = await fetch(getApiUrl('/api/profile/save'), {
+                        method: 'POST',
+                        headers,
+                        credentials: 'include',
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        localStorage.setItem(`profileData_${userId}`, JSON.stringify(result.profile));
+                        showAlert('Profile saved successfully!');
+                        setTimeout(showProfileView, 1500);
+                    } else {
+                        showAlert('Failed to save profile!');
+                    }
+                } catch (err) {
+                    showAlert('Error saving profile!');
+                    throw err;
+                }
+            });
+        });
+
+        // Handle file input changes
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const status = document.getElementById('avatarUploadStatus');
+                status.textContent = `${file.name} uploaded successfully!`;
+                status.style.display = 'block';
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('profileAvatar').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('photosInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                const status = document.getElementById('photosUploadStatus');
+                status.textContent = `${files.length} photo(s) uploaded successfully!`;
+                status.style.display = 'block';
+                
+                const grid = document.getElementById('buildPhotosGrid');
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'media-item';
+                    photoItem.innerHTML = `
+                        <img src="${URL.createObjectURL(file)}" alt="Photo ${i + 1}">
+                        <button class="delete-btn" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    grid.appendChild(photoItem);
+                }
+            }
+        });
+
+        document.getElementById('audioInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                const status = document.getElementById('audioUploadStatus');
+                status.textContent = `${files.length} audio file(s) uploaded successfully!`;
+                status.style.display = 'block';
+                
+                const grid = document.getElementById('buildAudioGrid');
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const audioItem = document.createElement('div');
+                    audioItem.className = 'media-item';
+                    audioItem.innerHTML = `
+                        <audio controls src="${URL.createObjectURL(file)}"></audio>
+                        <button class="delete-btn" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    grid.appendChild(audioItem);
+                }
+            }
+        });
+
+        document.getElementById('videoInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files && files.length > 0) {
+                const status = document.getElementById('videoUploadStatus');
+                status.textContent = `${files.length} video file(s) uploaded successfully!`;
+                status.style.display = 'block';
+                
+                const grid = document.getElementById('buildVideoGrid');
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'media-item';
+                    videoItem.innerHTML = `
+                        <video controls src="${URL.createObjectURL(file)}"></video>
+                        <button class="delete-btn" onclick="this.parentElement.remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    grid.appendChild(videoItem);
+                }
+            }
+        });
+
+        document.getElementById('bannerInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const status = document.getElementById('bannerUploadStatus');
+                status.textContent = `${file.name} uploaded successfully!`;
+                status.style.display = 'block';
+                
+                const grid = document.getElementById('buildBannerGrid');
+                grid.innerHTML = '';
+                const bannerItem = document.createElement('div');
+                bannerItem.className = 'media-item';
+                bannerItem.innerHTML = `
+                    <img src="${URL.createObjectURL(file)}" alt="Banner Image">
+                    <button class="delete-btn" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                grid.appendChild(bannerItem);
+            }
+        });
+
+        // Logout function
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            const userId = localStorage.getItem('userId');
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userEmail');
+
+            const profileView = document.getElementById('profileView');
+            const buildProfile = document.getElementById('buildProfile');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            if (profileView) profileView.style.display = 'none';
+            if (buildProfile) buildProfile.style.display = 'none';
+            if (notLoggedIn) notLoggedIn.style.display = 'block';
+
+            resetProfileForm();
+
+            const audioPlayer = document.getElementById('audioPlayer');
+            if (audioPlayer) audioPlayer.src = '';
+            const videoPlayer = document.getElementById('videoPlayer');
+            if (videoPlayer) videoPlayer.src = '';
+
+            window.location.href = 'frontend.html';
+        });
+
+        // Show alert modal
+        function showAlert(message) {
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').style.display = 'flex';
+        }
+
+        // Close alert modal
+        function closeAlert() {
+            document.getElementById('alertModal').style.display = 'none';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                checkLoginStatus();
+            } catch (error) {
+                console.error("Initialization error:", error);
+            }
+        });
+
+        // Consistent login/logout logic for all pages
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            const authButtons = document.getElementById('authButtons');
+
+            const token = localStorage.getItem('token');
+            if (token) {
+                if (authButtons) authButtons.style.display = 'none';
+                if (logoutBtn) logoutBtn.style.display = 'block';
+            } else {
+                if (authButtons) authButtons.style.display = 'flex';
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

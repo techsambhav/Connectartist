@@ -1,0 +1,7 @@
+Posting create-order for artist 68bde1fbcd2e93059ea312d5 to https://localhost:5000
+(node:16448) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+HTTP error 500 {
+  "success": false,
+  "message": "Server error creating booking"
+}

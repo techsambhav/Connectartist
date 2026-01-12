@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Authentication Scenarios for YOUR EVENTS</title>
+    <style>
+        .test-case { border: 1px solid #ccc; margin: 10px; padding: 15px; }
+        .pass { background-color: #d4edda; }
+        .fail { background-color: #f8d7da; }
+    </style>
+</head>
+<body>
+    <h1>Testing YOUR EVENTS Visibility Logic</h1>
+    
+    <div id="test-results"></div>
+
+    <script>
+        async function runTests() {
+            const results = document.getElementById('test-results');
+            const artistId = '68b917970861b56e3644d863'; // Pushp Sharma
+            const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OGI5MTc5NzA4NjFiNTZlMzY0NGQ4NjMiLCJlbWFpbCI6InB1c2hwc2hhcjFAZ21haWwuY29tIiwicm9sZSI6ImFydGlzdCIsInNlc3Npb25Sb2xlIjoiYXJ0aXN0IiwiaWF0IjoxNzU4MzAzMTA2LCJleHAiOjE3NTg5MDc5MDZ9.mbM6WoF4a0jm1WyQVJsScJV2jwY95r2IiVXhruLWlNc';
+            
+            const testCases = [
+                {
+                    name: "Test 1: No authentication (visitor viewing profile)",
+                    setup: () => {
+                        localStorage.clear();
+                    },
+                    expected: "Section should be hidden"
+                },
+                {
+                    name: "Test 2: Wrong user logged in (different artist viewing profile)", 
+                    setup: () => {
+                        localStorage.clear();
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('userId', '68bde1fbcd2e93059ea312d5'); // Different artist
+                    },
+                    expected: "Section should be hidden"
+                },
+                {
+                    name: "Test 3: Correct artist logged in (artist viewing own profile)",
+                    setup: () => {
+                        localStorage.clear();
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('userId', artistId); // Same artist
+                    },
+                    expected: "Section should be visible with bookings"
+                },
+                {
+                    name: "Test 4: Token but no userId",
+                    setup: () => {
+                        localStorage.clear();
+                        localStorage.setItem('token', token);
+                        // No userId set
+                    },
+                    expected: "Section should be hidden"
+                }
+            ];
+
+            let html = '';
+
+            for (let i = 0; i < testCases.length; i++) {
+                const testCase = testCases[i];
+                console.log(`\\n=== ${testCase.name} ===`);
+                
+                // Setup the test
+                testCase.setup();
+                
+                // Run the visibility logic (same as in card.html)
+                const loggedUserId = localStorage.getItem('userId') || null;
+                const shouldBeVisible = loggedUserId && String(loggedUserId) === String(artistId);
+                
+                console.log('Test conditions:', {
+                    artistId,
+                    loggedUserId,
+                    match: String(loggedUserId) === String(artistId),
+                    token: !!localStorage.getItem('token'),
+                    shouldBeVisible
+                });
+
+                // Test API call if should be visible
+                let apiResult = null;
+                if (shouldBeVisible) {
+                    try {
+                        const res = await fetch('/api/bookings', {
+                            headers: { 
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`, 
+                                'Content-Type': 'application/json' 
+                            }
+                        });
+                        
+                        if (res.ok) {
+                            const json = await res.json();
+                            const allBookings = json.bookings || [];
+                            const artistBookings = allBookings.filter(b => String(b.artistId) === String(artistId));
+                            apiResult = `API Success: ${artistBookings.length} bookings found`;
+                        } else {
+                            apiResult = `API Failed: ${res.status} ${res.statusText}`;
+                        }
+                    } catch (err) {
+                        apiResult = `API Error: ${err.message}`;
+                    }
+                }
+
+                const resultClass = shouldBeVisible ? 'pass' : 'fail';
+                html += `
+                    <div class="test-case ${resultClass}">
+                        <h3>${testCase.name}</h3>
+                        <p><strong>Expected:</strong> ${testCase.expected}</p>
+                        <p><strong>Result:</strong> Section ${shouldBeVisible ? 'VISIBLE' : 'HIDDEN'}</p>
+                        ${apiResult ? `<p><strong>API Test:</strong> ${apiResult}</p>` : ''}
+                        <p><strong>Auth State:</strong> UserId=${loggedUserId}, Token=${!!localStorage.getItem('token')}</p>
+                    </div>
+                `;
+            }
+
+            results.innerHTML = html;
+            console.log('All tests completed');
+        }
+
+        // Run tests when page loads
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>

@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Profile | ConnectArtist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/payment-integration-fixed.js" defer></script>
+    <style>
+    :root {
+        --black: #0a0a0a;
+        --dark-grey: #1a1a1a;
+        --medium-grey: #2a2a2a;
+        --light-grey: #3a3a3a;
+        --silver: #e0e0e0;
+        --white: #ffffff;
+        --accent: #ffffff;
+        --radius: 12px;
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.16);
+        --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2);
+        --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--black);
+        color: var(--silver);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+    }
+
+    .profile-header {
+        position: relative;
+        margin-bottom: 3rem;
+    }
+
+    .payment-close-btn:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .payment-content-wrapper {
+        padding: 20px;
+        padding-top: 60px;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    /* Make sure the payment box is visible */
+    .payment-box-overlay.show,
+    .payment-box-container.show {
+        display: block !important;
+    }
+
+    /* Ensure card.html background remains black */
+    body {
+        background-color: var(--black) !important;
+        color: var(--silver) !important;
+    }
+
+    /* ---------- Updated banner styles (smart loader will toggle contain/cover) ---------- */
+    .profile-banner {
+        height: 400px;
+        background-size: cover; /* default; JS may switch to 'contain' */
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: var(--radius);
+        background-color: var(--dark-grey);
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        transition: background-size 0.25s ease, background-position 0.25s ease, background-image 0.25s ease;
+    }
+
+    .profile-banner::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 150px;
+        background: linear-gradient(to top, rgba(10,10,10,0.9) 0%, transparent 100%);
+        pointer-events: none;
+    }
+
+    .profile-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: -100px;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ---------- Avatar wrapper + avatar styles (prevents cropping and keeps circular mask) ---------- */
+    .profile-avatar-wrapper {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: inline-block;
+        padding: 4px;                 /* space between border and image when using contain */
+        box-sizing: border-box;
+        background: transparent;
+        border-radius: 50%;
+        border: 4px solid var(--white);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .profile-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;            /* default; JS will switch to 'contain' for non-square images */
+        display: block;
+        transition: var(--transition);
+        background-color: var(--dark-grey);
+        vertical-align: middle;
+    }
+
+    .profile-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .profile-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.5rem;
+        color: var(--white);
+        letter-spacing: 0.5px;
+        text-align: center;
+    }
+
+    .profile-details {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .profile-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .profile-genre {
+        background: rgba(255,255,255,0.1);
+        color: var(--white);
+        padding: 0.5rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .profile-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--silver);
+        font-size: 0.9rem;
+    }
+
+    .profile-bio {
+        color: var(--silver);
+        max-width: 700px;
+        line-height: 1.8;
+        text-align: center;
+        font-weight: 400;
+        font-size: 1.05rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .profile-tabs {
+        display: flex;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 3rem;
+        justify-content: center;
+    }
+
+    .profile-tab {
+        padding: 1rem 2.5rem;
+        background: none;
+        border: none;
+        color: var(--silver);
+        cursor: pointer;
+        font-weight: 500;
+        position: relative;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+        transition: var(--transition);
+        opacity: 0.7;
+    }
+
+    .profile-tab:hover {
+        opacity: 1;
+        color: var(--white);
+    }
+
+    .profile-tab.active {
+        opacity: 1;
+        color: var(--white);
+    }
+
+    .profile-tab.active::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 2px;
+        background: var(--white);
+    }
+
+    .tab-content {
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .media-item {
+        position: relative;
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--dark-grey);
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .media-item:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .media-item img,
+    .media-item video {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .media-item audio {
+        width: 100%;
+        padding: 1.5rem;
+        background: var(--medium-grey);
+    }
+
+    .media-title {
+        padding: 1.5rem;
+        font-size: 1rem;
+        color: var(--white);
+    }
+
+    .fullscreen-btn {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        background: rgba(0, 0, 0, 0.7);
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: var(--transition);
+    }
+
+    .media-item:hover .fullscreen-btn {
+        opacity: 1;
+    }
+
+    .video-fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .video-fullscreen video,
+    .video-fullscreen img {
+        max-width: 90%;
+        max-height: 90%;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 3rem;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: 1rem 2.5rem;
+        border-radius: 30px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+        background: var(--white);
+        color: var(--black);
+    }
+
+    .btn-primary:hover {
+        background: var(--silver);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--white);
+        border: 1px solid var(--silver);
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .social-actions {
+        display: flex;
+        gap: 1.5rem;
+        margin: 2rem 0;
+        justify-content: center;
+    }
+
+    .social-btn {
+        background: transparent;
+        border: 1px solid var(--silver);
+        border-radius: 30px;
+        padding: 0.8rem 1.8rem;
+        color: var(--silver);
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    .social-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--white);
+        border-color: var(--white);
+        transform: translateY(-2px);
+    }
+
+    /* Booking card styles to match organizer dashboard */
+    .booking-card {
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .booking-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(45deg, var(--white), var(--silver));
+    }
+
+    .booking-card:hover {
+        background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%) !important;
+        border-color: rgba(255,255,255,0.2) !important;
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .booking-card .event-btn {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        transition: var(--transition);
+    }
+
+    .booking-card .event-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .booking-card .contact-organizer:hover {
+        background: rgba(255,255,255,0.1) !important;
+        border-color: rgba(255,255,255,0.3) !important;
+    }
+
+    /* Events Section Styles */
+    .event-item {
+        background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .event-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(45deg, var(--white), var(--silver));
+    }
+
+    .event-item:hover {
+        background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+        border-color: rgba(255,255,255,0.15);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .event-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .event-organizer {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--white);
+        margin-bottom: 0.5rem;
+    }
+
+    .event-details {
+        color: var(--silver);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .event-date-venue {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .event-price {
+        color: #4ade80;
+        font-weight: 600;
+        font-size: 1.05rem;
+        margin-top: 0.5rem;
+    }
+
+    .event-actions {
+        display: flex;
+        gap: 0.8rem;
+        margin-top: 1rem;
+    }
+
+    .event-btn {
+        background: rgba(255,255,255,0.1);
+        color: var(--white);
+        border: 1px solid rgba(255,255,255,0.2);
+        padding: 0.6rem 1.2rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+    }
+
+    .event-btn:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.3);
+        transform: translateY(-2px);
+    }
+
+    .event-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .event-btn-primary {
+        background: var(--white);
+        color: var(--black);
+        border-color: var(--white);
+    }
+
+    .event-btn-primary:hover {
+        background: var(--silver);
+    }
+
+    .empty {
+        text-align: center;
+        padding: 2rem;
+        color: var(--silver);
+        opacity: 0.8;
+        font-style: italic;
+    }
+
+    .social-btn.active {
+        color: var(--white);
+        border-color: var(--white);
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .social-btn i {
+        font-size: 1.1rem;
+    }
+
+    .comments-section {
+        margin-top: 4rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 3rem;
+    }
+
+    .comments-title {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        color: var(--white);
+        font-family: 'Playfair Display', serif;
+        text-align: center;
+    }
+
+    .comment-form {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .comment-input {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        background: var(--dark-grey);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius);
+        color: var(--white);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .comment-input:focus {
+        outline: none;
+        border-color: var(--silver);
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+    }
+
+    .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .comment-item {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background: var(--dark-grey);
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        transition: var(--transition);
+    }
+
+    .comment-item:hover {
+        background: var(--medium-grey);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .comment-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-author {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--white);
+    }
+
+    .comment-text {
+        color: var(--silver);
+        line-height: 1.7;
+        opacity: 0.9;
+    }
+
+    .comment-meta {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+        color: var(--silver);
+        opacity: 0.7;
+    }
+
+    .comment-like {
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .comment-like:hover {
+        color: var(--white);
+        opacity: 1;
+    }
+
+    .comment-like.active {
+        color: var(--white);
+        opacity: 1;
+    }
+
+    .stats-container {
+        display: flex;
+        gap: 2rem;
+        margin: 1.5rem 0;
+        justify-content: center;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        color: var(--silver);
+        font-size: 0.95rem;
+    }
+
+    .stat-item i {
+        color: var(--white);
+        font-size: 1.1rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            padding: 2rem 1.5rem;
+        }
+
+        .profile-banner {
+            height: 300px;
+        }
+
+        .profile-info {
+            margin-top: -80px;
+        }
+
+        .profile-avatar, .profile-avatar-wrapper { width: 140px; height: 140px; padding: 4px; }
+        .profile-name {
+            font-size: 2rem;
+        }
+
+        .profile-tabs {
+            overflow-x: auto;
+            white-space: nowrap;
+            justify-content: flex-start;
+            padding-bottom: 5px;
+        }
+
+        .profile-tab {
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .media-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons,
+        .social-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .comment-form {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .profile-banner {
+            height: 250px;
+        }
+
+        .profile-avatar, .profile-avatar-wrapper { width: 120px; height: 120px; padding: 3px; }
+        .profile-name {
+            font-size: 1.8rem;
+        }
+
+        .profile-meta {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stats-container {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+
+        /* Styles used by the contact information overlay (injected) */
+        .contact-info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .contact-info-container {
+            width: 75vw;
+            max-width: 900px;
+            height: 90vh;
+            background: var(--dark-grey);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            overflow-y: auto;
+            padding: 32px 24px 24px 24px;
+            color: var(--white);
+            animation: fadeIn 0.3s;
+        }
+        .contact-info-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: rgba(0,0,0,0.15);
+            border: none;
+            color: var(--white);
+            font-size: 2rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+        }
+        .contact-info-close-btn:hover {
+            background: rgba(0,0,0,0.3);
+        }
+    </style>
+    <script>
+        // Function to extract styles from HTML content
+        function extractStyles(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+            const styles = doc.querySelectorAll('style, link[rel="stylesheet"]');
+            return Array.from(styles);
+        }
+
+        // Function to show payment box
+        function showPaymentBox() {
+            const overlay = document.getElementById('paymentBoxOverlay');
+            const container = document.getElementById('paymentBoxContainer');
+            if (overlay && container) {
+                overlay.classList.add('show');
+                container.classList.add('show');
+            }
+        }
+
+        // Function to close payment box
+        function closePaymentBox() {
+            const overlay = document.getElementById('paymentBoxOverlay');
+            const container = document.getElementById('paymentBoxContainer');
+            if (overlay && container) {
+                overlay.classList.remove('show');
+                container.classList.remove('show');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only set window-scoped IDs here. Actual payment box creation/injection
+            // is handled by `paymentIntegration.init()` (called from renderProfile) so
+            // we avoid injecting owner-only UI for visitors.
+            window.__PROFILE_USER_ID = window.__PROFILE_USER_ID || new URLSearchParams(window.location.search).get('id') || '';
+            window.__LOGGED_IN_USER_ID = window.__LOGGED_IN_USER_ID || localStorage.getItem('userId') || '';
+            console.debug('Card init deferred IDs:', { profileId: window.__PROFILE_USER_ID, loggedInUserId: window.__LOGGED_IN_USER_ID });
+        });
+
+        // Close payment box when clicking outside
+        document.addEventListener('click', function(event) {
+            const overlay = document.getElementById('paymentBoxOverlay');
+            if (event.target === overlay) {
+                closePaymentBox();
+            }
+        });
+
+        // Delegate static close button to integration if present
+        document.addEventListener('DOMContentLoaded', function() {
+            const staticClose = document.getElementById('paymentBoxCloseBtn');
+            if (staticClose) {
+                staticClose.addEventListener('click', function() {
+                    if (window.paymentIntegration && typeof window.paymentIntegration.closePaymentBox === 'function') {
+                        window.paymentIntegration.closePaymentBox();
+                    } else {
+                        closePaymentBox();
+                    }
+                });
+            }
+        });
+
+    </script>
+</head>
+<body>
+    <div class="profile-container">
+    
+    <!-- Payment Box Overlay -->
+    <div id="paymentBoxOverlay" class="payment-box-overlay">
+        <div id="paymentBoxContainer" class="payment-box-container">
+            <button id="paymentBoxCloseBtn" class="payment-close-btn">&times;</button>
+            <!-- PaymentDetailsBox content will be loaded here -->
+        </div>
+    </div>
+    <!-- Contact Info Box Overlay (injected for card.html) -->
+    <div id="contactInfoOverlay" class="contact-info-overlay" style="display:none;">
+        <div id="contactOverlayInner" class="contact-info-container">
+            <button type="button" id="contactInfoCloseBtn" class="contact-info-close-btn">&times;</button>
+            <!-- Contact info content will be injected here -->
+        </div>
+    </div>
+        <div class="profile-header">
+            <div class="profile-banner" id="profileBanner"></div>
+            <div class="profile-info">
+                <!-- wrapped avatar to keep circular mask and padding -->
+                <div class="profile-avatar-wrapper">
+                    <img src="" alt="Artist Avatar" class="profile-avatar" id="profileAvatar">
+                </div>
+                <div class="profile-details">
+                    <h1 class="profile-name" id="profileName"></h1>
+                    <div class="profile-meta">
+                        <span class="profile-genre" id="profileGenre"></span>
+                        <span class="profile-location">
+                            <i class="fas fa-map-marker-alt"></i> <span id="profileLocation"></span>
+                        </span>
+                    </div>
+                    <p class="profile-bio" id="profileBio"></p>
+                    
+                    <div class="stats-container">
+                        <div class="stat-item">
+                            <i class="fas fa-heart"></i> <span id="likeCount">0</span> Likes
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-share"></i> <span id="shareCount">0</span> Shares
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-eye"></i> <span id="viewCount">0</span> Views
+                        </div>
+                    </div>
+                    
+                    <div class="social-actions">
+                        <button class="social-btn" id="likeBtn">
+                            <i class="far fa-heart"></i> Like
+                        </button>
+                        <button class="social-btn" id="shareBtn">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                        <button class="social-btn" id="commentBtn">
+                            <i class="far fa-comment"></i> Comment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="videos"><i class="fas fa-video"></i> Videos</button>
+            <button class="profile-tab" data-tab="music"><i class="fas fa-music"></i> Music</button>
+            <button class="profile-tab" data-tab="photos"><i class="fas fa-images"></i> Photos</button>
+        </div>
+
+        <div class="tab-content active" id="videos-tab">
+            <div class="media-grid" id="videos-grid"></div>
+        </div>
+
+        <div class="tab-content" id="music-tab">
+            <div class="media-grid" id="music-grid"></div>
+        </div>
+
+        <div class="tab-content" id="photos-tab">
+            <div class="media-grid" id="photos-grid"></div>
+        </div>
+
+        <!-- YOUR EVENTS Section - Only visible to the artist -->
+        <section id="yourEventsWrapper" style="margin-top: 3rem; display: none;">
+            <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 2rem;">
+                <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 600; color: var(--white); text-align: center; letter-spacing: 0.5px;">
+                    <i class="fas fa-calendar-alt" style="margin-right: 0.5rem; color: var(--silver);"></i>
+                    YOUR EVENTS
+                </h3>
+            </div>
+            <div id="yourEventsSection">
+                <div class="empty" style="padding: 2rem; color: var(--silver); text-align: center; background: rgba(255,255,255,0.03); border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.1);">
+                    Loading your events…
+                </div>
+            </div>
+        </section>
+
+        <div class="comments-section" id="commentsSection" style="display: none;">
+            <h3 class="comments-title">Comments</h3>
+            <div class="comment-form">
+                <input type="text" class="comment-input" id="commentInput" placeholder="Add a comment...">
+                <button class="btn btn-primary" id="postCommentBtn">Post</button>
+            </div>
+            <div class="comment-list" id="commentList"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="bookNowBtn"><i class="fas fa-calendar-check"></i> Book Now</button>
+
+            <!-- Payment Methods button inserted between Book Now and Back -->
+            <button class="btn btn-payment" id="paymentMethodsBtn" title="Manage your payment methods">
+                <i class="fas fa-wallet"></i>
+                Payment Methods
+            </button>
+
+            <!-- Contact Info button (hidden by default; shown for profile owner) -->
+            <button class="btn btn-secondary" id="contactInfoBtn" title="View contact information" style="display:none;">
+                <i class="fas fa-address-card"></i>
+                Contact Info
+            </button>
+
+            <button class="btn btn-secondary" id="backBtn"><i class="fas fa-arrow-left"></i> Back to Discover</button>
+        </div>
+    </div>
+
+    <script>
+
+        // Create or reuse the booking iframe modal for this page
+        (function createBookingIframeModalForCard(){
+            if (document.getElementById('bookingIframeModal')) return;
+            const overlay = document.createElement('div');
+            overlay.id = 'bookingIframeModal';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.right = '0';
+            overlay.style.bottom = '0';
+            overlay.style.background = 'rgba(0,0,0,0.6)';
+            overlay.style.zIndex = '99999';
+            overlay.style.display = 'none';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+
+            const inner = document.createElement('div');
+            inner.style.width = '80vw';
+            inner.style.height = '80vh';
+            inner.style.background = 'transparent';
+            inner.style.borderRadius = '10px';
+            inner.style.overflow = 'hidden';
+            inner.style.boxShadow = '0 8px 40px rgba(0,0,0,0.6)';
+            inner.style.position = 'relative';
+
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕';
+            closeBtn.style.position = 'absolute';
+            closeBtn.style.top = '8px';
+            closeBtn.style.right = '8px';
+            closeBtn.style.zIndex = '100000';
+            closeBtn.style.background = 'rgba(255,255,255,0.9)';
+            closeBtn.style.border = 'none';
+            closeBtn.style.borderRadius = '6px';
+            closeBtn.style.padding = '6px 8px';
+            closeBtn.style.cursor = 'pointer';
+
+            const iframe = document.createElement('iframe');
+            iframe.id = 'bookingIframe';
+            iframe.style.width = '100%';
+            iframe.style.height = '100%';
+            iframe.style.border = '0';
+            iframe.style.display = 'block';
+
+            closeBtn.addEventListener('click', () => {
+                overlay.style.display = 'none';
+                iframe.src = 'about:blank';
+            });
+
+            // allow child page to request close via postMessage
+            window.addEventListener('message', (ev) => {
+                try {
+                    const d = ev.data || {};
+                    if (d && d.type === 'closeBookingModal') {
+                        overlay.style.display = 'none';
+                        iframe.src = 'about:blank';
+                    }
+                } catch (e) { }
+            });
+
+            inner.appendChild(closeBtn);
+            inner.appendChild(iframe);
+            overlay.appendChild(inner);
+            document.body.appendChild(overlay);
+        })();
+
+        // Book now button opens the booking iframe modal (passes artist id via query)
+        document.getElementById('bookNowBtn')?.addEventListener('click', function() {
+            const profileId = new URLSearchParams(window.location.search).get('id');
+            if (!profileId) {
+                alert('Booking information not available for this artist.');
+                return;
+            }
+            // Self-booking guard (runtime) — prevent opening modal if viewing own profile
+            try {
+                const currentUserId = localStorage.getItem('userId');
+                if (currentUserId && profileId && String(currentUserId) === String(profileId)) {
+                    alert("You can't book yourself.");
+                    return;
+                }
+            } catch(e) {}
+            const overlay = document.getElementById('bookingIframeModal');
+            const iframe = document.getElementById('bookingIframe');
+            if (!overlay || !iframe) {
+                alert('Could not open booking modal.');
+                return;
+            }
+            iframe.src = `artistBookingDetails.html?id=${encodeURIComponent(profileId)}`;
+            overlay.style.display = 'flex';
+            setTimeout(() => { try { iframe.contentWindow.focus(); } catch (e) {} }, 300);
+        });
+    // Payment Methods button style and handler
+    const style = document.createElement('style');
+    style.textContent = `
+        .btn-payment {
+            background: linear-gradient(135deg,#2563eb 0%,#4f46e5 100%);
+            color: #fff;
+            border: none;
+            padding: 0.85rem 1.25rem;
+            border-radius: 28px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            box-shadow: 0 6px 18px rgba(79,70,229,0.18);
+            transform: translateY(0);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+        .btn-payment:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(79,70,229,0.22); }
+        .btn-payment i { font-size: 1.05rem; }
+    `;
+    document.head.appendChild(style);
+
+    document.getElementById('paymentMethodsBtn')?.addEventListener('click', function() {
+        if (window.paymentIntegration && typeof window.paymentIntegration.loadPaymentBox === 'function') {
+            window.paymentIntegration.loadPaymentBox();
+        } else {
+            alert('Payment module not initialized yet. Please try again.');
+        }
+    });
+        // 1. Get artist ID from URL and fetch profile
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Card: DOM Content Loaded');
+            // Ensure payment integration is initialized
+            if (!window.paymentIntegration) {
+                console.error('Payment integration not initialized!');
+            }
+            
+            const profileId = new URLSearchParams(window.location.search).get("id");
+            // Disable the Book Now button immediately if self-profile
+            try {
+                const currentUserId = localStorage.getItem('userId');
+                if (currentUserId && profileId && String(currentUserId) === String(profileId)) {
+                    const bookBtn = document.getElementById('bookNowBtn');
+                    if (bookBtn) {
+                        bookBtn.innerHTML = '<i class="fas fa-user"></i> Your Profile';
+                        bookBtn.disabled = true;
+                        bookBtn.style.opacity = '0.55';
+                        bookBtn.style.pointerEvents = 'none';
+                        bookBtn.title = "You can't book yourself";
+                    }
+                }
+            } catch(e) {}
+
+            if (!profileId) {
+                document.body.innerHTML = "<h2>Error: No artist ID was provided in the URL.</h2>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/profiles/${profileId}`);
+                const data = await response.json();
+
+                if (!data.success || !data.profile) {
+                    throw new Error(data.message || "Profile not found");
+                }
+                
+                const profile = data.profile;
+                renderProfile(profile); // Render the profile data
+                setupEventListeners(profile); // Set up event listeners
+
+            } catch (err) {
+                console.error("Error fetching profile:", err);
+                document.body.innerHTML = `<h2>Sorry, we couldn't load this artist's profile.</h2><p>${err.message}</p>`;
+            }
+        });
+
+        /**
+         * Renders all profile information onto the page.
+         * @param {object} profile - The artist's profile data from the API.
+         */
+        function renderProfile(profile) {
+            const defaultAvatar = 'https://storage.googleapis.com/www.connectartist.in/avatars/default-avatar.jpg';
+            
+            // Initialize payment integration if needed
+            // Initialize payment integration with ownership info
+            try {
+                // Compute logged in user id: prefer localStorage, fall back to token decode
+                let loggedInUserId = localStorage.getItem('userId') || '';
+                if (!loggedInUserId) {
+                    try {
+                        const token = localStorage.getItem('token');
+                        if (token) {
+                            const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+                            loggedInUserId = payload.userId || payload.id || payload.sub || '';
+                        }
+                    } catch (e) {
+                        console.warn('Failed to decode token for loggedInUserId fallback:', e);
+                    }
+                }
+
+                // Resolve the canonical profile owner id. Prefer profile.userId (owner). If missing,
+                // fall back to the URL `id` param (some links use the owner id) or profile._id as a last resort.
+                const profileUserId = profile.userId || new URLSearchParams(window.location.search).get('id') || profile._id || window.__PROFILE_USER_ID || '';
+                console.debug('Ownership check:', { profileUserId, loggedInUserId });
+                if (window.paymentIntegration) {
+                    // init will only create the modal if the viewer is the owner
+                    window.paymentIntegration.init(profileUserId, loggedInUserId);
+                }
+
+                // Expose profile id for injected widgets (contact-information.js reads window.CURRENT_PROFILE_ID)
+                window.CURRENT_PROFILE_ID = window.CURRENT_PROFILE_ID || (profile._id || profile.userId || '');
+                // Also expose the resolved profile owner id so injected modules can reliably check ownership
+                window.CURRENT_PROFILE_USER_ID = window.CURRENT_PROFILE_USER_ID || profileUserId || '';
+
+                // Show or hide the Payment Methods button depending on ownership
+                const isOwner = String(profileUserId) && String(loggedInUserId) && String(profileUserId) === String(loggedInUserId);
+                const paymentBtn = document.getElementById('paymentMethodsBtn');
+                if (paymentBtn) {
+                    if (!isOwner) {
+                        paymentBtn.style.display = 'none';
+                    } else {
+                        paymentBtn.style.display = 'inline-flex';
+                        paymentBtn.onclick = () => {
+                            if (window.paymentIntegration && typeof window.paymentIntegration.loadPaymentBox === 'function') {
+                                window.paymentIntegration.loadPaymentBox();
+                            } else {
+                                alert('Payment module not initialized yet. Please try again.');
+                            }
+                        };
+                    }
+                }
+
+                // Show or hide Contact Info button depending on ownership (safe, explicit)
+                const contactBtn = document.getElementById('contactInfoBtn');
+                if (contactBtn) {
+                    if (!isOwner) {
+                        contactBtn.style.display = 'none';
+                    } else {
+                        contactBtn.style.display = 'inline-flex';
+                        // Bind to openContactInfoBox with current profile
+                        contactBtn.onclick = () => {
+                            if (typeof openContactInfoBox === 'function') openContactInfoBox(profile);
+                            else if (window.openContactInfoForProfile) window.openContactInfoForProfile(profile);
+                            else alert('Contact module not initialized.');
+                        };
+                    }
+                }
+            } catch (e) {
+                console.warn('Payment integration init failed:', e);
+            }
+
+            // ---------- Smart Banner Loader ----------
+            (function setSmartBanner(profile) {
+                const banner = document.getElementById('profileBanner');
+                if (!banner) return;
+
+                const defaultGradient = "linear-gradient(135deg, #2a2a2a, #0a0a0a)";
+                const bannerUrl = profile.bannerUrl || '';
+
+                // If no banner provided, set gradient and return
+                if (!bannerUrl) {
+                    banner.style.backgroundImage = defaultGradient;
+                    banner.style.backgroundSize = 'cover';
+                    return;
+                }
+
+                // While image loads show a low-cost fade-in placeholder (keeps existing background)
+                banner.style.backgroundImage = defaultGradient;
+                banner.style.backgroundSize = 'cover';
+
+                // Create an Image to read the natural size without inserting into DOM
+                const img = new Image();
+                img.src = bannerUrl;
+                img.onload = function() {
+                    try {
+                        const imgW = img.naturalWidth || 1;
+                        const imgH = img.naturalHeight || 1;
+                        const imgRatio = imgW / imgH;
+
+                        // Compute banner element's current aspect ratio (uses computed height)
+                        const rect = banner.getBoundingClientRect();
+                        const bannerW = rect.width || banner.clientWidth || 1200;
+                        const bannerH = rect.height || banner.clientHeight || 400;
+                        const bannerRatio = bannerW / bannerH;
+
+                        // If the image ratio is reasonably close to the banner ratio, choose 'cover' (fills)
+                        // If image is much taller or much narrower than banner, prefer 'contain' to avoid cropping.
+                        const closeness = Math.abs(Math.log(imgRatio / bannerRatio)); // scale-invariant difference
+                        const threshold = 0.25; // smaller = stricter; 0.25 works well in practice
+
+                        banner.style.backgroundImage = `url('${bannerUrl}')`;
+                        if (closeness <= threshold) {
+                            banner.style.backgroundSize = 'cover';
+                            banner.style.backgroundPosition = 'center';
+                        } else {
+                            // contain will show full image; set a dark background so empty space looks intentional
+                            banner.style.backgroundSize = 'contain';
+                            banner.style.backgroundPosition = 'center';
+                            banner.style.backgroundColor = 'var(--dark-grey)';
+                        }
+                    } catch (e) {
+                        // fallback: use cover
+                        console.warn('Banner aspect-check failed, using cover', e);
+                        banner.style.backgroundImage = `url('${bannerUrl}')`;
+                        banner.style.backgroundSize = 'cover';
+                        banner.style.backgroundPosition = 'center';
+                    }
+                };
+                img.onerror = function() {
+                    // if image fails to load, fallback to gradient
+                    banner.style.backgroundImage = defaultGradient;
+                    banner.style.backgroundSize = 'cover';
+                };
+            })(profile);
+
+            // ---------- Avatar logic (choose contain vs cover based on aspect ratio) ----------
+            (function setSmartAvatar(profile) {
+                const avatar = document.getElementById('profileAvatar');
+                const defaultAvatar = 'https://storage.googleapis.com/www.connectartist.in/avatars/default-avatar.jpg';
+                if (!avatar) return;
+                avatar.src = profile.avatarUrl || defaultAvatar;
+
+                avatar.onerror = function() {
+                    this.src = defaultAvatar;
+                    this.style.objectFit = 'contain';
+                };
+
+                avatar.onload = function() {
+                    try {
+                        const w = avatar.naturalWidth || 1;
+                        const h = avatar.naturalHeight || 1;
+                        const ratio = w / h;
+                        if (Math.abs(ratio - 1) <= 0.25) {
+                            avatar.style.objectFit = 'cover';
+                        } else {
+                            avatar.style.objectFit = 'contain';
+                        }
+                    } catch (e) {
+                        avatar.style.objectFit = 'contain';
+                    }
+                };
+
+                // in case image is cached and onload doesn't fire
+                setTimeout(() => { if (avatar.complete) avatar.onload(); }, 50);
+            })(profile);
+
+            // Set Text Details
+            document.getElementById('profileName').textContent = profile.displayName || 'Unnamed Artist';
+            document.getElementById('profileBio').textContent = profile.bio || 'No bio available.';
+            document.getElementById('profileGenre').textContent = profile.genre || profile.artistType || 'Artist';
+            document.getElementById('profileLocation').textContent = profile.location || 'Unknown Location';
+
+            // Set Stats
+            document.getElementById('likeCount').textContent = profile.likeCount || 0;
+            document.getElementById('shareCount').textContent = profile.shareCount || 0;
+            document.getElementById('viewCount').textContent = profile.viewCount || 0;
+
+            // Render Media Grids
+            const renderMedia = (gridId, mediaArray = [], type) => {
+                const grid = document.getElementById(gridId);
+                if (!grid) return; // Ensure the grid element exists
+                grid.innerHTML = ''; // Clear previous content
+
+                if (mediaArray.length > 0) {
+                    mediaArray.forEach(media => {
+                        const item = document.createElement('div');
+                        item.className = 'media-item';
+                        if (type === 'video') {
+                            item.innerHTML = `
+                                <video controls src="${media.url}">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <button class="fullscreen-btn" onclick="openFullscreenVideo('${media.url}')">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            `;
+                        } else if (type === 'audio') {
+                            item.innerHTML = `
+                                <audio controls src="${media.url}">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                <div class="media-title">${media.title || 'Untitled Track'}</div>
+                            `;
+                        } else if (type === 'photo') {
+                            item.innerHTML = `
+                                <img src="${media.url}" alt="${media.title || 'Artist photo'}">
+                                <button class="fullscreen-btn" onclick="openFullscreenImage('${media.url}')">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            `;
+                        }
+                        grid.appendChild(item);
+                    });
+                } else {
+                    grid.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--silver);">No ${type}s uploaded yet.</p>`;
+                }
+            };
+
+            renderMedia('videos-grid', profile.videos, 'video');
+            renderMedia('music-grid', profile.audios, 'audio');
+            renderMedia('photos-grid', profile.photos, 'photo');
+            
+            // Render Comments
+            const commentList = document.getElementById('commentList');
+            if (commentList) {
+                commentList.innerHTML = ''; // Clear previous content
+                if (profile.comments && profile.comments.length > 0) {
+                    profile.comments.forEach(comment => {
+                        const commentItem = document.createElement('div');
+                        commentItem.className = 'comment-item';
+                        commentItem.innerHTML = `
+                            <img src="${comment.userAvatar || defaultAvatar}" class="comment-avatar" alt="${comment.username}">
+                            <div class="comment-content">
+                                <div class="comment-author">${comment.username}</div>
+                                <div class="comment-text">${comment.text}</div>
+                                <div class="comment-meta">
+                                    <span>${new Date(comment.createdAt || Date.now()).toLocaleString()}</span>
+                                </div>
+                            </div>
+                        `;
+                        commentList.appendChild(commentItem);
+                    });
+                } else {
+                    commentList.innerHTML = '<p style="text-align:center;color:var(--silver);">Be the first to comment!</p>';
+                }
+            }
+        }
+
+        /* Contact overlay helpers (idempotent, safe) */
+        window.openContactInfoBox = window.openContactInfoBox || function(profile){
+            const overlay = document.getElementById('contactInfoOverlay');
+            if (overlay) overlay.style.display = 'flex';
+            // Delegate to integration if available
+            if (window.openContactInfoForProfile) window.openContactInfoForProfile(profile || window.__PROFILE || {});
+        };
+
+        window.closeContactInfoBox = window.closeContactInfoBox || function(){
+            const overlay = document.getElementById('contactInfoOverlay');
+            if (overlay) overlay.style.display = 'none';
+        };
+
+        // Bind contact close button safely
+        document.addEventListener('DOMContentLoaded', function(){
+            const btn = document.getElementById('contactInfoCloseBtn');
+            if (btn && !btn.__bound) {
+                btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); window.closeContactInfoBox(); });
+                btn.__bound = true;
+            }
+        });
+
+        // Close overlay when clicking outside container
+        document.addEventListener('click', function(event){
+            const overlay = document.getElementById('contactInfoOverlay');
+            const container = document.getElementById('contactOverlayInner');
+            if (overlay && container && overlay.style.display === 'flex' && event.target === overlay) {
+                window.closeContactInfoBox();
+            }
+        });
+
+        /**
+         * Sets up all event listeners for the page buttons.
+         * @param {object} profile - The artist's profile data.
+         */
+        function setupEventListeners(profile) {
+            const profileId = profile._id || profile.userId;
+
+            // Like button
+            document.getElementById('likeBtn')?.addEventListener('click', async function() {
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        alert('Please login to like this profile');
+                        window.location.href = '/login.html';
+                        return;
+                    }
+
+                    const res = await fetch(`/api/profile/${profileId}/like`, { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        this.classList.toggle('active');
+                        this.innerHTML = this.classList.contains('active') ? 
+                            '<i class="fas fa-heart"></i> Liked' : 
+                            '<i class="far fa-heart"></i> Like';
+                        document.getElementById('likeCount').textContent = data.likeCount || 0;
+                    } else {
+                        alert(data.message || 'Error liking profile');
+                    }
+                } catch (e) { 
+                    console.error('Error liking profile:', e);
+                    alert('Error liking profile');
+                }
+            });
+
+            // Share button
+            document.getElementById('shareBtn')?.addEventListener('click', async function() {
+                try {
+                    const shareUrl = `${window.location.origin}/card.html?id=${profileId}`;
+                    if (navigator.share) {
+                        await navigator.share({
+                            title: `Check out ${profile.displayName}'s profile`,
+                            text: profile.bio || '',
+                            url: shareUrl
+                        });
+                    } else {
+                        // Fallback for browsers that don't support Web Share API
+                        await navigator.clipboard.writeText(shareUrl);
+                        alert('Profile link copied to clipboard!');
+                    }
+                    
+                    // Track the share
+                    const res = await fetch(`/api/profile/${profileId}/share`, { 
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        document.getElementById('shareCount').textContent = data.shareCount || 0;
+                    }
+                } catch (e) {
+                    console.error('Error sharing profile:', e);
+                    if (e.name !== 'AbortError') { // Ignore AbortError if user cancels share
+                        alert('Error sharing profile');
+                    }
+                }
+            });
+
+            // Comment button toggle
+            document.getElementById('commentBtn')?.addEventListener('click', function() {
+                const commentsSection = document.getElementById('commentsSection');
+                commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Post comment
+            document.getElementById('postCommentBtn')?.addEventListener('click', async function() {
+                const commentInput = document.getElementById('commentInput');
+                const commentText = commentInput.value.trim();
+                if (!commentText) return;
+
+                try {
+                    const token = localStorage.getItem('token');
+                    if (!token) {
+                        alert('Please login to comment');
+                        window.location.href = '/login.html';
+                        return;
+                    }
+
+                    const res = await fetch(`/api/profile/${profileId}/comment`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        },
+                        body: JSON.stringify({ text: commentText })
+                    });
+                    const data = await res.json();
+                    if (data.success && data.comment) {
+                        // Add the new comment to the list
+                        const commentList = document.getElementById('commentList');
+                        if (commentList.innerHTML.includes('No comments yet')) {
+                            commentList.innerHTML = '';
+                        }
+                        
+                        const commentItem = document.createElement('div');
+                        commentItem.className = 'comment-item';
+                        commentItem.innerHTML = `
+                            <img src="${data.comment.userAvatar || 'https://storage.googleapis.com/www.connectartist.in/avatars/default-avatar.jpg'}" class="comment-avatar" alt="${data.comment.username}">
+                            <div class="comment-content">
+                                <div class="comment-author">${data.comment.username}</div>
+                                <div class="comment-text">${data.comment.text}</div>
+                                <div class="comment-meta">
+                                    <span>Just now</span>
+                                </div>
+                            </div>
+                        `;
+                        commentList.prepend(commentItem);
+                        commentInput.value = '';
+                    } else {
+                        alert(data.message || 'Error posting comment');
+                    }
+                } catch (e) {
+                    console.error('Error posting comment:', e);
+                    alert('Error posting comment');
+                }
+            });
+
+            // Tab switching logic
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                    // Hide all tab contents
+                    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                    // Activate clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabName = tab.getAttribute('data-tab');
+                    document.getElementById(tabName + '-tab').classList.add('active');
+                });
+            });
+
+            // Back button
+            document.getElementById('backBtn')?.addEventListener('click', function() {
+                window.location.href = '/discover.html';
+            });
+
+            // Book now button
+            document.getElementById('bookNowBtn')?.addEventListener('click', function() {
+                if (profile.price && profile.displayName) {
+                    window.open(`/payment/payment-gateway.html?amount=${encodeURIComponent(profile.price)}&artist_name=${encodeURIComponent(profile.displayName)}`, '_blank');
+                } else {
+                    alert('Booking information not available for this artist.');
+                }
+            });
+        }
+
+        // Fullscreen media functions
+        function openFullscreenVideo(url) {
+            const overlay = document.createElement('div');
+            overlay.className = 'video-fullscreen';
+            overlay.innerHTML = `
+                <video controls autoplay src="${url}" style="max-width:90vw;max-height:90vh;"></video>
+                <button style="position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.7);border:none;width:40px;height:40px;border-radius:50%;color:white;cursor:pointer;font-size:1.5rem;" onclick="this.parentElement.remove()">×</button>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function openFullscreenImage(url) {
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.background = 'rgba(0,0,0,0.95)';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.zIndex = '9999';
+            overlay.style.cursor = 'zoom-out';
+            overlay.innerHTML = `
+                <img src="${url}" style="max-width:90vw;max-height:90vh;border-radius:20px;box-shadow:0 0 40px #000;">
+                <button style="position:fixed;top:20px;right:20px;background:rgba(0,0,0,0.7);border:none;width:40px;height:40px;border-radius:50%;color:white;cursor:pointer;font-size:1.5rem;">×</button>
+            `;
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', () => overlay.remove());
+        }
+        // --- Contact Info Overlay integration (injected, non-intrusive) ---
+        (function(){
+            // Helper to safely get profile id (Profile._id or userId)
+            function getProfileId(profile) {
+                return (profile && (profile._id || profile.userId)) || window.__PROFILE_USER_ID || new URLSearchParams(window.location.search).get('id') || '';
+            }
+
+            // Show/hide contact info button based on ownership - this mirrors payment button logic
+            function configureContactButton(profile) {
+                try {
+                    const profileId = getProfileId(profile);
+                    const currentUserId = localStorage.getItem('userId') || '';
+                    // Prefer the resolved global owner id to detect ownership reliably across flows
+                    const resolvedOwnerId = window.CURRENT_PROFILE_USER_ID || profile.userId || profileId;
+                    const isOwner = currentUserId && (String(currentUserId) === String(resolvedOwnerId));
+                    const contactBtn = document.getElementById('contactInfoBtn');
+                    if (contactBtn) contactBtn.style.display = isOwner ? '' : 'none';
+                } catch (e) { console.warn('configureContactButton error', e); }
+            }
+
+            // Close the contact overlay (preserve injected content)
+            window.closeContactInfoBox = window.closeContactInfoBox || function() {
+                const overlay = document.getElementById('contactInfoOverlay');
+                if (overlay) overlay.style.display = 'none';
+            };
+
+            // Bind close button if present (idempotent)
+            function bindContactClose() {
+                const btn = document.getElementById('contactInfoCloseBtn');
+                if (!btn) return;
+                // Avoid double-binding
+                if (btn.__bound) return;
+                btn.addEventListener('click', function(e){ e.preventDefault(); e.stopPropagation(); window.closeContactInfoBox(); });
+                btn.__bound = true;
+            }
+
+            // Clicking outside inner container closes overlay
+            document.addEventListener('click', function(event){
+                const overlay = document.getElementById('contactInfoOverlay');
+                const container = document.getElementById('contactOverlayInner');
+                if (overlay && container && overlay.style.display === 'flex') {
+                    if (event.target === overlay) window.closeContactInfoBox();
+                }
+            });
+
+            // Inject contact information HTML into the overlay when requested (owner-only guard inside)
+            async function openContactOverlay(profile) {
+                const profileId = getProfileId(profile);
+                const currentUser = localStorage.getItem('userId');
+                if (!currentUser || !(String(currentUser) === String(profileId) || String(currentUser) === String(profile.userId))) {
+                    alert('You are not authorized to view contact information for this profile.');
+                    return;
+                }
+
+                const overlay = document.getElementById('contactInfoOverlay');
+                const container = document.getElementById('contactOverlayInner');
+                if (!overlay || !container) {
+                    console.warn('Contact overlay elements missing');
+                    return;
+                }
+                overlay.style.display = 'flex';
+
+                // If already injected, preserve state and return
+                if (container.querySelector('.contact-injected-wrapper')) {
+                    bindContactClose();
+                    return;
+                }
+
+                try {
+                    const res = await fetch('/contact-information.html');
+                    const html = await res.text();
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    // Remove external stylesheets and meta tags to avoid global conflicts,
+                    // but preserve inline <style> blocks from the fetched document so its UI remains intact
+                    doc.querySelectorAll('link[rel="stylesheet"], meta').forEach(n => n.remove());
+                    const bodyContent = doc.body.innerHTML;
+
+                    // Clean out previous non-close children
+                    Array.from(container.children).forEach(child => { if (child.id !== 'contactInfoCloseBtn') child.remove(); });
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'contact-injected-wrapper';
+                    wrapper.innerHTML = bodyContent;
+
+                    // Hidden inputs for contact script to read both profile doc id and owner userId
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden'; hidden.id = 'profileId'; hidden.value = profileId || '';
+                    const hiddenUser = document.createElement('input');
+                    hiddenUser.type = 'hidden'; hiddenUser.id = 'profileUserId'; hiddenUser.value = (profile && profile.userId) || window.CURRENT_PROFILE_USER_ID || '';
+                    wrapper.prepend(hiddenUser);
+                    wrapper.prepend(hidden);
+
+                    container.appendChild(wrapper);
+
+                    // Prevent injected forms from performing a full-page submit/reload (stop navigation if scripts not yet attached)
+                    try {
+                        wrapper.querySelectorAll('form').forEach(f => {
+                            // Remove any action to avoid navigation fallback, and add a defensive submit handler
+                            try { f.removeAttribute('action'); } catch(e){}
+                            if (!f.__injectedPrevent) {
+                                f.addEventListener('submit', function(ev){ ev.preventDefault(); }, { once: false });
+                                f.__injectedPrevent = true;
+                            }
+                        });
+                    } catch(e) { console.warn('Could not attach preventive submit handlers to injected forms', e); }
+
+                    // Add theme overrides scoped to wrapper
+                    const override = document.createElement('style');
+                    override.textContent = `
+                        .contact-injected-wrapper { color: var(--silver); font-family: 'Montserrat', sans-serif; }
+                        .contact-injected-wrapper .contact-container { background: transparent !important; box-shadow: none !important; padding: 0 !important; }
+                        .contact-injected-wrapper .contact-header, .contact-injected-wrapper .contact-display { padding: 0 8px 16px 8px; }
+                        .contact-injected-wrapper .contact-form { padding: 8px; }
+                    `;
+                    container.appendChild(override);
+
+                    // Re-run scripts from fetched doc in the page context (external scripts appended, inline executed)
+                    const scripts = doc.querySelectorAll('script');
+                    scripts.forEach(s => {
+                        if (s.src) {
+                            const sc = document.createElement('script');
+                            sc.src = s.src;
+                            // Ensure execution order and reduce race issues by disabling async
+                            sc.async = false;
+                            sc.type = 'text/javascript';
+                            sc.onload = () => console.debug('Injected script loaded:', s.src);
+                            sc.onerror = (err) => console.error('Failed to load injected script:', s.src, err);
+                            container.appendChild(sc);
+                        } else if (s.textContent) {
+                            try { eval(s.textContent); } catch (e) { console.error('Error running injected contact script', e); }
+                        }
+                    });
+
+                    bindContactClose();
+                    // Expose helper for injected script to close overlay
+                    window.closeContactInfoBox = window.closeContactInfoBox || function(){ if (overlay) overlay.style.display = 'none'; };
+                } catch (err) {
+                    console.error('Failed to load contact info:', err);
+                    container.appendChild(document.createTextNode('Failed to load contact info.'));
+                }
+            }
+
+            // Expose a safe opener that renderProfile/setupEventListeners can call
+            window.openContactInfoForProfile = window.openContactInfoForProfile || function(profile){ openContactOverlay(profile); };
+
+            // If setupEventListeners is called later, patch it to configure contact button
+            const origSetup = window.setupEventListeners;
+            if (typeof origSetup === 'function') {
+                window.setupEventListeners = function(profile) {
+                    try { configureContactButton(profile); } catch (e) { console.warn(e); }
+                    try { origSetup(profile); } catch (e) { console.error('setupEventListeners wrapper error', e); }
+                    // Bind contact button after original setup has run
+                    const contactBtn = document.getElementById('contactInfoBtn');
+                    if (contactBtn) {
+                        contactBtn.addEventListener('click', function(){ window.openContactInfoForProfile(profile); });
+                    }
+                };
+            } else {
+                // If setupEventListeners not yet defined at parse time, try to bind later on DOMContentLoaded
+                document.addEventListener('DOMContentLoaded', function(){
+                    const contactBtn = document.getElementById('contactInfoBtn');
+                    if (contactBtn) contactBtn.addEventListener('click', function(){ window.openContactInfoForProfile(window.__PROFILE || {}); });
+                });
+            }
+        })();
+
+        /* === Artist "YOUR EVENTS" loader - Updated with robust token handling === */
+        (async function artistEventsInit() {
+          // --- Helpers ---
+          function getProfileIdFromUrl() {
+            return new URLSearchParams(window.location.search).get('id') || null;
+          }
+
+          async function fetchProfile(profileId) {
+            try {
+              const res = await fetch(`/api/profiles/${encodeURIComponent(profileId)}`, { credentials: 'include' });
+              if (!res.ok) return null;
+              const j = await res.json().catch(()=>null);
+              if (j && j.success && j.profile) return j.profile;
+              return null;
+            } catch (e) { console.warn('fetchProfile err', e); return null; }
+          }
+
+          // Get logged user ID from localStorage/token or server
+          function getLoggedUserIdFromStorageOrToken() {
+            try {
+              const ls = localStorage.getItem('userId');
+              if (ls) return String(ls);
+              const token = localStorage.getItem('token');
+              if (token) {
+                const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+                return String(payload.userId || payload.sub || payload.id || '');
+              }
+            } catch (e) { /* ignore */ }
+            return null;
+          }
+
+          async function getLoggedUserIdFromServer() {
+            try {
+              const res = await fetch('/api/auth/me', { credentials: 'include' });
+              if (!res.ok) return null;
+              const j = await res.json().catch(()=>null);
+              if (j && j.user) return String(j.user._id || j.user.userId || j.user.id || '');
+            } catch (e) { return null; }
+            return null;
+          }
+
+          // Main robust booking loader
+          async function loadArtistYourEvents(artistId) {
+            try {
+              if (!artistId) return;
+
+              const token = localStorage.getItem('token') || null;
+              const headers = {};
+              if (token) headers['Authorization'] = `Bearer ${token}`;
+
+              // use the secure artist endpoint that only returns bookings to that artist
+              const res = await fetch(`/api/bookings/artist/${encodeURIComponent(artistId)}`, {
+                method: 'GET',
+                headers,
+                credentials: 'same-origin'
+              });
+
+              if (!res.ok) {
+                console.warn('loadArtistYourEvents - fetch failed', res.status, await res.text().catch(()=>null));
+                return;
+              }
+              const data = await res.json();
+              if (!data || !data.success) {
+                console.warn('loadArtistYourEvents - no bookings or error', data);
+                return;
+              }
+
+              const bookings = data.bookings || [];
+              // render the bookings into the YOUR EVENTS section
+              const container = document.getElementById('yourEventsSection');
+              if (!container) return;
+              container.innerHTML = '';
+              if (!bookings.length) {
+                container.innerHTML = '<div class="empty">No bookings yet. When organizers book you, they will appear here.</div>';
+                return;
+              }
+
+              bookings.forEach(b => {
+                const bookingId = b._id || b.id || '';
+                const eventDate = b.eventDate ? new Date(b.eventDate).toLocaleString() : '';
+                const location = b.eventLocation || b.venue || '';
+                const price = b.price || b.amount || b.fee || '—';
+                const status = (b.status || 'pending').toUpperCase();
+                const organizerName = (b.organizerProfile && (b.organizerProfile.name || b.organizerProfile.displayName)) || b.organizerName || 'Organizer';
+
+                const el = document.createElement('div');
+                el.className = 'event-item';
+                el.innerHTML = `
+                  <div class="event-header">
+                    <div>
+                      <div class="event-organizer">${organizerName}</div>
+                      <div class="event-details">
+                        <div class="event-date-venue">
+                          <i class="fas fa-calendar"></i>
+                          <span>${eventDate} ${location ? ' • ' + location : ''}</span>
+                        </div>
+                        <div class="event-price">₹ ${price}</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--silver);">Status: ${status}</div>
+                      </div>
+                    </div>
+                    <div class="event-actions">
+                      <button class="event-btn btn-download" data-booking="${bookingId}" data-which="booking_artist">
+                        <i class="fas fa-download"></i> Contact Info
+                      </button>
+                      <button class="event-btn btn-download" data-booking="${bookingId}" data-which="booking_org">
+                        <i class="fas fa-file-pdf"></i> Booking PDF
+                      </button>
+                      <button class="event-btn" onclick="window.open('mailto:${b.organizerProfile && b.organizerProfile.email ? b.organizerProfile.email : (b.organizerEmail||'')}','_blank')">
+                        <i class="fas fa-envelope"></i> Contact
+                      </button>
+                    </div>
+                  </div>
+                `;
+                container.appendChild(el);
+              });
+
+              // attach download handlers
+              document.querySelectorAll('#yourEventsSection .btn-download').forEach(btn => {
+                btn.addEventListener('click', async (ev) => {
+                  const which = btn.getAttribute('data-which');
+                  const bookingId = btn.getAttribute('data-booking');
+                  try {
+                    // same pattern as organizer: use token in Authorization header
+                    const h = {};
+                    if (token) h['Authorization'] = `Bearer ${token}`;
+                    const resp = await fetch(`/api/escrow/bookings/${encodeURIComponent(bookingId)}/files/${which}`, { headers: h });
+                    if (!resp.ok) {
+                      const text = await resp.text().catch(()=>null);
+                      alert('File download failed: ' + (text || resp.status));
+                      return;
+                    }
+                    const buf = await resp.arrayBuffer();
+                    const blob = new Blob([buf], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${which}-${bookingId}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    URL.revokeObjectURL(url);
+                  } catch (e) {
+                    console.error('download error', e);
+                    alert('Download failed');
+                  }
+                });
+              });
+
+            } catch (err) {
+              console.error('loadArtistYourEvents error', err);
+            }
+          }
+
+          // Main logic starts here
+          const profileId = getProfileIdFromUrl();
+          const wrapper = document.getElementById('yourEventsSection');
+          const wrapperOuter = document.getElementById('yourEventsWrapper');
+
+          if (!wrapper || !wrapperOuter) {
+            console.warn('Artist events: missing wrapper elements');
+            return;
+          }
+
+          // Hide section initially
+          wrapper.innerHTML = '<div class="empty">Loading your events…</div>';
+          wrapperOuter.style.display = 'none';
+
+          // Get profile data
+          let profile = window.__PROFILE || null;
+          if (!profile || (!profile.userId && !profile._id)) {
+            if (profileId) profile = await fetchProfile(profileId);
+          }
+          if (!profile) {
+            wrapper.innerHTML = '<div class="empty">Profile not found — cannot load bookings.</div>';
+            return;
+          }
+
+          // Get profile owner user ID (prefer userId, fallback to _id)
+          const profileOwnerUserId = String(profile.userId || profile._id || '');
+
+          // Get logged user ID
+          let loggedUserId = getLoggedUserIdFromStorageOrToken();
+          if (!loggedUserId) loggedUserId = await getLoggedUserIdFromServer();
+
+          if (!loggedUserId) {
+            wrapper.innerHTML = '<div class="empty">Sign in as this artist to view your events.</div>';
+            wrapperOuter.style.display = 'none';
+            return;
+          }
+
+          // Check ownership
+          if (String(loggedUserId) !== String(profileOwnerUserId)) {
+            wrapper.innerHTML = '<div class="empty">Your events are visible only when you are signed in as this artist.</div>';
+            wrapperOuter.style.display = 'none';
+            return;
+          }
+
+          // Show the section and load bookings
+          wrapperOuter.style.display = 'block';
+          await loadArtistYourEvents(profileOwnerUserId);
+
+        })();
+
+    </script>
+</body>
+</html>

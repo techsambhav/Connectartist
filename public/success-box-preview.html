@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Success Box UI Preview - New Design</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .demo-container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 800px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 16px;
+    }
+
+    .demo-btn {
+      background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+      transition: all 0.3s;
+      margin-bottom: 30px;
+    }
+
+    .demo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(26, 115, 232, 0.4);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 30px;
+    }
+
+    .feature {
+      background: #f8fafb;
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid #1a73e8;
+    }
+
+    .feature-title {
+      font-weight: 600;
+      color: #1a73e8;
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      color: #666;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.8) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes scaleOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.9); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes checkmarkPop {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes checkmarkDraw {
+      from { opacity: 0; transform: scale(0.7) rotate(-10deg); }
+      to { opacity: 1; transform: scale(1) rotate(0); }
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <h1>🎨 New Success Box UI</h1>
+    <p class="subtitle">Click the button below to preview the improved booking confirmation modal</p>
+
+    <button class="demo-btn" onclick="showSuccessBox()">
+      🚀 Preview Success Modal
+    </button>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-title">✨ Animated</div>
+        <div class="feature-desc">Smooth entrance with bounce effect</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">🎨 Gradient</div>
+        <div class="feature-desc">Professional blue-to-green header</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">📱 Responsive</div>
+        <div class="feature-desc">Works on all screen sizes</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">⚡ Fast</div>
+        <div class="feature-desc">Clear loading states</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">✅ Feedback</div>
+        <div class="feature-desc">Success/error indicators</div>
+      </div>
+      <div class="feature">
+        <div class="feature-title">🎯 Clear</div>
+        <div class="feature-desc">Explicit download status</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showSuccessBox() {
+      const bookingId = '507f1f77bcf86cd799439011';
+
+      // Create backdrop
+      const backdrop = document.createElement('div');
+      backdrop.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
+        z-index: 9999; display: flex; align-items: center; justify-content: center;
+        animation: fadeIn 0.3s ease-out;
+      `;
+
+      // Create dialog
+      const dialog = document.createElement('div');
+      dialog.style.cssText = `
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafb 100%);
+        max-width: 540px; width: 92%; padding: 0; border-radius: 20px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        text-align: center; animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        overflow: hidden;
+      `;
+
+      // Header
+      const header = document.createElement('div');
+      header.style.cssText = `
+        background: linear-gradient(135deg, #1a73e8 0%, #00b894 100%);
+        padding: 40px 32px 32px;
+      `;
+
+      const checkmarkContainer = document.createElement('div');
+      checkmarkContainer.style.cssText = `
+        width: 80px; height: 80px; margin: 0 auto 16px;
+        background: white; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        animation: checkmarkPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+      `;
+
+      const checkmark = document.createElement('div');
+      checkmark.innerHTML = '✓';
+      checkmark.style.cssText = `
+        font-size: 48px; font-weight: 700; color: #00b894;
+        animation: checkmarkDraw 0.4s ease-out 0.4s both;
+      `;
+      checkmarkContainer.appendChild(checkmark);
+
+      const title = document.createElement('h2');
+      title.textContent = 'Booking Confirmed!';
+      title.style.cssText = `
+        color: white; margin: 0 0 8px; font-size: 32px; font-weight: 700;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        animation: slideDown 0.5s ease-out 0.3s both;
+      `;
+
+      const subtitle = document.createElement('p');
+      subtitle.textContent = 'Your event is secured';
+      subtitle.style.cssText = `
+        color: rgba(255, 255, 255, 0.95); font-size: 16px; margin: 0;
+        animation: slideDown 0.5s ease-out 0.4s both;
+      `;
+
+      header.appendChild(checkmarkContainer);
+      header.appendChild(title);
+      header.appendChild(subtitle);
+
+      // Content
+      const content = document.createElement('div');
+      content.style.cssText = `padding: 32px; background: white;`;
+
+      const bookingCard = document.createElement('div');
+      bookingCard.style.cssText = `
+        background: #f8fafb; border: 2px solid #e8f0fe; border-radius: 12px;
+        padding: 20px; margin-bottom: 24px;
+        animation: fadeInUp 0.5s ease-out 0.5s both;
+      `;
+
+      const bookingLabel = document.createElement('div');
+      bookingLabel.textContent = 'BOOKING ID';
+      bookingLabel.style.cssText = `
+        color: #666; font-size: 12px; font-weight: 600;
+        letter-spacing: 0.5px; margin-bottom: 6px;
+      `;
+
+      const bookingIdText = document.createElement('div');
+      bookingIdText.textContent = bookingId;
+      bookingIdText.style.cssText = `
+        color: #1a73e8; font-size: 18px; font-weight: 700;
+        font-family: 'Courier New', monospace; word-break: break-all;
+      `;
+
+      bookingCard.appendChild(bookingLabel);
+      bookingCard.appendChild(bookingIdText);
+
+      const msgSub = document.createElement('p');
+      msgSub.innerHTML = '📧 Confirmation email sent to your inbox';
+      msgSub.style.cssText = `
+        color: #666; font-size: 14px; margin: 0 0 28px;
+        animation: fadeInUp 0.5s ease-out 0.6s both;
+      `;
+
+      // Download button
+      const downloadBtn = document.createElement('button');
+      downloadBtn.innerHTML = `<span>📄</span> <span>Preparing documents...</span>`;
+      downloadBtn.disabled = true;
+      downloadBtn.style.cssText = `
+        width: 100%; padding: 18px 24px; border: none; border-radius: 12px;
+        background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+        color: white; font-size: 16px; font-weight: 600; cursor: not-allowed;
+        opacity: 0.6; margin-bottom: 12px; transition: all 0.3s;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+        animation: fadeInUp 0.5s ease-out 0.7s both;
+      `;
+
+      setTimeout(() => {
+        downloadBtn.disabled = false;
+        downloadBtn.style.cursor = 'pointer';
+        downloadBtn.style.opacity = '1';
+        downloadBtn.innerHTML = `<span>⬇️</span> <span>Download Booking Confirmation</span>`;
+
+        downloadBtn.onmouseover = () => {
+          if (!downloadBtn.disabled) {
+            downloadBtn.style.transform = 'translateY(-2px)';
+            downloadBtn.style.boxShadow = '0 8px 20px rgba(26, 115, 232, 0.4)';
+          }
+        };
+        downloadBtn.onmouseout = () => {
+          downloadBtn.style.transform = 'translateY(0)';
+          downloadBtn.style.boxShadow = '0 4px 12px rgba(26, 115, 232, 0.3)';
+        };
+      }, 2500);
+
+      downloadBtn.onclick = () => {
+        if (downloadBtn.disabled) return;
+
+        const originalHTML = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = `<span style="animation: spin 1s linear infinite;">⏳</span> <span>Downloading your booking confirmation...</span>`;
+        downloadBtn.disabled = true;
+        downloadBtn.style.cursor = 'not-allowed';
+        downloadBtn.style.opacity = '0.8';
+
+        setTimeout(() => {
+          downloadBtn.innerHTML = `<span>✓</span> <span>Download Complete</span>`;
+          downloadBtn.style.background = 'linear-gradient(135deg, #00b894 0%, #00a07b 100%)';
+          downloadBtn.style.opacity = '1';
+
+          setTimeout(() => {
+            downloadBtn.innerHTML = originalHTML;
+            downloadBtn.disabled = false;
+            downloadBtn.style.cursor = 'pointer';
+            downloadBtn.style.background = 'linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%)';
+          }, 2500);
+        }, 2000);
+      };
+
+      // Close button
+      const closeBtn = document.createElement('button');
+      closeBtn.textContent = 'Close';
+      closeBtn.style.cssText = `
+        width: 100%; padding: 16px; border: 2px solid #e0e0e0; border-radius: 12px;
+        background: transparent; color: #666; font-size: 15px; font-weight: 600;
+        cursor: pointer; transition: all 0.3s;
+        animation: fadeInUp 0.5s ease-out 0.8s both;
+      `;
+
+      closeBtn.onmouseover = () => {
+        closeBtn.style.background = '#f5f5f5';
+        closeBtn.style.borderColor = '#bbb';
+        closeBtn.style.transform = 'translateY(-1px)';
+      };
+      closeBtn.onmouseout = () => {
+        closeBtn.style.background = 'transparent';
+        closeBtn.style.borderColor = '#e0e0e0';
+        closeBtn.style.transform = 'translateY(0)';
+      };
+
+      closeBtn.onclick = () => {
+        backdrop.style.animation = 'fadeOut 0.2s ease-out';
+        dialog.style.animation = 'scaleOut 0.2s ease-out';
+        setTimeout(() => backdrop.remove(), 200);
+      };
+
+      backdrop.onclick = (e) => {
+        if (e.target === backdrop) {
+          backdrop.style.animation = 'fadeOut 0.2s ease-out';
+          dialog.style.animation = 'scaleOut 0.2s ease-out';
+          setTimeout(() => backdrop.remove(), 200);
+        }
+      };
+
+      content.appendChild(bookingCard);
+      content.appendChild(msgSub);
+      content.appendChild(downloadBtn);
+      content.appendChild(closeBtn);
+
+      dialog.appendChild(header);
+      dialog.appendChild(content);
+      backdrop.appendChild(dialog);
+      document.body.appendChild(backdrop);
+    }
+  </script>
+</body>
+</html>

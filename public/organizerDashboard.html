@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Organizer Dashboard — My Bookings</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #0ea5a4;
+      --danger: #ef4444;
+      --shadow: 0 6px 18px rgba(15,23,42,0.08);
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    body { margin:0; background:var(--bg); color:#0f172a; }
+    .container { max-width:1100px; margin:36px auto; padding:20px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; }
+    h1 { margin:0; font-size:20px; }
+    .sub { color:var(--muted); font-size:13px; }
+    .card { background:var(--card); border-radius:12px; padding:16px; box-shadow:var(--shadow); }
+    .filters { display:flex; gap:12px; margin-bottom:14px; align-items:center; }
+    .search { padding:8px 10px; border-radius:8px; border:1px solid #e6e9ef; width:320px; }
+    .btn { padding:8px 12px; border-radius:8px; border:0; cursor:pointer; background:var(--accent); color:#fff; }
+    .table { width:100%; border-collapse:collapse; margin-top:8px; }
+    th, td { padding:12px 8px; text-align:left; border-bottom:1px solid #eef2f7; font-size:14px; }
+    th { color:var(--muted); font-size:13px; }
+    .small { font-size:13px; color:var(--muted); }
+    .actions { display:flex; gap:8px; align-items:center; }
+    .link-btn { background:transparent; color:var(--accent); border:0; cursor:pointer; padding:6px 8px; }
+    .danger { background:var(--danger); color:#fff; border:0; padding:8px 10px; border-radius:8px; cursor:pointer; }
+    .badge { background:#eefcfb; color:#064e47; padding:6px 8px; border-radius:999px; font-weight:600; font-size:12px; }
+    .empty { text-align:center; padding:36px; color:var(--muted); }
+    footer { margin-top:18px; font-size:13px; color:var(--muted); }
+    @media (max-width:720px){
+      .search { width:100%; }
+      th:nth-child(4), td:nth-child(4) { display:none; } /* hide venue on small screens */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Organizer Dashboard</h1>
+        <div class="sub">Private — your bookings and receipts</div>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="/frontend.html" class="btn" style="background: #4a5568;">Back to Home</a>
+        <button id="refreshBtn" class="btn">Refresh</button>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="filters">
+        <input id="searchInput" class="search" placeholder="Search by Booking ID, artist name or venue" />
+        <select id="statusFilter" style="padding:8px;border-radius:8px;border:1px solid #e6e9ef;">
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <div style="margin-left:auto" class="small" id="countSummary">Loading…</div>
+      </div>
+
+      <div id="tableWrap">
+        <!-- bookingsGrid will render two-card layout per booking -->
+        <div id="bookingsGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;">
+          <div id="gridEmpty" class="empty">Loading bookings…</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Tip: Click "Download" to open receipt or booking confirmation. Mark an event as successful when it finished to trigger payout/release flows.
+    </footer>
+  </div>
+
+  <script src="organizerDashboard.js"></script>
+  <script>
+    // Normalize legacy/alias paths so users always see /organizerdashboard.html in the address bar
+    (function(){
+      try {
+        const p = window.location.pathname || '';
+        if (p === '/organizer/dashboard' || p === '/organizer/dashboard/') {
+          // Replace the current history entry (no reload) with the canonical static path
+          history.replaceState(history.state, document.title, '/organizerdashboard.html' + (window.location.search || ''));
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+</body>
+</html>

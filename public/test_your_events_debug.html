@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOUR EVENTS Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🧪 YOUR EVENTS Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Setup Authentication</h2>
+        <button onclick="setupAuth()">Setup Auth for Artist 68b917970861b56e3644d863</button>
+        <div id="auth-status"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test API Endpoints</h2>
+        <button onclick="testAuthMe()">Test /api/auth/me</button>
+        <button onclick="testBookingsArtist()">Test /api/bookings/artist/:id</button>
+        <button onclick="testBookingsGeneral()">Test /api/bookings</button>
+        <div id="api-results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. View Artist Profile</h2>
+        <button onclick="goToProfile()">Open Artist Profile Page</button>
+        <p>This will navigate to the actual card.html page with authentication set up.</p>
+    </div>
+
+    <script>
+        const artistId = '68b917970861b56e3644d863';
+        const testToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI5MTc5NzA4NjFiNTZlMzY0NGQ4NjMiLCJyb2xlIjoiYXJ0aXN0IiwiaWF0IjoxNzU4MzA5MzgyLCJleHAiOjE3NTgzMTI5ODJ9.e1k3E3Ex3WhEIktmwzOTAgFHEXxxSbSQNAvoe4WXbUk';
+
+        function log(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = message;
+            container.appendChild(div);
+        }
+
+        function setupAuth() {
+            const container = document.getElementById('auth-status');
+            container.innerHTML = '';
+            
+            localStorage.setItem('token', testToken);
+            localStorage.setItem('userId', artistId);
+            
+            log('auth-status', '✅ Authentication set up successfully', 'success');
+            log('auth-status', `Token: ${testToken.substring(0, 50)}...`, 'info');
+            log('auth-status', `User ID: ${artistId}`, 'info');
+        }
+
+        async function testAuthMe() {
+            const container = document.getElementById('api-results');
+            container.innerHTML = '';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('api-results', '❌ No token found. Setup authentication first.', 'error');
+                return;
+            }
+
+            try {
+                log('api-results', '🔄 Testing /api/auth/me...', 'info');
+                const response = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    credentials: 'include'
+                });
+
+                log('api-results', `Status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('api-results', '<pre>' + JSON.stringify(data, null, 2) + '</pre>', 'success');
+                } else {
+                    const errorText = await response.text();
+                    log('api-results', `Error: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                log('api-results', `Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testBookingsArtist() {
+            const container = document.getElementById('api-results');
+            container.innerHTML = '';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('api-results', '❌ No token found. Setup authentication first.', 'error');
+                return;
+            }
+
+            try {
+                log('api-results', `🔄 Testing /api/bookings/artist/${artistId}...`, 'info');
+                const response = await fetch(`/api/bookings/artist/${encodeURIComponent(artistId)}`, {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                log('api-results', `Status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    log('api-results', `Found ${data.bookings ? data.bookings.length : 0} bookings`, 'success');
+                    log('api-results', '<pre>' + JSON.stringify(data, null, 2) + '</pre>', 'info');
+                } else {
+                    const errorText = await response.text();
+                    log('api-results', `Error: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                log('api-results', `Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testBookingsGeneral() {
+            const container = document.getElementById('api-results');
+            container.innerHTML = '';
+            
+            const token = localStorage.getItem('token');
+            if (!token) {
+                log('api-results', '❌ No token found. Setup authentication first.', 'error');
+                return;
+            }
+
+            try {
+                log('api-results', '🔄 Testing /api/bookings...', 'info');
+                const response = await fetch('/api/bookings', {
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+
+                log('api-results', `Status: ${response.status}`, response.ok ? 'success' : 'error');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const allBookings = data.bookings || data.data || [];
+                    const artistBookings = allBookings.filter(b => String(b.artistId) === String(artistId));
+                    log('api-results', `Found ${allBookings.length} total bookings, ${artistBookings.length} for this artist`, 'success');
+                    log('api-results', '<pre>' + JSON.stringify(data, null, 2) + '</pre>', 'info');
+                } else {
+                    const errorText = await response.text();
+                    log('api-results', `Error: ${errorText}`, 'error');
+                }
+            } catch (error) {
+                log('api-results', `Request failed: ${error.message}`, 'error');
+            }
+        }
+
+        function goToProfile() {
+            const profileUrl = `/card.html?id=${artistId}`;
+            log('auth-status', `🔄 Navigating to ${profileUrl}`, 'info');
+            window.location.href = profileUrl;
+        }
+
+        // Auto-setup on page load
+        window.addEventListener('load', () => {
+            setupAuth();
+        });
+    </script>
+</body>
+</html>

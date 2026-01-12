@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConnectArtist About</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4A90E2; /* Blue for primary actions */
+      --accent: #50C878; /* Green for highlights */
+      --light: #F5F7FA; /* Light background */
+      --white: #FFFFFF; /* Pure white for cards */
+      --text: #2D3748; /* Dark text for readability */
+      --text-light: #718096; /* Lighter text for secondary info */
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--light);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .about-section {
+      padding: 4rem 5%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      width: 60px;
+      height: 4px;
+      background: var(--accent);
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .about-hero {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .about-hero-image {
+      max-width: 1000px;
+      margin: 0 auto;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--accent);
+    }
+
+    .about-hero-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: var(--transition);
+    }
+
+    .about-hero-image:hover img {
+      transform: scale(1.02);
+    }
+
+    .mission-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: center;
+      margin-bottom: 4rem;
+    }
+
+    .mission-content h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .mission-content h2 i {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    .mission-content p {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .mission-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .mission-image {
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .mission-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .timeline-section {
+      margin-bottom: 4rem;
+    }
+
+    .timeline-section h2 {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+
+    .timeline-section h2 i {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    .timeline-item:nth-child(odd) .timeline-content {
+      margin-left: auto;
+      text-align: right;
+      padding-right: 3rem;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+      padding-left: 3rem;
+    }
+
+    .timeline-date {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: var(--white);
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow);
+      z-index: 1;
+    }
+
+    .timeline-content {
+      width: calc(50% - 2rem);
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .timeline-content:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .timeline-content h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-content p {
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+
+    .team-section {
+      margin-bottom: 4rem;
+      text-align: center;
+    }
+
+    .team-section h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .team-section h2 i {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    .team-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      margin-bottom: 2rem;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      align-items: stretch; /* ensure children stretch to equal height */
+      grid-auto-rows: 1fr; /* make rows uniform */
+    }
+
+    /* make each team card a flex column so content aligns and stretches equally */
+    .team-member {
+      background: var(--white);
+      padding: 2rem; /* slightly larger cards */
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .team-member:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .member-image {
+      width: 140px; /* slightly larger profile image */
+      height: 140px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid var(--accent);
+      flex: 0 0 auto;
+    }
+
+    .member-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .social-links {
+      position: absolute;
+      bottom: -20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .team-member:hover .social-links {
+      bottom: 10px;
+      opacity: 1;
+    }
+
+    .social-links a {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .team-member h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .position {
+      font-size: 0.95rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .bio {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .values-section {
+      margin-bottom: 4rem;
+      text-align: center;
+    }
+
+    .values-section h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+
+    .values-section h2 i {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .value-card {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .value-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(80, 200, 120, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      color: var(--accent);
+      transition: var(--transition);
+    }
+
+    .value-card:hover .value-icon {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .value-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .value-card p {
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+
+    .about-cta {
+      text-align: center;
+      padding: 3rem;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .about-cta h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .about-cta p {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: #3b7cc7;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .mission-section {
+        grid-template-columns: 1fr;
+      }
+
+      .mission-image {
+        order: -1;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+      }
+
+      .timeline::before {
+        left: 30px;
+      }
+
+      .timeline-item:nth-child(odd) .timeline-content,
+      .timeline-item:nth-child(even) .timeline-content {
+        width: calc(100% - 90px);
+        margin-left: 80px;
+        text-align: left;
+        padding: 1.5rem;
+      }
+
+      .timeline-date {
+        left: 0;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .mission-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-item {
+        max-width: 250px;
+        margin: 0 auto;
+      }
+
+      .about-cta {
+        padding: 2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .section-subtitle {
+        font-size: 1rem;
+      }
+
+      .about-cta h2 {
+        font-size: 1.5rem;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Back to Home Button -->
+  <div style="position: absolute; top: 24px; right: 32px; z-index: 100;">
+    <button id="back-home-btn" class="btn btn-secondary" style="padding: 0.6rem 1.5rem; border-radius: 30px; font-weight: 600; border: none; cursor: pointer;">
+      <i class="fas fa-home"></i> Back to Home
+    </button>
+  </div>
+
+  <section class="about-section">
+    <div class="section-header">
+      <h1 class="section-title">About <span>ConnectArtist</span></h1>
+      <p class="section-subtitle">Bridging the gap between artists and opportunities</p>
+    </div>
+
+    <div class="about-hero">
+      <div class="about-hero-image">
+        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a5d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600&q=80" alt="Artist community">
+      </div>
+    </div>
+
+    <div class="mission-section">
+      <div class="mission-content">
+        <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
+        <p>At ConnectArtist, we empower artists of all disciplines—from musicians to magicians—to showcase their talent, connect with audiences, and build sustainable careers.</p>
+        <div class="mission-stats">
+          <div class="stat-item">
+            <div class="stat-number" data-count="25000">0</div>
+            <div class="stat-label">Registered Artists</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-count="120">0</div>
+            <div class="stat-label">Countries</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number" data-count="5000">0</div>
+            <div class="stat-label">Events Booked</div>
+          </div>
+        </div>
+      </div>
+      <div class="mission-image">
+        <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80" alt="Artist performing">
+      </div>
+    </div>
+
+    <div class="timeline-section">
+      <h2><i class="fas fa-history"></i> Our Journey</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-date">2018</div>
+          <div class="timeline-content">
+            <h3>Founded in Delhi</h3>
+            <p>Started as a platform connecting local performers with event organizers.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2019</div>
+          <div class="timeline-content">
+            <h3>First Major Update</h3>
+            <p>Launched artist profiles and a booking system.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2020</div>
+          <div class="timeline-content">
+            <h3>Online growth</h3>
+            <p>Reached to artist online.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2022</div>
+          <div class="timeline-content">
+            <h3>National Launch</h3>
+            <p>Reached National markets with multi-language support.</p>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">2023</div>
+          <div class="timeline-content">
+            <h3>AI Matching System</h3>
+            <p>Introduced smart algorithms for perfect artist-opportunity matches.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="team-section">
+      <h2><i class="fas fa-users"></i> Meet The Team</h2>
+      <p class="team-subtitle">The passionate people behind ConnectArtist</p>
+      <div class="team-grid" style="grid-template-columns: repeat(3, 1fr); align-items: start;">
+        <div class="team-member">
+          <div class="member-image">
+            <img src="rahulraj.jpg" alt="Rahul Raj">
+            <div class="social-links">
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+              <a href="#"><i class="fab fa-github"></i></a>
+            </div>
+          </div>
+          <h3>Rahul Raj</h3>
+          <p class="position">Tech Lead</p>
+          <p class="bio">Seasoned systems engineer who designs scalable, secure platforms. He built the AI matching engine and booking backend to ensure reliable, high-performance service for artists and events.</p>
+        </div>
+
+        <div class="team-member">
+          <div class="member-image">
+            <img src="shubh.png" alt="Shubham Agarwal">
+            <div class="social-links">
+              <a href="#"><i class="fab fa-linkedin"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <h3>Shubham Agarwal</h3>
+          <p class="position">Founder & CEO</p>
+          <p class="bio">Developed the website and built the artist-relations network. Leads product and community to create fair, scalable opportunities and meaningful experiences for artists.</p>
+        </div>
+
+        <div class="team-member">
+          <div class="member-image">
+            <img src="sambhav.jpg" alt="Sambhav Jain">
+            <div class="social-links">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <h3>Sambhav Jain</h3>
+          <p class="position">Head of Multimedia & PR Outreach</p>
+          <p class="bio">Leads multimedia and PR outreach to amplify artist stories across platforms. Crafts visual content and integrated campaigns that boost engagement, expand audience reach, and develop strategic partnerships to artist.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="values-section">
+      <h2><i class="fas fa-heart"></i> Our Core Values</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-star"></i>
+          </div>
+          <h3>Artist First</h3>
+          <p>Prioritizing artist success and wellbeing in every decision.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3>Inclusivity</h3>
+          <p>Celebrating all art forms and backgrounds.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3>Innovation</h3>
+          <p>Constantly evolving to serve artists better.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon">
+            <i class="fas fa-handshake"></i>
+          </div>
+          <h3>Integrity</h3>
+          <p>Transparent and fair in all our dealings.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-cta">
+      <h2>Join Our Artistic Revolution</h2>
+      <p>Become part of the most connected artist community in the world.</p>
+      <div class="cta-buttons">
+        <a href="/signup.html" class="btn btn-primary">Sign Up Now</a>
+        <a href="/contact.html" class="btn btn-secondary">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Animate stats counting
+      const statNumbers = document.querySelectorAll('.stat-number');
+
+      const animateStats = () => {
+        statNumbers.forEach(stat => {
+          const target = parseInt(stat.getAttribute('data-count'));
+          const duration = 2000;
+          const start = 0;
+          const increment = target / (duration / 16);
+
+          let current = start;
+          const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+              clearInterval(timer);
+              current = target;
+            }
+            stat.textContent = Math.floor(current).toLocaleString();
+          }, 16);
+        });
+      };
+
+      // Intersection Observer for stats animation
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateStats();
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      observer.observe(document.querySelector('.mission-section'));
+
+      // Card hover animations
+      const cards = document.querySelectorAll('.stat-item, .timeline-content, .team-member, .value-card');
+      cards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.style.transform = 'translateY(-5px)';
+          card.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          card.style.boxShadow = 'var(--shadow)';
+        });
+      });
+
+      // Value icon hover animations
+      const valueCards = document.querySelectorAll('.value-card');
+      valueCards.forEach(card => {
+        card.addEventListener('mouseenter', () => {
+          card.querySelector('.value-icon').style.background = 'var(--accent)';
+          card.querySelector('.value-icon').style.color = 'var(--white)';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.querySelector('.value-icon').style.background = 'rgba(80, 200, 120, 0.1)';
+          card.querySelector('.value-icon').style.color = 'var(--accent)';
+        });
+      });
+    });
+
+    // Back to Home button handler
+    document.addEventListener('DOMContentLoaded', function() {
+      const backBtn = document.getElementById('back-home-btn');
+      if (backBtn) {
+        backBtn.addEventListener('click', function() {
+          window.location.href = 'frontend.html';
+        });
+      }
+    });
+  </script>
+</body>
+</html>

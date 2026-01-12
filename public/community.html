@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConnectArtist Community</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4A90E2; /* Blue for primary actions */
+      --accent: #50C878; /* Green for highlights */
+      --light: #F5F7FA; /* Light background */
+      --white: #FFFFFF; /* Pure white for cards */
+      --text: #2D3748; /* Dark text for readability */
+      --text-light: #718096; /* Lighter text for secondary info */
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --radius: 12px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--light);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .community-section {
+      padding: 4rem 5%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      width: 60px;
+      height: 4px;
+      background: var(--accent);
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .community-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .community-feature {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: var(--radius);
+      text-align: center;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .community-feature:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      border-color: var(--accent);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(80, 200, 120, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
+      color: var(--accent);
+      transition: var(--transition);
+    }
+
+    .community-feature:hover .feature-icon {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .community-feature h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .community-feature p {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: #3b7cc7;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .testimonials {
+      margin-bottom: 4rem;
+    }
+
+    .testimonials h3 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2rem;
+    }
+
+    .testimonials h3 i {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    .testimonial-slider {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .testimonial-card {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .testimonial-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .testimonial-content {
+      font-size: 0.95rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      position: relative;
+      font-style: italic;
+    }
+
+    .testimonial-content::before {
+      content: '"';
+      font-size: 3rem;
+      position: absolute;
+      top: -1rem;
+      left: -0.5rem;
+      color: rgba(80, 200, 120, 0.3);
+      font-family: serif;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .testimonial-author img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+
+    .author-info strong {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .author-info span {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .community-cta {
+      text-align: center;
+      padding: 3rem;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .community-cta h3 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.75rem;
+    }
+
+    .community-cta p {
+      font-size: 1.1rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .community-section {
+        padding: 3rem 5%;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .community-features {
+        grid-template-columns: 1fr;
+      }
+
+      .testimonial-slider {
+        grid-template-columns: 1fr;
+      }
+
+      .community-cta {
+        padding: 2rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .section-subtitle {
+        font-size: 1rem;
+      }
+
+      .community-cta h3 {
+        font-size: 1.5rem;
+      }
+
+      .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Back to Home Button -->
+  <div style="position: absolute; top: 24px; right: 32px; z-index: 100;">
+    <button id="back-home-btn" class="btn btn-secondary" style="padding: 0.6rem 1.5rem; border-radius: 30px; font-weight: 600; border: none; cursor: pointer;">
+      <i class="fas fa-home"></i> Back to Home
+    </button>
+  </div>
+
+  <section class="community-section">
+    <div class="section-header">
+      <h2 class="section-title">Our Vibrant Community</h2>
+      <p class="section-subtitle">Connect, collaborate, and grow with artists worldwide</p>
+    </div>
+
+    <div class="community-features">
+      <div class="community-feature">
+        <div class="feature-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <h3>Artist Groups</h3>
+        <p>Join groups based on genre, location, or interests to connect with like-minded creators.</p>
+        <a href="#" class="btn btn-secondary">Explore Groups</a>
+      </div>
+
+      <div class="community-feature">
+        <div class="feature-icon">
+          <i class="fas fa-calendar-alt"></i>
+        </div>
+        <h3>Community Events</h3>
+        <p>Attend virtual and in-person events, workshops, and networking sessions.</p>
+        <a href="#" class="btn btn-secondary">View Events</a>
+      </div>
+
+      <div class="community-feature">
+        <div class="feature-icon">
+          <i class="fas fa-trophy"></i>
+        </div>
+        <h3>Challenges & Competitions</h3>
+        <p>Showcase your skills in exciting challenges with prizes and exposure.</p>
+        <a href="#" class="btn btn-secondary">Join Challenges</a>
+      </div>
+    </div>
+
+    <div class="community-cta">
+      <h3>Join Our Creative Community</h3>
+      <p>Become part of a thriving global network of artists and creators.</p>
+      <div class="cta-buttons">
+        <a href="/signup.html" class="btn btn-primary">Sign Up Now</a>
+        <a href="#" class="btn btn-secondary">Take a Tour</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Back to Home button handler
+    document.addEventListener('DOMContentLoaded', function() {
+      const backBtn = document.getElementById('back-home-btn');
+      if (backBtn) {
+        backBtn.addEventListener('click', function() {
+          window.location.href = 'frontend.html';
+        });
+      }
+
+      const features = document.querySelectorAll('.community-feature');
+
+      // Feature card animations
+      features.forEach(feature => {
+        feature.addEventListener('mouseenter', () => {
+          feature.style.transform = 'translateY(-8px)';
+          feature.querySelector('.feature-icon').style.background = 'var(--accent)';
+          feature.querySelector('.feature-icon').style.color = 'var(--white)';
+        });
+
+        feature.addEventListener('mouseleave', () => {
+          feature.style.transform = '';
+          feature.querySelector('.feature-icon').style.background = 'rgba(80, 200, 120, 0.1)';
+          feature.querySelector('.feature-icon').style.color = 'var(--accent)';
+        });
+      });
+
+      // Testimonial card animations
+      const testimonials = document.querySelectorAll('.testimonial-card');
+      testimonials.forEach(testimonial => {
+        testimonial.addEventListener('mouseenter', () => {
+          testimonial.style.transform = 'translateY(-5px)';
+          testimonial.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.15)';
+        });
+
+        testimonial.addEventListener('mouseleave', () => {
+          testimonial.style.transform = '';
+          testimonial.style.boxShadow = 'var(--shadow)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

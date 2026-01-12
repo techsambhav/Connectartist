@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Book Artist - Professional Booking Form</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Modern Reset */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #00b894;
+      --primary-dark: #00a07b;
+      --danger: #d63031;
+      --warning: #fdcb6e;
+      --bg-dark: #1d1f21;
+      --bg-card: #2b2f33;
+      --bg-input: #3a3f44;
+      --text-primary: #ffffff;
+      --text-secondary: #dfe6e9;
+      --text-muted: #b2bec3;
+      --border: #636e72;
+      --shadow: rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg-dark), #3a3f44);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border-radius: 16px;
+      box-shadow: 0 10px 40px var(--shadow);
+      overflow: hidden;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 24px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .close-btn {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .form-wrapper {
+      padding: 32px;
+    }
+
+    .section {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    label .required {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    input:focus, select:focus, textarea:focus {
+      background: #484e54;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+    }
+
+    input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] {
+      border-color: var(--danger);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .error-message {
+      font-size: 0.85rem;
+      color: var(--danger);
+      display: none;
+      margin-top: 4px;
+    }
+
+    .error-message.visible {
+      display: block;
+    }
+
+    .help-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .checkbox-item:hover {
+      background: rgba(255,255,255,0.06);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+
+    .checkbox-item label {
+      cursor: pointer;
+      font-weight: 400;
+      flex: 1;
+    }
+
+    .file-upload {
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      transition: all 0.3s;
+      cursor: pointer;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .file-upload:hover {
+      border-color: var(--primary);
+      background: rgba(0, 184, 148, 0.05);
+    }
+
+    .file-upload.drag-over {
+      border-color: var(--primary);
+      background: rgba(0, 184, 148, 0.1);
+    }
+
+    .file-upload input[type="file"] {
+      display: none;
+    }
+
+    .file-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--bg-input);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .file-item button {
+      background: var(--danger);
+      border: none;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .file-item button:hover {
+      opacity: 0.8;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 24px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-cancel {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 12px;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: var(--text-secondary);
+    }
+
+    #message {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      display: none;
+    }
+
+    #message.visible {
+      display: block;
+    }
+
+    #message.success {
+      background: rgba(0, 184, 148, 0.2);
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    #message.error {
+      background: rgba(214, 48, 49, 0.2);
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .pac-container {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-top: 4px;
+      box-shadow: 0 4px 16px var(--shadow);
+      font-family: 'Inter', sans-serif;
+    }
+
+    .pac-item {
+      padding: 10px 12px;
+      color: var(--text-primary);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+    }
+
+    .pac-item:hover {
+      background-color: rgba(0, 184, 148, 0.1);
+    }
+
+    .pac-item-query {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .pac-matched {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (max-width: 640px) {
+      .form-wrapper {
+        padding: 20px;
+      }
+
+      .header {
+        padding: 20px;
+      }
+
+      .header h1 {
+        font-size: 1.4rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    input[type="hidden"] { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Professional Artist Booking</h1>
+      <button class="close-btn" id="modalClose" aria-label="Close">×</button>
+    </div>
+
+    <div class="form-wrapper">
+      <form id="bookingForm" novalidate>
+        <!-- Hidden fields -->
+        <input type="hidden" id="userId" name="userId" value="" />
+        <input type="hidden" id="venue_place_id" name="venue_place_id" />
+        <input type="hidden" id="venue_lat" name="venue_lat" />
+        <input type="hidden" id="venue_lng" name="venue_lng" />
+        <input type="hidden" id="venue_formatted_address" name="venue_formatted_address" />
+        <input type="hidden" id="venue_city" name="venue_city" />
+        <input type="hidden" id="venue_postal_code" name="venue_postal_code" />
+
+        <!-- SECTION 1: Contact Information -->
+        <div class="section">
+          <h2 class="section-title">Contact Information</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="organizerName">Your Name <span class="required">*</span></label>
+              <input type="text" id="organizerName" name="organizerName" required minlength="2" placeholder="Enter your full name">
+              <div class="error-message" id="organizerName-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="organizerEmail">Email Address <span class="required">*</span></label>
+              <input type="email" id="organizerEmail" name="organizerEmail" required placeholder="your@email.com">
+              <div class="error-message" id="organizerEmail-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="organizerPhone">Contact Number <span class="required">*</span></label>
+              <input type="tel" id="organizerPhone" name="organizerPhone" required placeholder="+91 98765 43210">
+              <div class="help-text">Enter 10 digits or +91 country code</div>
+              <div class="error-message" id="organizerPhone-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="organizerBackupName">Backup Contact Name</label>
+              <input type="text" id="organizerBackupName" name="organizerBackupName" placeholder="Alternate contact person">
+            </div>
+
+            <div class="form-group">
+              <label for="organizerBackupPhone">Backup Contact Number</label>
+              <input type="tel" id="organizerBackupPhone" name="organizerBackupPhone" placeholder="+91 98765 43210">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: Event Details -->
+        <div class="section">
+          <h2 class="section-title">Event Details</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="eventType">Event Type <span class="required">*</span></label>
+              <select id="eventType" name="eventType" required>
+                <option value="">-- Select event type --</option>
+                <option value="wedding">Wedding</option>
+                <option value="corporate">Corporate Event</option>
+                <option value="festival">Festival / Fair</option>
+                <option value="private">Private Party</option>
+                <option value="college">College Event</option>
+                <option value="concert">Concert</option>
+                <option value="other">Other</option>
+              </select>
+              <div class="error-message" id="eventType-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="audienceSize">Expected Audience Size <span class="required">*</span></label>
+              <input type="number" id="audienceSize" name="audienceSize" required min="1" placeholder="e.g. 500">
+              <div class="error-message" id="audienceSize-error"></div>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="venueAutocomplete">Event Venue <span class="required">*</span></label>
+              <div style="display: flex; gap: 8px; align-items: stretch;">
+                <input type="text" id="venueAutocomplete" name="venueAutocomplete" required placeholder="Enter venue address or use location button..." autocomplete="off" style="flex: 1;">
+                <button type="button" onclick="useMyLocation()" style="
+                  background: linear-gradient(135deg, #00b894, #00a07b);
+                  color: white;
+                  border: none;
+                  padding: 0 20px;
+                  border-radius: 8px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  font-weight: 600;
+                  white-space: nowrap;
+                  transition: transform 0.2s, box-shadow 0.2s;
+                  box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0, 184, 148, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0, 184, 148, 0.3)';">
+                  📍 Use My Location
+                </button>
+              </div>
+              <div class="help-text">Enter venue address manually or click "Use My Location" to auto-detect</div>
+              <div id="location-status" style="font-size: 13px; margin-top: 6px; display: none;"></div>
+              <div class="error-message" id="venueAutocomplete-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="eventDate">Event Date <span class="required">*</span></label>
+              <input type="date" id="eventDate" name="eventDate" required>
+              <div class="error-message" id="eventDate-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="startTime">Start Time <span class="required">*</span></label>
+              <input type="time" id="startTime" name="startTime" required>
+              <div class="error-message" id="startTime-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="endTime">End Time <span class="required">*</span></label>
+              <input type="time" id="endTime" name="endTime" required>
+              <div class="error-message" id="endTime-error"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: Performance Details -->
+        <div class="section">
+          <h2 class="section-title">Performance Details</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="numberOfSets">Number of Sets</label>
+              <input type="number" id="numberOfSets" name="numberOfSets" min="1" placeholder="e.g. 2">
+            </div>
+
+            <div class="form-group">
+              <label for="setDuration">Set Duration (minutes)</label>
+              <input type="number" id="setDuration" name="setDuration" min="1" placeholder="e.g. 45">
+            </div>
+
+            <div class="form-group">
+              <label for="loadInTime">Load-in Time</label>
+              <input type="time" id="loadInTime" name="loadInTime">
+            </div>
+
+            <div class="form-group">
+              <label for="soundcheckTime">Soundcheck Time</label>
+              <input type="time" id="soundcheckTime" name="soundcheckTime">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: Technical Rider -->
+        <div class="section">
+          <h2 class="section-title">Technical Rider</h2>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="paSystem" name="paSystem">
+              <label for="paSystem">PA System (Sound System)</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="monitors" name="monitors">
+              <label for="monitors">Stage Monitors</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="lights" name="lights">
+              <label for="lights">Stage Lighting</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="backline" name="backline">
+              <label for="backline">Backline Equipment (drums, amps, etc.)</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="power" name="power">
+              <label for="power">Dedicated Power Supply</label>
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-top: 20px;">
+            <div class="form-group">
+              <label for="stageSize">Stage Size (meters)</label>
+              <input type="text" id="stageSize" name="stageSize" placeholder="e.g. 8m x 6m">
+            </div>
+
+            <div class="form-group full-width">
+              <label for="technicalNotes">Additional Technical Requirements</label>
+              <textarea id="technicalNotes" name="technicalNotes" placeholder="Specify any other technical requirements..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: Travel & Accommodation -->
+        <div class="section">
+          <h2 class="section-title">Travel & Accommodation</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="travelResponsibility">Travel Responsibility</label>
+              <select id="travelResponsibility" name="travelResponsibility">
+                <option value="">-- Select --</option>
+                <option value="organizer">Organizer arranges travel</option>
+                <option value="artist">Artist arranges own travel</option>
+                <option value="shared">Shared / Reimbursed</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="accommodationProvided">Accommodation Provided</label>
+              <select id="accommodationProvided" name="accommodationProvided">
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="hotelName">Hotel Name (if applicable)</label>
+              <input type="text" id="hotelName" name="hotelName" placeholder="Hotel name">
+            </div>
+
+            <div class="form-group">
+              <label for="travelAllowance">Travel Allowance (₹)</label>
+              <input type="number" id="travelAllowance" name="travelAllowance" min="0" placeholder="e.g. 5000">
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 6: Pricing -->
+        <div class="section">
+          <h2 class="section-title">Pricing</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="price">Offered Price (₹) <span class="required">*</span></label>
+              <input type="number" id="price" name="price" required min="1" placeholder="e.g. 50000">
+              <div class="error-message" id="price-error"></div>
+            </div>
+
+            <div class="form-group">
+              <label for="depositRequired">Deposit Required</label>
+              <select id="depositRequired" name="depositRequired">
+                <option value="false">No</option>
+                <option value="true">Yes (advance payment)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 7: File Attachments -->
+        <div class="section">
+          <h2 class="section-title">File Attachments</h2>
+          <div class="file-upload" id="fileUploadArea">
+            <input type="file" id="fileInput" name="attachments" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+            <div class="upload-icon" style="font-size: 3rem; margin-bottom: 8px;">📎</div>
+            <div style="font-weight: 500; margin-bottom: 4px;">Click to upload or drag and drop</div>
+            <div class="help-text">PDF, DOC, images (max 5MB per file)</div>
+          </div>
+          <div class="file-list" id="fileList"></div>
+        </div>
+
+        <!-- SECTION 8: Additional Notes -->
+        <div class="section">
+          <h2 class="section-title">Additional Notes</h2>
+          <div class="form-group full-width">
+            <textarea id="notes" name="notes" placeholder="Any other requirements, dietary restrictions, parking instructions, etc."></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 9: Terms & Conditions -->
+        <div class="section">
+          <h2 class="section-title">Terms & Conditions</h2>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="termsAccepted" name="termsAccepted" required>
+              <label for="termsAccepted">
+                I agree to the <a href="/terms.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Terms & Conditions</a> <span class="required">*</span>
+              </label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="cancellationPolicyAccepted" name="cancellationPolicyAccepted" required>
+              <label for="cancellationPolicyAccepted">
+                I agree to the <a href="/refund.html" target="_blank" style="color: var(--primary); text-decoration: underline;">Cancellation & Refund Policy</a> <span class="required">*</span>
+              </label>
+            </div>
+          </div>
+          <div class="error-message" id="terms-error"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" id="submitBtn">Confirm Booking & Proceed to Payment</button>
+        <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+
+        <!-- Message Area -->
+        <div id="message" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Google Maps removed - using manual input + geolocation instead -->
+  <script src="artistBookingDetails.js"></script>
+
+  <script>
+    // Close and Cancel handlers
+    document.getElementById('modalClose').addEventListener('click', () => {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'closeBookingModal' }, '*');
+      } else {
+        window.history.back();
+      }
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to cancel this booking?')) {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'closeBookingModal' }, '*');
+        } else {
+          window.history.back();
+        }
+      }
+    });
+
+    // Set userId from URL query string
+    (function setUserIdFromQuery(){
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id') || params.get('userId');
+      if (id) document.getElementById('userId').value = id;
+    })();
+  </script>
+</body>
+</html>

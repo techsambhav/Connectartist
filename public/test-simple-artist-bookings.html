@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Artist Bookings</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: white; }
+        .empty { padding: 20px; color: #ccc; text-align: center; background: rgba(255,255,255,0.1); border-radius: 8px; }
+        .booking-card { border: 1px solid rgba(255,255,255,0.1); padding: 16px; margin: 12px 0; border-radius: 12px; display: flex; gap: 16px; align-items: center; background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%); }
+        .btn { padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 2px; }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Test Artist Bookings - Simple Version</h1>
+    <div id="yourEventsWrapper">
+        <h3>YOUR EVENTS</h3>
+        <div id="yourEventsSection">
+            <div class="empty">Loading your events...</div>
+        </div>
+    </div>
+
+    <script>
+        // Simple function to load and display artist bookings - mirrors organizer dashboard exactly
+        async function loadArtistBookings() {
+            const wrapper = document.getElementById('yourEventsSection');
+            const eventsWrapper = document.getElementById('yourEventsWrapper');
+            
+            if (!wrapper || !eventsWrapper) {
+                console.warn('Required DOM elements not found');
+                return;
+            }
+
+            try {
+                wrapper.innerHTML = '<div class="empty">Loading your events...</div>';
+                
+                // Use the simple artist endpoint that mirrors organizer approach
+                const res = await fetch('/api/artist/bookings', { credentials: 'include' });
+
+                // handle unauthorized
+                if (res.status === 401 || res.status === 403) {
+                    wrapper.innerHTML = '<div class="empty">You must be logged in to view your bookings. <a href="/api/auth/google?redirect=' + encodeURIComponent(window.location.href) + '">Sign in</a></div>';
+                    return [];
+                }
+
+                const json = await res.json().catch(() => null);
+                // handle server that returns either array or {success:true, bookings:[]}
+                let bookings = [];
+                if (Array.isArray(json)) bookings = json;
+                else if (json && json.success === true && Array.isArray(json.bookings)) bookings = json.bookings;
+                else if (json && Array.isArray(json.data)) bookings = json.data; // defensive
+                else {
+                    // no bookings
+                    wrapper.innerHTML = '<div class="empty">No bookings yet. When organizers book you, they will appear here.</div>';
+                    return [];
+                }
+
+                if (!bookings || bookings.length === 0) {
+                    wrapper.innerHTML = '<div class="empty">No bookings yet. When organizers book you, they will appear here.</div>';
+                    return [];
+                }
+
+                // Show the section and render
+                wrapper.innerHTML = bookings.map(b => artistBookingCardHtml(b)).join('');
+                attachArtistActions(wrapper);
+                return bookings;
+            } catch (err) {
+                console.error('loadArtistBookings error', err);
+                wrapper.innerHTML = '<div class="empty">Error loading bookings — check console for details.</div>';
+                return [];
+            }
+        }
+
+        // Create booking card HTML - mirrors organizer dashboard style
+        function artistBookingCardHtml(b) {
+            const organizerName = (b.organizerProfile && (b.organizerProfile.displayName || b.organizerProfile.name)) || b.organizerName || 'Organizer';
+            const avatar = (b.organizerProfile && (b.organizerProfile.avatarUrl || b.organizerProfile.avatar)) || b.organizerAvatar || '/images/default-avatar.png';
+            const eventDate = b.eventDate || b.eventOn || '';
+            const location = b.eventLocation || b.venue || '';
+            const price = b.price || b.amount || '—';
+            const bookingId = b._id || b.id;
+            const status = b.status || 'pending';
+            const organizerEmail = b.organizerEmail || (b.organizerProfile && b.organizerProfile.email) || '';
+
+            return `
+                <div class="booking-card">
+                    <img src="${avatar}" style="width:64px;height:64px;border-radius:8px;object-fit:cover;border:2px solid rgba(255,255,255,0.1);" />
+                    <div style="flex:1;color:#ccc;">
+                        <div style="font-weight:600;color:white;font-size:1.1rem;margin-bottom:4px;">${organizerName}</div>
+                        <div style="color:#ccc;font-size:0.95rem;margin-bottom:4px;">${eventDate} ${location ? '• ' + location : ''}</div>
+                        <div style="margin-top:8px;color:#4ade80;font-weight:600;font-size:1.05rem;">Price: ₹${price}</div>
+                        <div style="margin-top:6px;color:#ccc;font-size:0.85rem;">Status: ${status}</div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:8px;min-width:160px;">
+                        <button class="btn download-booking" data-id="${bookingId}">Booking PDF</button>
+                        <button class="btn download-contact" data-id="${bookingId}">Organizer Contact PDF</button>
+                        <button class="btn contact-organizer" data-email="${organizerEmail}">Contact Organizer</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function attachArtistActions(containerEl) {
+            containerEl.querySelectorAll('.contact-organizer').forEach(btn => {
+                btn.addEventListener('click', (ev) => {
+                    const email = btn.dataset.email;
+                    if (email) {
+                        window.open(`mailto:${email}`, '_blank');
+                    } else {
+                        alert('No email available for this organizer.');
+                    }
+                });
+            });
+
+            containerEl.querySelectorAll('.download-booking, .download-contact').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const bookingId = btn.dataset.id;
+                    const isBooking = btn.classList.contains('download-booking');
+                    const endpoint = isBooking ? 'booking_artist' : 'booking_org';
+                    const url = `/api/escrow/bookings/${encodeURIComponent(bookingId)}/files/${endpoint}`;
+                    window.open(url, '_blank');
+                });
+            });
+        }
+
+        // Load bookings on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadArtistBookings();
+        });
+    </script>
+</body>
+</html>

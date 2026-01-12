@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Manage Profiles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4A90E2; /* Light blue */
+            --secondary: #50C878; /* Green accent */
+            --dark: #1e272e;
+            --light: #ffffff;
+            --text: #2D3748;
+            --text-light: #718096;
+            --bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --radius: 12px;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .profile-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+
+        .profile-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .profile-card p {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 0.7rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background: var(--primary);
+            color: var(--light);
+        }
+
+        .btn-edit:hover {
+            background: #3b7cc7;
+        }
+
+        .btn-delete {
+            background: #ff4d4d;
+            color: var(--light);
+        }
+
+        .btn-delete:hover {
+            background: #e04343;
+        }
+
+        .edit-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .edit-modal.active {
+            display: flex;
+        }
+
+        .edit-form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            min-width: 400px;
+            max-width: 600px;
+            box-shadow: var(--shadow);
+            /* Make the form scrollable when content exceeds viewport height */
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative; /* for positioning the close button */
+        }
+
+        .edit-form h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .edit-form label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .edit-form input,
+        .edit-form select,
+        .edit-form textarea {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.7rem;
+            border-radius: var(--radius);
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .edit-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .edit-form input:focus,
+        .edit-form select:focus,
+        .edit-form textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            outline: none;
+        }
+
+        /* Close button inside modal */
+        .modal-close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 6px 8px;
+            border-radius: 6px;
+        }
+
+        .modal-close-btn:hover {
+            background: rgba(0,0,0,0.06);
+            color: var(--text);
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 1rem;
+            background: rgba(74, 144, 226, 0.05);
+            border-radius: var(--radius);
+            color: var(--text-light);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px dashed #ddd;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--primary);
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-status {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .media-item {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            aspect-ratio: 1;
+        }
+
+        .media-item img,
+        .media-item video,
+        .media-item audio {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .media-item .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .edit-form-actions {
+            display: flex;
+            gap: 4%;
+            margin-top: 1rem;
+        }
+
+        .edit-form-actions .btn {
+            width: 48%;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 2000;
+            max-width: 320px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;">
+            <div style="flex:0 0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <button id="showArtistsBtn" class="btn btn-edit" data-active="true">Artists</button>
+                <button id="showOrganizersBtn" class="btn">Organizers</button>
+                <button id="showEventsBtn" class="btn">Events</button>
+            </div>
+            <div style="flex:0 0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                <button id="viewCredsBtn" class="btn">View Credentials</button>
+                <button id="openCreateArtistBtn" class="btn btn-edit">Create Artist</button>
+            </div>
+        </div>
+                <div id="credsList" style="display:none; margin-top:20px; max-width:1200px; margin-left:auto; margin-right:auto;"></div>
+                <!-- Inline Create Artist (admin) -->
+                <div id="admin-create" style="display:flex;gap:8px;align-items:center;margin-top:12px;">
+                    <input id="artistName" placeholder="Artist name" style="padding:8px;border-radius:8px;border:1px solid #ddd;" />
+                    <input id="artistEmail" placeholder="Email (artist@example.com)" style="padding:8px;border-radius:8px;border:1px solid #ddd;" />
+                    <input id="artistPassword" placeholder="Password (set for artist)" type="password" style="padding:8px;border-radius:8px;border:1px solid #ddd;" />
+                    <button id="createArtistBtn" class="btn btn-edit">Create Artist</button>
+                </div>
+                <div id="credsContainer" style="display:none; margin-top:20px; max-width:1200px; margin-left:auto; margin-right:auto;"></div>
+        <div class="profile-list" id="profileList"></div>
+    </div>
+
+        <!-- Edit Modal -->
+        <div class="edit-modal" id="editModal">
+            <div class="edit-form">
+                    <!-- top-right close button -->
+                    <button type="button" class="modal-close-btn" aria-label="Close edit" onclick="closeEditModal()">&times;</button>
+                <h2>Edit Profile</h2>
+                <form id="editForm" enctype="multipart/form-data">
+                    <input type="hidden" id="editProfileId">
+
+                    <label for="editDisplayName">Name</label>
+                    <input type="text" id="editDisplayName" name="displayName">
+
+                    <label for="editBio">Bio</label>
+                    <textarea id="editBio" name="bio"></textarea>
+
+                    <label for="editArtistType">Artist Type</label>
+                    <select id="editArtistType" name="artistType">
+                        <option value="Musician">Musician</option>
+                        <option value="Singer">Singer</option>
+                        <option value="DJ">DJ</option>
+                        <option value="Comedian">Comedian</option>
+                        <option value="Magician">Magician</option>
+                        <option value="Dancer">Dancer</option>
+                        <option value="General Artist">General Artist</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <label for="editPrice">Booking Price</label>
+                    <input type="number" id="editPrice" name="price">
+
+                    <label for="editLocation">Location</label>
+                    <input type="text" id="editLocation" name="location">
+
+                    <h3>Avatar</h3>
+                    <div class="media-grid" id="editAvatarGrid"></div>
+                    <input type="file" id="editAvatarInput" name="avatar">
+                    <div class="upload-status" id="editAvatarUploadStatus"></div>
+
+                    <h3>Banner</h3>
+                    <div class="media-grid" id="editBannerGrid"></div>
+                    <input type="file" id="editBannerInput" name="bannerImage">
+                    <div class="upload-status" id="editBannerUploadStatus"></div>
+
+                    <!-- Media Grids (kept existing IDs so inline JS continues to work) -->
+                    <h3>Photos</h3>
+                    <div class="media-grid" id="editPhotosGrid"></div>
+                    <input type="file" id="editPhotosInput" name="photos" multiple>
+
+                    <h3>Videos</h3>
+                    <div class="media-grid" id="editVideoGrid"></div>
+                    <input type="file" id="editVideoInput" name="videos" multiple>
+
+                    <h3>Audios</h3>
+                    <div class="media-grid" id="editAudioGrid"></div>
+                    <input type="file" id="editAudioInput" name="audios" multiple>
+
+                    <div class="edit-form-actions">
+                        <button type="submit" class="btn btn-edit">Save</button>
+                        <button type="button" class="btn btn-delete" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+            <!-- Toast -->
+            <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- Progress Modal -->
+    <div class="alert-modal" id="progressModal">
+        <div class="alert-content">
+            <p class="alert-message" id="progressMessage">Uploading: 0%</p>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Create Artist Modal (reuses edit-modal / edit-form styles) -->
+    <div class="edit-modal" id="adminCreateModal">
+        <div class="edit-form" style="min-width:320px;max-width:460px;">
+            <button type="button" class="modal-close-btn" aria-label="Close create artist" onclick="closeAdminCreateModal()">&times;</button>
+            <h2>Create Artist</h2>
+            <form id="adminCreateForm">
+                <label for="createArtistName">Name</label>
+                <input type="text" id="createArtistName" name="name" placeholder="Artist full name" required>
+
+                <label for="createArtistEmail">Email (optional)</label>
+                <input type="email" id="createArtistEmail" name="email" placeholder="artist@example.com">
+
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                    <button type="submit" class="btn btn-edit">Create</button>
+                    <button type="button" class="btn btn-delete" onclick="closeAdminCreateModal()">Cancel</button>
+                </div>
+            </form>
+            <hr style="margin:12px 0;">
+            <div id="adminCreateResult" style="display:none;">
+                <p><strong>Credentials (showing once):</strong></p>
+                <p>Email: <span id="resultEmail"></span></p>
+                <p>Password: <span id="resultPassword"></span></p>
+                <div style="margin-top:12px;display:flex;gap:8px;">
+                    <button id="openProfileBuilderBtn" class="btn btn-edit">Open profile builder (admin)</button>
+                    <button class="btn" onclick="copyCredentials()">Copy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const profileList = document.getElementById('profileList');
+        const editModal = document.getElementById('editModal');
+        const editForm = document.getElementById('editForm');
+        const progressModal = document.getElementById('progressModal');
+        const progressMessage = document.getElementById('progressMessage');
+        const progressBarFill = document.getElementById('progressBarFill');
+        
+        // Global variable to store current admin user's role
+        let currentUserRole = 'admin'; // default to admin
+        
+        // Fetch current admin user info to get role
+        async function loadUserInfo() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+                
+                const res = await fetch('/api/admin/user-info', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    currentUserRole = data.user.role;
+                    console.log('Admin user role:', currentUserRole);
+                }
+            } catch (err) {
+                console.log('Could not fetch user info:', err);
+            }
+        }
+
+        let currentView = 'artists'; // 'artists' | 'organizers' | 'events'
+
+        function setToggleButtons() {
+            const artistsBtn = document.getElementById('showArtistsBtn');
+            const organizersBtn = document.getElementById('showOrganizersBtn');
+            const eventsBtn = document.getElementById('showEventsBtn');
+            const all = [artistsBtn, organizersBtn, eventsBtn];
+            // reset
+            all.forEach(btn => { if (btn) { btn.classList.remove('btn-edit'); btn.removeAttribute('data-active'); } });
+            if (currentView === 'artists' && artistsBtn) {
+                artistsBtn.classList.add('btn-edit');
+                artistsBtn.setAttribute('data-active','true');
+            } else if (currentView === 'organizers' && organizersBtn) {
+                organizersBtn.classList.add('btn-edit');
+                organizersBtn.setAttribute('data-active','true');
+            } else if (currentView === 'events' && eventsBtn) {
+                eventsBtn.classList.add('btn-edit');
+                eventsBtn.setAttribute('data-active','true');
+            }
+        }
+
+        // Escape helper to avoid simple injection when inserting text
+        function escapeHtml(str) {
+            if (typeof str !== 'string') return str;
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Load artist profiles (existing behavior)
+        async function loadProfiles() {
+            try {
+                const res = await fetch('/api/profiles');
+                const data = await res.json();
+                profileList.innerHTML = '';
+                if (data.success) {
+                    data.profiles.forEach(profile => {
+                        const card = document.createElement('div');
+                        card.className = 'profile-card';
+                        card.innerHTML = `
+                            <img src="${profile.avatarUrl || 'https://via.placeholder.com/260x150'}" alt="${profile.displayName}">
+                            <h3>${profile.displayName}</h3>
+                            <p><strong>Type:</strong> ${profile.artistType || 'General Artist'}</p>
+                            <p><strong>Location:</strong> ${profile.location || 'Not specified'}</p>
+                            <p><strong>Bio:</strong> ${profile.bio || 'No bio available'}</p>
+                            <p><strong>Price:</strong> ₹${profile.price || 0}</p>
+                            <div class="profile-stats">
+                                <span><i class="fas fa-eye"></i> ${profile.viewCount || 0} Views</span>
+                                <span><i class="fas fa-heart"></i> ${profile.likeCount || 0} Likes</span>
+                                <span><i class="fas fa-share"></i> ${profile.shareCount || 0} Shares</span>
+                            </div>
+                            <div class="profile-actions">
+                                <button class="btn btn-edit" onclick='openEditModal("${profile._id}", "${profile.displayName}", "${profile.bio || ''}", "${profile.artistType || ''}", ${profile.price || 0}, "${profile.location || ''}", "${profile.avatarUrl || ''}", "${profile.bannerUrl || ''}", ${JSON.stringify(profile.photos || [])}, ${JSON.stringify(profile.audios || [])}, ${JSON.stringify(profile.videos || [])})'>Edit</button>
+                                <button class="btn" onclick="adminResetPassword('${profile.userId || profile._id}')">Reset Password</button>
+                                ${currentUserRole === 'admin' ? `<button class="btn btn-delete" onclick="deleteProfile('${profile._id}')">Delete</button>` : ''}
+                            </div>
+                        `;
+                        profileList.appendChild(card);
+                    });
+                } else {
+                    alert('Failed to load profiles.');
+                }
+            } catch (err) {
+                alert('Error loading profiles.');
+            }
+        }
+
+        // Open edit modal
+        function openEditModal(id, name, bio, type, price, location, avatarUrl, bannerUrl, photos, audios, videos) {
+            document.getElementById('editProfileId').value = id;
+            document.getElementById('editDisplayName').value = name;
+            document.getElementById('editBio').value = bio;
+            document.getElementById('editArtistType').value = type;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editLocation').value = location;
+
+            // Clear existing media grids
+            ['editPhotosGrid', 'editAudioGrid', 'editVideoGrid', 'editBannerGrid'].forEach(gridId => {
+                document.getElementById(gridId).innerHTML = '';
+            });
+
+            // Populate photos grid
+            if (photos && photos.length > 0) {
+                const photosGrid = document.getElementById('editPhotosGrid');
+                photos.forEach((photo, index) => {
+                    const photoItem = document.createElement('div');
+                    photoItem.className = 'media-item';
+                    photoItem.innerHTML = `
+                        <img src="${photo.url}" alt="Photo ${index + 1}">
+                        <button class="delete-btn" onclick="deleteMediaItem('photos', ${index}, true)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    photosGrid.appendChild(photoItem);
+                });
+            }
+
+            // Populate audio grid
+            if (audios && audios.length > 0) {
+                const audioGrid = document.getElementById('editAudioGrid');
+                audios.forEach((audio, index) => {
+                    const audioItem = document.createElement('div');
+                    audioItem.className = 'media-item';
+                    audioItem.innerHTML = `
+                        <audio controls src="${audio.url}"></audio>
+                        <button class="delete-btn" onclick="deleteMediaItem('audios', ${index}, true)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    audioGrid.appendChild(audioItem);
+                });
+            }
+
+            // Populate video grid
+            if (videos && videos.length > 0) {
+                const videoGrid = document.getElementById('editVideoGrid');
+                videos.forEach((video, index) => {
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'media-item';
+                    videoItem.innerHTML = `
+                        <video controls src="${video.url}"></video>
+                        <button class="delete-btn" onclick="deleteMediaItem('videos', ${index}, true)">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    videoGrid.appendChild(videoItem);
+                });
+            }
+
+            // Populate banner grid
+            if (bannerUrl) {
+                const bannerGrid = document.getElementById('editBannerGrid');
+                const bannerItem = document.createElement('div');
+                bannerItem.className = 'media-item';
+                bannerItem.innerHTML = `
+                    <img src="${bannerUrl}" alt="Banner Image">
+                    <button class="delete-btn" onclick="deleteMediaItem('banner', 0, true)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                bannerGrid.appendChild(bannerItem);
+            }
+
+            editModal.classList.add('active');
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            editModal.classList.remove('active');
+            // Clear file inputs and upload statuses
+            ['editAvatarInput', 'editBannerInput', 'editPhotosInput', 'editAudioInput', 'editVideoInput'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) input.value = '';
+            });
+            ['editAvatarUploadStatus', 'editBannerUploadStatus', 'editPhotosUploadStatus', 'editAudioUploadStatus', 'editVideoUploadStatus'].forEach(id => {
+                const status = document.getElementById(id);
+                if (status) {
+                    status.textContent = '';
+                    status.style.display = 'none';
+                }
+            });
+            ['editPhotosGrid', 'editAudioGrid', 'editVideoGrid', 'editBannerGrid'].forEach(id => {
+                document.getElementById(id).innerHTML = '';
+            });
+        }
+
+        // Delete media item (client-side preview)
+        function deleteMediaItem(type, index, isEditMode = false) {
+            const gridId = `edit${type.charAt(0).toUpperCase() + type.slice(1)}Grid`;
+            const grid = document.getElementById(gridId);
+            if (grid.children[index]) {
+                grid.children[index].remove();
+            }
+        }
+
+        // Handle file input changes
+        ['editAvatarInput', 'editBannerInput', 'editPhotosInput', 'editAudioInput', 'editVideoInput'].forEach(inputId => {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.addEventListener('change', function(e) {
+                    const files = e.target.files;
+                    const type = inputId.replace('edit', '').replace('Input', '').toLowerCase();
+                    const gridId = `edit${type.charAt(0).toUpperCase() + type.slice(1)}Grid`;
+                    const statusId = `edit${type.charAt(0).toUpperCase() + type.slice(1)}UploadStatus`;
+                    const grid = document.getElementById(gridId);
+                    const status = document.getElementById(statusId);
+
+                    if (files && files.length > 0) {
+                        if (status) {
+                            status.textContent = `${files.length} file(s) uploaded successfully!`;
+                            status.style.display = 'block';
+                        }
+
+                        if (type === 'avatar' || type === 'banner') {
+                            if (grid) grid.innerHTML = '';
+                            const file = files[0];
+                            const item = document.createElement('div');
+                            item.className = 'media-item';
+                            item.innerHTML = `
+                                <img src="${URL.createObjectURL(file)}" alt="${type.charAt(0).toUpperCase() + type.slice(1)}">
+                                <button class="delete-btn" onclick="deleteMediaItem('${type}', 0, true)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            `;
+                            if (grid) grid.appendChild(item);
+                        } else {
+                            for (let i = 0; i < files.length; i++) {
+                                const file = files[i];
+                                const item = document.createElement('div');
+                                item.className = 'media-item';
+                                item.innerHTML = `
+                                    ${type === 'photos' ? `<img src="${URL.createObjectURL(file)}" alt="Photo ${i + 1}">` : 
+                                      type === 'audio' ? `<audio controls src="${URL.createObjectURL(file)}"></audio>` : 
+                                      `<video controls src="${URL.createObjectURL(file)}"></video>`}
+                                    <button class="delete-btn" onclick="this.parentElement.remove()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                `;
+                                if (grid) grid.appendChild(item);
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        // Handle edit form submit
+        editForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editProfileId').value;
+            const displayName = document.getElementById('editDisplayName').value;
+            const bio = document.getElementById('editBio').value;
+            const artistType = document.getElementById('editArtistType').value;
+            const price = document.getElementById('editPrice').value;
+            const location = document.getElementById('editLocation').value;
+
+            const formData = new FormData();
+            formData.append('displayName', displayName);
+            formData.append('bio', bio);
+            formData.append('artistType', artistType);
+            formData.append('price', price);
+            formData.append('location', location);
+
+            const avatarInput = document.getElementById('editAvatarInput');
+            const avatarFile = avatarInput && avatarInput.files && avatarInput.files[0];
+            if (avatarFile) formData.append('avatar', avatarFile);
+
+            const bannerInput = document.getElementById('editBannerInput');
+            const bannerFile = bannerInput && bannerInput.files && bannerInput.files[0];
+            if (bannerFile) formData.append('bannerImage', bannerFile);
+
+            const photosInput = document.getElementById('editPhotosInput');
+            const photosFiles = photosInput && photosInput.files ? photosInput.files : [];
+            for (let i = 0; i < photosFiles.length; i++) {
+                formData.append('photos', photosFiles[i]);
+            }
+
+            const audioInput = document.getElementById('editAudioInput');
+            const audioFiles = audioInput && audioInput.files ? audioInput.files : [];
+            for (let i = 0; i < audioFiles.length; i++) {
+                formData.append('audios', audioFiles[i]);
+            }
+
+            const videoInput = document.getElementById('editVideoInput');
+            const videoFiles = videoInput && videoInput.files ? videoInput.files : [];
+            for (let i = 0; i < videoFiles.length; i++) {
+                formData.append('videos', videoFiles[i]);
+            }
+
+            // Show progress modal
+            progressModal.style.display = 'flex';
+            progressMessage.textContent = 'Uploading: 0%';
+            progressBarFill.style.width = '0%';
+
+            // Use fetch for the save call. Append removedMedia and userId.
+            formData.append('userId', id);
+            try {
+                formData.append('removedMedia', JSON.stringify(window.removedMedia || {}));
+            } catch (err) {
+                console.warn('Could not append removedMedia:', err);
+            }
+
+            // Show progress modal while request runs
+            progressModal.style.display = 'flex';
+            progressMessage.textContent = 'Uploading...';
+            progressBarFill.style.width = '10%';
+
+            try {
+                const resp = await fetch('/api/admin/profile/update', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                progressBarFill.style.width = '90%';
+
+                if (!resp.ok) {
+                    const text = await resp.text().catch(() => resp.statusText);
+                    progressModal.style.display = 'none';
+                    showToast(`Error ${resp.status}: ${text}`);
+                    return;
+                }
+
+                const result = await resp.json().catch(() => null);
+                progressModal.style.display = 'none';
+
+                if (result && result.success) {
+                    showToast('Profile updated successfully!');
+                    closeEditModal();
+                    loadProfiles();
+                } else {
+                    const msg = result && result.message ? result.message : 'Failed to update profile.';
+                    showToast(msg);
+                }
+            } catch (err) {
+                progressModal.style.display = 'none';
+                showToast('Network error: ' + (err.message || 'Request failed'));
+                console.error('Admin update error:', err);
+            } finally {
+                progressBarFill.style.width = '100%';
+                setTimeout(() => { progressBarFill.style.width = '0%'; }, 400);
+            }
+        });
+
+        // Delete profile
+        async function deleteProfile(id) {
+            if (currentUserRole !== 'admin') {
+                alert('You do not have permission to delete profiles.');
+                return;
+            }
+            
+            if (!confirm('Are you sure you want to delete this profile?')) return;
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`/api/profiles/${id}`, { 
+                    method: 'DELETE',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const result = await res.json();
+                if (result.success) {
+                    loadProfiles();
+                    alert('Profile deleted.');
+                } else {
+                    alert(result.message || 'Failed to delete profile.');
+                }
+            } catch (err) {
+                alert('Error deleting profile.');
+            }
+        }
+
+        // Load organizers list (accounts + attached profile if any)
+        async function loadOrganizers() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    profileList.innerHTML = '<p>Please login as admin.</p>';
+                    return;
+                }
+                const res = await fetch('/api/admin/list-organizers', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                profileList.innerHTML = '';
+                if (!data.success) {
+                    profileList.innerHTML = `<p>Error loading organizers: ${escapeHtml(data.message || 'failed')}</p>`;
+                    return;
+                }
+                if (!data.organizers.length) {
+                    profileList.innerHTML = '<p>No organizers found.</p>';
+                    return;
+                }
+                data.organizers.forEach(o => {
+                    const p = o.profile || {}; // may be null
+                    const card = document.createElement('div');
+                    card.className = 'profile-card';
+                    card.innerHTML = `
+                        <img src="${(p && p.avatarUrl) || 'https://via.placeholder.com/260x150'}" alt="${escapeHtml(p.displayName || o.name || 'Organizer')}">
+                        <h3>${escapeHtml(p.displayName || o.name || 'Organizer')}</h3>
+                        <p><strong>Email:</strong> ${escapeHtml(o.email || 'N/A')}</p>
+                        <p><strong>Location:</strong> ${escapeHtml(p.location || 'Not specified')}</p>
+                        <p><strong>Bio:</strong> ${escapeHtml(p.bio || 'No bio')}</p>
+                        <p><strong>Created:</strong> ${new Date(o.createdAt).toLocaleDateString()}</p>
+                        <div class="profile-stats">
+                            <span><i class="fas fa-eye"></i> ${p.viewCount || 0} Views</span>
+                            <span><i class="fas fa-heart"></i> ${p.likeCount || 0} Likes</span>
+                            <span><i class="fas fa-share"></i> ${p.shareCount || 0} Shares</span>
+                        </div>
+                        <div class="profile-actions">
+                            ${p && p._id ? `<button class="btn btn-edit" onclick='openEditModal("${p.userId}", "${escapeHtml(p.displayName || '').replace(/"/g,'&quot;')}", "${escapeHtml(p.bio || '').replace(/"/g,'&quot;')}", "${escapeHtml(p.artistType || '').replace(/"/g,'&quot;')}", ${p.price || 0}, "${escapeHtml(p.location || '').replace(/"/g,'&quot;')}", "${p.avatarUrl || ''}", "${p.bannerUrl || ''}", ${JSON.stringify(p.photos || [])}, ${JSON.stringify(p.audios || [])}, ${JSON.stringify(p.videos || [])})'>Edit</button>` : ''}
+                            <button class="btn" onclick="adminResetPassword('${o._id}')">Reset Password</button>
+                        </div>
+                    `;
+                    profileList.appendChild(card);
+                });
+            } catch (err) {
+                console.error('loadOrganizers error', err);
+                profileList.innerHTML = '<p>Error loading organizers.</p>';
+            }
+        }
+
+        function loadCurrentView() {
+            if (currentView === 'artists') return loadProfiles();
+            if (currentView === 'events') return loadEvents();
+            return loadOrganizers();
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadUserInfo();
+            setToggleButtons();
+            loadCurrentView();
+            const artistsBtn = document.getElementById('showArtistsBtn');
+            const organizersBtn = document.getElementById('showOrganizersBtn');
+            if (artistsBtn) artistsBtn.onclick = () => { currentView = 'artists'; setToggleButtons(); loadCurrentView(); };
+            if (organizersBtn) organizersBtn.onclick = () => { currentView = 'organizers'; setToggleButtons(); loadCurrentView(); };
+            const eventsBtn = document.getElementById('showEventsBtn');
+            if (eventsBtn) eventsBtn.onclick = () => { currentView = 'events'; setToggleButtons(); loadCurrentView(); };
+        });
+        // Ensure removedMedia is globally available for the form
+        window.removedMedia = window.removedMedia || { photos: [], videos: [], audios: [] };
+
+        function showToast(text, timeout = 3000) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            t.textContent = text;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, timeout);
+        }
+
+        // ---------- Admin Create Artist helpers ----------
+                // --------- Enhanced Admin Events UI ---------
+                let adminEventsCache = [];
+                let currentEventFilter = 'pending'; // 'pending' | 'confirmed'
+
+                async function updateBookingStatus(bookingId, newStatus) {
+                    const token = localStorage.getItem('token') || '';
+                    const res = await fetch(`/api/admin/bookings/${encodeURIComponent(bookingId)}/status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                    const data = await res.json();
+                    if (!data || !data.success) throw new Error(data && data.message ? data.message : 'Failed to update booking status');
+                    return data.booking;
+                }
+
+                function createEventsFilterBar() {
+                    let bar = document.getElementById('eventsFilterBar');
+                    if (bar) return bar;
+                    bar = document.createElement('div');
+                    bar.id = 'eventsFilterBar';
+                    bar.style.display = 'flex';
+                    bar.style.gap = '8px';
+                    bar.style.margin = '12px 0';
+                    bar.style.alignItems = 'center';
+
+                    const pendingBtn = document.createElement('button');
+                    pendingBtn.id = 'eventsPendingBtn';
+                    pendingBtn.className = 'btn';
+                    pendingBtn.textContent = 'Pending';
+                    pendingBtn.onclick = () => { currentEventFilter = 'pending'; renderEvents(); setActiveEventFilter(); };
+
+                    const confirmedBtn = document.createElement('button');
+                    confirmedBtn.id = 'eventsConfirmedBtn';
+                    confirmedBtn.className = 'btn';
+                    confirmedBtn.textContent = 'Confirmed';
+                    confirmedBtn.onclick = () => { currentEventFilter = 'confirmed'; renderEvents(); setActiveEventFilter(); };
+
+                    const legend = document.createElement('div');
+                    legend.style.marginLeft = '12px';
+                    legend.style.color = '#666';
+                    legend.style.fontSize = '13px';
+                    legend.textContent = 'Show events by admin status';
+
+                    bar.appendChild(pendingBtn);
+                    bar.appendChild(confirmedBtn);
+                    bar.appendChild(legend);
+
+                    if (profileList && profileList.parentNode) {
+                        profileList.parentNode.insertBefore(bar, profileList);
+                    } else {
+                        document.body.insertBefore(bar, document.body.firstChild);
+                    }
+                    setActiveEventFilter();
+                    return bar;
+                }
+
+                function setActiveEventFilter() {
+                    const p = document.getElementById('eventsPendingBtn');
+                    const c = document.getElementById('eventsConfirmedBtn');
+                    if (p) { p.classList.toggle('btn-edit', currentEventFilter === 'pending'); }
+                    if (c) { c.classList.toggle('btn-edit', currentEventFilter === 'confirmed'); }
+                }
+
+                function renderEvents() {
+                    profileList.innerHTML = '';
+                    if (!adminEventsCache || adminEventsCache.length === 0) {
+                        profileList.innerHTML = '<p>No events/bookings found.</p>';
+                        return;
+                    }
+                    const filtered = adminEventsCache.filter(e => {
+                        const st = (e.booking && e.booking.status) ? e.booking.status : 'pending';
+                        if (currentEventFilter === 'pending') return st === 'pending';
+                        if (currentEventFilter === 'confirmed') return st === 'confirmed';
+                        return true;
+                    });
+                    if (filtered.length === 0) {
+                        profileList.innerHTML = `<p>No ${escapeHtml(currentEventFilter)} events.</p>`;
+                        return;
+                    }
+                    filtered.forEach(entry => {
+                        const b = entry.booking || {};
+                        const artist = entry.artistProfile || {};
+                        const orgProfile = entry.organizerProfile || {};
+                        const orgUser = entry.organizerUser || {};
+                        const artistName = artist.displayName || artist.name || b.artistName || 'Artist';
+                        const organizerName = orgProfile.displayName || orgProfile.name || orgUser.name || b.organizerName || b.userName || 'Organizer';
+                        const organizerEmail = orgUser.email || orgProfile.email || b.organizerEmail || '';
+                        const date = b.eventDate ? new Date(b.eventDate).toLocaleString() : (b.eventOn || '');
+                        const location = b.eventLocation || b.venue || 'Not specified';
+                        const amount = b.amount || b.price || b.total || '—';
+                        const status = b.status || 'pending';
+                        const card = document.createElement('div');
+                        card.className = 'profile-card';
+                        card.dataset.bookingId = b._id;
+                        card.style.position = 'relative';
+                        card.innerHTML = `
+                            <div style="display:flex;gap:12px;align-items:center;">
+                              <div style="width:72px;height:72px;flex-shrink:0;">
+                                <img src="${artist.avatarUrl || artist.image || 'https://via.placeholder.com/72'}" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" />
+                              </div>
+                              <div style="flex:1;">
+                                <div style="font-weight:700;font-size:16px;">${escapeHtml(artistName)}</div>
+                                <div style="font-size:13px;color:#555;">Organizer: <strong>${escapeHtml(organizerName)}</strong> ${organizerEmail ? ` (${escapeHtml(organizerEmail)})` : ''}</div>
+                                <div style="font-size:13px;color:#555;margin-top:6px;">Date: ${escapeHtml(date)} — Location: ${escapeHtml(location)}</div>
+                              </div>
+                              <div style="text-align:right;">
+                                <div style="font-weight:700">₹${escapeHtml(String(amount))}</div>
+                                <div style="font-size:13px;color:#666">${escapeHtml(status)}</div>
+                              </div>
+                            </div>
+                            <details style="margin-top:10px">
+                              <summary>Full booking details</summary>
+                              <pre style="white-space:pre-wrap;background:#fafafa;border:1px solid #eee;padding:8px;border-radius:6px;font-size:13px;">${escapeHtml(JSON.stringify(b, null, 2))}</pre>
+                            </details>
+                            <div class="profile-actions" style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end;">
+                              <button class="btn btn-edit viewed-btn">Viewed</button>
+                              <button class="btn hold-btn">Hold</button>
+                            </div>`;
+
+                        const viewedBtn = card.querySelector('.viewed-btn');
+                        const holdBtn = card.querySelector('.hold-btn');
+
+                        viewedBtn.addEventListener('click', async () => {
+                            try {
+                                viewedBtn.disabled = true; viewedBtn.textContent = 'Saving...';
+                                const updated = await updateBookingStatus(b._id, 'confirmed');
+                                adminEventsCache = adminEventsCache.map(en => (String(en.booking._id) === String(updated._id) ? Object.assign({}, en, { booking: updated }) : en));
+                                if (currentEventFilter === 'pending') {
+                                    card.remove();
+                                    if (!profileList.children.length) profileList.innerHTML = `<p>No ${escapeHtml(currentEventFilter)} events.</p>`;
+                                } else {
+                                    const statusEl = card.querySelector('div[style*="font-size:13px;color:#666"]');
+                                    if (statusEl) statusEl.textContent = updated.status || 'confirmed';
+                                    viewedBtn.disabled = false; viewedBtn.textContent = 'Viewed';
+                                }
+                            } catch (err) {
+                                console.error('Error updating status to confirmed', err);
+                                alert('Could not mark as confirmed: ' + (err.message || 'server error'));
+                                viewedBtn.disabled = false; viewedBtn.textContent = 'Viewed';
+                            }
+                        });
+
+                        holdBtn.addEventListener('click', async () => {
+                            try {
+                                holdBtn.disabled = true; holdBtn.textContent = 'Saving...';
+                                const updated = await updateBookingStatus(b._id, 'pending');
+                                adminEventsCache = adminEventsCache.map(en => (String(en.booking._id) === String(updated._id) ? Object.assign({}, en, { booking: updated }) : en));
+                                if (currentEventFilter === 'confirmed') {
+                                    card.remove();
+                                    if (!profileList.children.length) profileList.innerHTML = `<p>No ${escapeHtml(currentEventFilter)} events.</p>`;
+                                } else {
+                                    const statusEl = card.querySelector('div[style*="font-size:13px;color:#666"]');
+                                    if (statusEl) statusEl.textContent = updated.status || 'pending';
+                                    holdBtn.disabled = false; holdBtn.textContent = 'Hold';
+                                }
+                            } catch (err) {
+                                console.error('Error updating status to pending', err);
+                                alert('Could not set on hold: ' + (err.message || 'server error'));
+                                holdBtn.disabled = false; holdBtn.textContent = 'Hold';
+                            }
+                        });
+
+                        profileList.appendChild(card);
+                    });
+                }
+
+                async function loadEvents() {
+                    try {
+                        createEventsFilterBar();
+                        profileList.innerHTML = '<p>Loading events…</p>';
+                        const token = localStorage.getItem('token') || '';
+                        const res = await fetch('/api/admin/list-events', { headers: { 'Authorization': 'Bearer ' + token } });
+                        const data = await res.json();
+                        profileList.innerHTML = '';
+                        if (!data || !data.success) {
+                            profileList.innerHTML = `<p>Error loading events: ${escapeHtml((data && data.message) || 'Unknown')}</p>`;
+                            return;
+                        }
+                        adminEventsCache = data.events || [];
+                        currentEventFilter = 'pending';
+                        setActiveEventFilter();
+                        renderEvents();
+                    } catch (err) {
+                        console.error('loadEvents error', err);
+                        profileList.innerHTML = '<p>Error loading events (see console)</p>';
+                    }
+                }
+
+                function hideEventsFilterBar() {
+                    const bar = document.getElementById('eventsFilterBar');
+                    if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+                }
+
+                const originalLoadCurrentView = window.loadCurrentView || function(){};
+                window.loadCurrentView = function() {
+                    if (currentView === 'artists') { hideEventsFilterBar(); return loadProfiles(); }
+                    if (currentView === 'events') { return loadEvents(); }
+                    hideEventsFilterBar();
+                    return loadOrganizers();
+                };
+                // --------- End Enhanced Admin Events UI ---------
+        const openCreateArtistBtn = document.getElementById('openCreateArtistBtn');
+        const adminCreateModal = document.getElementById('adminCreateModal');
+        const adminCreateForm = document.getElementById('adminCreateForm');
+        const adminCreateResult = document.getElementById('adminCreateResult');
+        const resultEmail = document.getElementById('resultEmail');
+        const resultPassword = document.getElementById('resultPassword');
+        const openProfileBuilderBtn = document.getElementById('openProfileBuilderBtn');
+
+        function openAdminCreateModal() {
+            adminCreateForm.style.display = 'block';
+            adminCreateResult.style.display = 'none';
+            adminCreateModal.classList.add('active');
+        }
+
+    // If this HTML is opened directly from the filesystem (file://),
+    // use the local server origin so API calls reach the running server.
+    const API_BASE = (location.protocol === 'file:') ? 'https://localhost:5000' : '';
+
+        function closeAdminCreateModal() {
+            adminCreateModal.classList.remove('active');
+        }
+
+        async function adminCreateArtist(name, email) {
+            const token = localStorage.getItem('token');
+            if (!token) return alert('You must be logged in as admin.');
+
+            const resp = await fetch(API_BASE + '/api/admin/create-artist', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ name, email })
+            });
+            const data = await resp.json();
+            if (!data.success) return alert('Error: ' + (data.message || 'failed'));
+
+            // Show the returned credentials immediately
+            document.getElementById('credEmail').innerText = data.email;
+            document.getElementById('credPassword').innerText = data.password;
+            document.getElementById('credUserId').innerText = data.userId;
+            document.getElementById('credModal').style.display = 'block';
+
+            // Wire up buttons
+            document.getElementById('copyCredsBtn').onclick = () => {
+                const text = `Email: ${data.email}\nPassword: ${data.password}\nUserId: ${data.userId}`;
+                navigator.clipboard.writeText(text).then(() => alert('Credentials copied to clipboard'));
+            };
+
+            document.getElementById('downloadCsvBtn').onclick = () => {
+                const csv = `email,password,userId\n"${data.email}","${data.password}","${data.userId}"\n`;
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${data.email}-credentials.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            document.getElementById('closeCredModal').onclick = () => {
+                document.getElementById('credModal').style.display = 'none';
+                // clear password from UI to avoid showing it later
+                document.getElementById('credPassword').innerText = '';
+            };
+        }
+
+        function showAdminCredentialsModal(email, password, userId) {
+            adminCreateForm.style.display = 'none';
+            adminCreateResult.style.display = 'block';
+            resultEmail.textContent = email;
+            resultPassword.textContent = password;
+            // Wire up open profile builder button
+            openProfileBuilderBtn.onclick = function() {
+                window.location.href = `/profile.html?adminCreate=true&userId=${userId}`;
+            };
+            adminCreateModal.classList.add('active');
+            // Populate and show credentials modal too
+            const credModal = document.getElementById('credModal');
+            if (credModal) {
+                document.getElementById('credEmail').textContent = email;
+                document.getElementById('credPassword').textContent = password;
+                document.getElementById('credUserId').textContent = userId;
+                credModal.style.display = 'block';
+            }
+        }
+
+        function copyCredentials() {
+            const text = `Email: ${resultEmail.textContent}\nPassword: ${resultPassword.textContent}`;
+            try {
+                navigator.clipboard.writeText(text);
+                showToast('Credentials copied to clipboard');
+            } catch (err) {
+                alert(text);
+            }
+        }
+
+        // Bind UI
+        if (openCreateArtistBtn) openCreateArtistBtn.addEventListener('click', openAdminCreateModal);
+        if (adminCreateForm) adminCreateForm.addEventListener('submit', function(e){
+            e.preventDefault();
+            const name = document.getElementById('createArtistName').value.trim();
+            const email = document.getElementById('createArtistEmail').value.trim();
+            if (!name) return alert('Name required');
+            adminCreateArtist(name, email || undefined);
+        });
+
+        // View Credentials button - lists stored credentials created by this admin
+        const viewCredsBtn = document.getElementById('viewCredsBtn');
+        const credsContainer = document.getElementById('credsContainer');
+        if (viewCredsBtn) viewCredsBtn.onclick = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return alert('Login as admin first');
+            try {
+                const resp = await fetch('/api/admin/list-credentials', { headers: { 'Authorization': 'Bearer ' + token } });
+                const data = await resp.json();
+                if (!data.success) return alert('Error: ' + (data.message || 'failed'));
+
+                credsContainer.innerHTML = '';
+                credsContainer.style.display = 'block';
+
+                data.credentials.forEach(c => {
+                    const div = document.createElement('div');
+                    div.style.border = '1px solid #ddd'; div.style.padding = '8px'; div.style.margin = '8px 0';
+                    div.innerHTML = `
+                      <strong>${c.email}</strong><br>
+                      userId: ${c.userId}<br>
+                      password: <code>${c.password}</code><br>
+                      created: ${new Date(c.createdAt).toLocaleString()} <br>
+                      <button class="copyBtn">Copy</button>
+                    `;
+                    credsContainer.appendChild(div);
+                    div.querySelector('.copyBtn').onclick = () => navigator.clipboard.writeText(`email:${c.email}\npassword:${c.password}`);
+                });
+            } catch (err) {
+                console.error('viewCreds error', err);
+                alert('Network error: ' + (err.message || 'request failed'));
+            }
+        };
+
+        // Create Artist inline handler
+        const createArtistBtn = document.getElementById('createArtistBtn');
+        if (createArtistBtn) createArtistBtn.onclick = async () => {
+            const name = document.getElementById('artistName').value.trim();
+            const email = document.getElementById('artistEmail').value.trim();
+            const password = document.getElementById('artistPassword').value;
+            const token = localStorage.getItem('token');
+            if (!token) return alert('Login as admin first');
+            if (!name || !email || !password) return alert('name, email and password required');
+
+            try {
+                const resp = await fetch(API_BASE + '/api/admin/create-artist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await resp.json();
+                if (!data.success) return alert('Error: ' + (data.message || 'failed'));
+                alert('Artist created: ' + data.email);
+                window.location.href = `/profile.html?adminCreate=true&userId=${data.userId}`;
+            } catch (err) {
+                console.error('createArtist error', err);
+                alert('Network error: ' + (err.message || 'request failed'));
+            }
+        };
+
+        // Admin: Reset password for a user and show credentials in the modal
+        async function adminResetPassword(userId) {
+            const token = localStorage.getItem('token');
+            if (!token) return alert('You must be logged in as admin.');
+
+            try {
+                const resp = await fetch('/api/admin/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ userId })
+                });
+                const data = await resp.json();
+                if (!data.success) return alert('Error: ' + (data.message || 'failed'));
+
+                // Populate and show the credentials modal
+                document.getElementById('credEmail').innerText = data.email;
+                document.getElementById('credPassword').innerText = data.password;
+                document.getElementById('credUserId').innerText = data.userId;
+                document.getElementById('credModal').style.display = 'block';
+
+                // Wire up buttons (reuse existing handlers)
+                document.getElementById('copyCredsBtn').onclick = () => {
+                    const text = `Email: ${data.email}\nPassword: ${data.password}\nUserId: ${data.userId}`;
+                    navigator.clipboard.writeText(text).then(() => alert('Credentials copied to clipboard'));
+                };
+                document.getElementById('downloadCsvBtn').onclick = () => {
+                    const csv = `email,password,userId\n"${data.email}","${data.password}","${data.userId}"\n`;
+                    const blob = new Blob([csv], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${data.email}-credentials.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                };
+                document.getElementById('closeCredModal').onclick = () => {
+                    document.getElementById('credModal').style.display = 'none';
+                    document.getElementById('credPassword').innerText = '';
+                };
+
+            } catch (err) {
+                console.error('adminResetPassword error', err);
+                alert('Network error: ' + (err.message || 'request failed'));
+            }
+        }
+    </script>
+    <!-- Attach admin.js for additional admin behaviors -->
+    <script src="/js/admin.js"></script>
+        <!-- Credentials modal -->
+        <div id="credModal" style="display:none; position:fixed; left:50%; top:30%; transform:translate(-50%,-30%); background:white; padding:20px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.2); z-index:9999;">
+            <h3>Artist credentials (SAVE & SHARE)</h3>
+            <div>
+                <label>Email:</label> <span id="credEmail"></span><br>
+                <label>Password:</label> <span id="credPassword"></span><br>
+                <label>UserId:</label> <span id="credUserId"></span>
+            </div>
+            <div style="margin-top:12px;">
+                <button id="copyCredsBtn" class="btn btn-edit">Copy</button>
+                <button id="downloadCsvBtn" class="btn">Download CSV</button>
+                <button id="closeCredModal" class="btn btn-delete">Close</button>
+            </div>
+            <small style="display:block; margin-top:8px; color:#a00;">
+                Note: Password is shown only once. If lost later, use "Reset password" in Admin to generate a new one.
+            </small>
+        </div>
+
+        <script>
+            // Credentials modal handlers
+            document.getElementById('copyCredsBtn').addEventListener('click', function(){
+                const email = document.getElementById('credEmail').textContent;
+                const password = document.getElementById('credPassword').textContent;
+                const userId = document.getElementById('credUserId').textContent;
+                const text = `Email: ${email}\nPassword: ${password}\nUserId: ${userId}`;
+                try { navigator.clipboard.writeText(text); showToast('Credentials copied'); } catch (e) { alert(text); }
+            });
+
+            document.getElementById('downloadCsvBtn').addEventListener('click', function(){
+                const email = document.getElementById('credEmail').textContent;
+                const password = document.getElementById('credPassword').textContent;
+                const userId = document.getElementById('credUserId').textContent;
+                const csv = `email,password,userId\n"${email}","${password}","${userId}"\n`;
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `artist-credentials-${userId}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+            });
+
+            document.getElementById('closeCredModal').addEventListener('click', function(){
+                document.getElementById('credModal').style.display = 'none';
+            });
+        </script>
+</body>
+</html>
