@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
     :root {
-      --primary: #4A90E2; /* Blue for primary actions */
-      --accent: #50C878; /* Green for highlights */
-      --light: #F5F7FA; /* Light background */
-      --white: #FFFFFF; /* Pure white for cards */
-      --text: #2D3748; /* Dark text for readability */
-      --text-light: #718096; /* Lighter text for secondary info */
+      --primary: #4A90E2;
+      /* Blue for primary actions */
+      --accent: #50C878;
+      /* Green for highlights */
+      --light: #F5F7FA;
+      /* Light background */
+      --white: #FFFFFF;
+      /* Pure white for cards */
+      --text: #2D3748;
+      /* Dark text for readability */
+      --text-light: #718096;
+      /* Lighter text for secondary info */
       --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       --transition: all 0.3s ease;
       --radius: 12px;
@@ -286,14 +293,17 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.5rem;
-      align-items: stretch; /* ensure children stretch to equal height */
-      grid-auto-rows: 1fr; /* make rows uniform */
+      align-items: stretch;
+      /* ensure children stretch to equal height */
+      grid-auto-rows: 1fr;
+      /* make rows uniform */
     }
 
     /* make each team card a flex column so content aligns and stretches equally */
     .team-member {
       background: var(--white);
-      padding: 2rem; /* slightly larger cards */
+      padding: 2rem;
+      /* slightly larger cards */
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       transition: var(--transition);
@@ -310,7 +320,8 @@
     }
 
     .member-image {
-      width: 140px; /* slightly larger profile image */
+      width: 140px;
+      /* slightly larger profile image */
       height: 140px;
       border-radius: 50%;
       margin: 0 auto 1rem;
@@ -583,10 +594,12 @@
     }
   </style>
 </head>
+
 <body>
   <!-- Back to Home Button -->
   <div style="position: absolute; top: 24px; right: 32px; z-index: 100;">
-    <button id="back-home-btn" class="btn btn-secondary" style="padding: 0.6rem 1.5rem; border-radius: 30px; font-weight: 600; border: none; cursor: pointer;">
+    <button id="back-home-btn" class="btn btn-secondary"
+      style="padding: 0.6rem 1.5rem; border-radius: 30px; font-weight: 600; border: none; cursor: pointer;">
       <i class="fas fa-home"></i> Back to Home
     </button>
   </div>
@@ -599,14 +612,17 @@
 
     <div class="about-hero">
       <div class="about-hero-image">
-        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a5d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600&q=80" alt="Artist community">
+        <img
+          src="https://images.unsplash.com/photo-1511671782779-c97d3d27a5d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=600&q=80"
+          alt="Artist community">
       </div>
     </div>
 
     <div class="mission-section">
       <div class="mission-content">
         <h2><i class="fas fa-bullseye"></i> Our Mission</h2>
-        <p>At ConnectArtist, we empower artists of all disciplines—from musicians to magicians—to showcase their talent, connect with audiences, and build sustainable careers.</p>
+        <p>At ConnectArtist, we empower artists of all disciplines—from musicians to magicians—to showcase their talent,
+          connect with audiences, and build sustainable careers.</p>
         <div class="mission-stats">
           <div class="stat-item">
             <div class="stat-number" data-count="25000">0</div>
@@ -623,7 +639,9 @@
         </div>
       </div>
       <div class="mission-image">
-        <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80" alt="Artist performing">
+        <img
+          src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80"
+          alt="Artist performing">
       </div>
     </div>
 
@@ -674,41 +692,42 @@
       <div class="team-grid" style="grid-template-columns: repeat(3, 1fr); align-items: start;">
         <div class="team-member">
           <div class="member-image">
-            <img src="rahulraj.jpg" alt="Rahul Raj">
+
             <div class="social-links">
               <a href="#"><i class="fab fa-linkedin"></i></a>
               <a href="#"><i class="fab fa-github"></i></a>
             </div>
           </div>
-          <h3>Rahul Raj</h3>
-          <p class="position">Tech Lead</p>
-          <p class="bio">Seasoned systems engineer who designs scalable, secure platforms. He built the AI matching engine and booking backend to ensure reliable, high-performance service for artists and events.</p>
-        </div>
-
-        <div class="team-member">
-          <div class="member-image">
-            <img src="shubh.png" alt="Shubham Agarwal">
-            <div class="social-links">
-              <a href="#"><i class="fab fa-linkedin"></i></a>
-              <a href="#"><i class="fab fa-twitter"></i></a>
-            </div>
-          </div>
-          <h3>Shubham Agarwal</h3>
-          <p class="position">Founder & CEO</p>
-          <p class="bio">Developed the website and built the artist-relations network. Leads product and community to create fair, scalable opportunities and meaningful experiences for artists.</p>
+          <h3>Bhumik Kundu</h3>
+          <p class="bio">Seasoned systems engineer who designs scalable, secure platforms. He built the AI matching
+            engine and booking backend to ensure reliable, high-performance service for artists and events.</p>
         </div>
 
         <div class="team-member">
           <div class="member-image">
             <img src="sambhav.jpg" alt="Sambhav Jain">
             <div class="social-links">
-              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin"></i></a>
               <a href="#"><i class="fab fa-twitter"></i></a>
             </div>
           </div>
           <h3>Sambhav Jain</h3>
-          <p class="position">Head of Multimedia & PR Outreach</p>
-          <p class="bio">Leads multimedia and PR outreach to amplify artist stories across platforms. Crafts visual content and integrated campaigns that boost engagement, expand audience reach, and develop strategic partnerships to artist.</p>
+          <p class="bio">Developed the website and built the artist-relations network. Leads product and community to
+            create fair, scalable opportunities and meaningful experiences for artists.</p>
+        </div>
+
+        <div class="team-member">
+          <div class="member-image">
+
+            <div class="social-links">
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <h3>Subodh Yadav</h3>
+          <p class="bio">Leads multimedia and PR outreach to amplify artist stories across platforms. Crafts visual
+            content and integrated campaigns that boost engagement, expand audience reach, and develop strategic
+            partnerships to artist.</p>
         </div>
       </div>
     </div>
@@ -758,7 +777,7 @@
   </section>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       // Animate stats counting
       const statNumbers = document.querySelectorAll('.stat-number');
 
@@ -821,14 +840,18 @@
     });
 
     // Back to Home button handler
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const backBtn = document.getElementById('back-home-btn');
       if (backBtn) {
-        backBtn.addEventListener('click', function() {
+        backBtn.addEventListener('click', function () {
           window.location.href = 'frontend.html';
         });
       }
     });
   </script>
+
+  <!-- AI Chatbot Script -->
+  <script src="js/chatbot.js" defer></script>
 </body>
+
 </html>

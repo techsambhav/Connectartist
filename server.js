@@ -13,6 +13,7 @@ const authRoutes = require('./routes/authRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const paymentController = require('./controllers/paymentController');
 const authController = require('./controllers/authController');
+const chatController = require('./controllers/chatController');
 const User = require('./models/User');
 const Profile = require('./models/Profile');
 const AdminCredential = require('./models/AdminCredential');
@@ -284,6 +285,28 @@ app.post('/api/profile/save', authMw.ensureAuth, authMw.requireSessionRole ? aut
   if (artistType !== undefined) profile.genre = artistType;
   if (price !== undefined && price !== '') profile.price = Number(price) || 0;
   if (req.body.location !== undefined) profile.location = req.body.location;
+  // Availability: accept comma-separated YYYY-MM-DD string or JSON array from form
+  if (req.body.availableDates !== undefined) {
+    try {
+      let dates = req.body.availableDates;
+      if (typeof dates === 'string') {
+        // Could be JSON array or comma-separated
+        dates = dates.trim();
+        if (dates.startsWith('[')) {
+          dates = JSON.parse(dates);
+        } else {
+          dates = dates.split(',').map(d => d.trim()).filter(Boolean);
+        }
+      }
+      if (Array.isArray(dates)) {
+        // Validate YYYY-MM-DD format and deduplicate
+        const validDate = /^\d{4}-\d{2}-\d{2}$/;
+        profile.availableDates = [...new Set(dates.filter(d => validDate.test(d)))];
+      }
+    } catch (e) {
+      console.warn('Could not parse availableDates:', e.message);
+    }
+  }
 
     // Merge uploaded media (append new items)
     if (uploads.avatarUrl) profile.avatarUrl = uploads.avatarUrl;
@@ -449,7 +472,11 @@ passport.deserializeUser(async (id, done) => {
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/auth/google/callback'
+    // Use explicit env var; default to the proxy port in local dev so the redirect
+    // stays on the same origin the browser is already accessing (avoids Chrome
+    // "Unsafe attempt to load URL from frame with different origin" error).
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3000/api/auth/google/callback',
+    proxy: true   // respect X-Forwarded-* headers from the proxy
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         console.log('Google OAuth Strategy: profile received', {
@@ -791,6 +818,9 @@ app.get('/api/analytics/audience-preferences', async (req, res) => {
         res.status(500).json({ message: 'Error fetching audience preferences' });
     }
 });
+
+// AI Chatbot endpoint
+app.post('/api/chat', express.json(), chatController.handleChatMessage);
 
 // New endpoint: Create booking
 app.post('/api/booking', async (req, res) => {
@@ -1639,9 +1669,19 @@ if (!isProduction && !isRender) {
         if (targetIsHttps) options.rejectUnauthorized = false;
 
         const proxyReq = requestLib.request(options, proxyRes => {
-          // Forward status and headers
+          // Forward status and headers — rewrite any Location redirects so the
+          // browser stays on port 3000 (proxy) instead of jumping to port 5000
+          // directly, which triggers Chrome's cross-origin security block.
           try {
-            res.writeHead(proxyRes.statusCode, proxyRes.headers);
+            const outHeaders = Object.assign({}, proxyRes.headers);
+            if (outHeaders['location']) {
+              outHeaders['location'] = outHeaders['location']
+                .replace(
+                  new RegExp(`^(https?://localhost):${PORT}`, 'i'),
+                  `$1:${REDIRECT_PORT}`
+                );
+            }
+            res.writeHead(proxyRes.statusCode, outHeaders);
             proxyRes.pipe(res, { end: true });
           } catch (err) {
             console.warn('Proxy response forward error', err && err.message);

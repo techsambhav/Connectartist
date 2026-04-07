@@ -124,10 +124,31 @@ function renderProfiles(profiles) {
 
   const currentUserId = localStorage.getItem('userId');
 
+  if (profiles.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-calendar-times"></i><p>No artists match your filters.</p></div>';
+    return;
+  }
+
   profiles.forEach(profile => {
     const avatarUrl = profile.avatarUrl || 'https://storage.googleapis.com/connectartist-media/avatars/default-avatar.png';
     const videoUrl = profile.videos?.[0]?.url || '';
     const artistId = profile._id || profile.userId || profile.id || '';
+
+    // Build availability badge for card
+    const avDates = Array.isArray(profile.availableDates) ? profile.availableDates : [];
+    const upcoming = avDates.filter(d => d >= new Date().toISOString().slice(0,10)).sort().slice(0,2);
+    const availBadgeHtml = upcoming.length
+      ? `<div style="margin-bottom:0.7rem;display:flex;flex-wrap:wrap;gap:0.3rem;">
+          ${upcoming.map(d => {
+            const dt = new Date(d + 'T00:00:00');
+            const lbl = dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+            return `<span style="background:rgba(80,200,120,0.18);color:#27ae60;border:1px solid #50c878;border-radius:14px;padding:2px 8px;font-size:0.72rem;font-weight:600;">
+                      <i class="fas fa-circle-check" style="font-size:0.65rem;"></i> ${lbl}
+                    </span>`;
+          }).join('')}
+          ${avDates.length > 2 ? `<span style="color:#a0b1c8;font-size:0.72rem;padding:2px 4px;">+${avDates.length-2} more</span>` : ''}
+        </div>`
+      : '';
 
     const card = document.createElement('div');
     card.className = 'artist-card';
@@ -145,6 +166,7 @@ function renderProfiles(profiles) {
           <span class="artist-genre">${profile.artistType || profile.genre || ''}</span>
           <span class="artist-rating"><i class="fas fa-star"></i> ${profile.rating || '5.0'}</span>
         </div>
+        ${availBadgeHtml}
         <div class="artist-price">Starting from ₹${profile.price || 0}</div>
         <div class="artist-actions">
           <button class="btn-book" data-artist-id="${artistId}">Book Now</button>
@@ -178,6 +200,8 @@ function searchArtists() {
   const location = (locationFilter.value || '').toLowerCase();
   const priceRange = priceFilter.value;
   const sortBy = sortFilter.value;
+  // Availability date filter
+  const availDate = availabilityFilter ? availabilityFilter.value : ''; // 'YYYY-MM-DD' or ''
 
   let filtered = allProfiles.filter(artist => {
     const name = (artist.displayName || '').toLowerCase();
@@ -196,7 +220,14 @@ function searchArtists() {
       matchesPrice = max ? (artistPrice >= min && artistPrice <= max) : (artistPrice >= min);
     }
 
-    return matchesSearch && matchesGenre && matchesLocation && matchesPrice;
+    // Availability filter: artist must have the selected date in their availableDates array
+    let matchesAvailability = true;
+    if (availDate) {
+      const avDates = Array.isArray(artist.availableDates) ? artist.availableDates : [];
+      matchesAvailability = avDates.includes(availDate);
+    }
+
+    return matchesSearch && matchesGenre && matchesLocation && matchesPrice && matchesAvailability;
   });
 
   // Sort

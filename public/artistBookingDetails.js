@@ -485,11 +485,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Fetch artist price for prefill
-  async function ensureArtistPrice() {
+  // Fetch artist price and available dates for prefill
+  async function loadArtistDetails() {
     try {
       const aid = (hiddenIdField && hiddenIdField.value) || artistIdFromUrl;
-      if (!aid) return;
+      if (!aid) {
+        const dateSelect = document.getElementById('eventDate');
+        if (dateSelect) {
+            dateSelect.innerHTML = '<option value="">-- Artist not selected --</option>';
+            dateSelect.disabled = true;
+        }
+        return;
+      }
 
       const res = await fetch(`/api/profiles/${encodeURIComponent(aid)}`);
       const data = await res.json().catch(() => ({}));
@@ -501,13 +508,42 @@ document.addEventListener("DOMContentLoaded", () => {
           document.getElementById('price').value = priceVal;
           document.getElementById('price').placeholder = `Suggested: ₹${priceVal}`;
         }
+
+        // Populate available dates dropdown
+        const dateSelect = document.getElementById('eventDate');
+        if (dateSelect) {
+            let availableDates = prof.availableDates || [];
+            if (!Array.isArray(availableDates)) {
+                availableDates = [];
+            }
+            
+            // Filter to only future dates
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const futureDates = availableDates.filter(d => d >= todayStr).sort();
+
+            if (futureDates.length === 0) {
+                dateSelect.innerHTML = '<option value="">-- No available dates set by artist --</option>';
+            } else {
+                let optionsHtml = '<option value="">-- Select an available date --</option>';
+                futureDates.forEach(dateStr => {
+                    const dt = new Date(dateStr + 'T00:00:00');
+                    const label = dt.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+                    optionsHtml += `<option value="${dateStr}">${label}</option>`;
+                });
+                dateSelect.innerHTML = optionsHtml;
+            }
+        }
       }
     } catch (e) {
-      console.warn('Could not fetch artist profile for price', e);
+      console.warn('Could not fetch artist profile', e);
+      const dateSelect = document.getElementById('eventDate');
+      if (dateSelect) {
+          dateSelect.innerHTML = '<option value="">-- Error loading dates --</option>';
+      }
     }
   }
 
-  ensureArtistPrice();
+  loadArtistDetails();
 
   // ============================================================================
   // FORM SUBMISSION HANDLER

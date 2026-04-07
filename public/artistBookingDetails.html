@@ -511,7 +511,9 @@
 
             <div class="form-group">
               <label for="eventDate">Event Date <span class="required">*</span></label>
-              <input type="date" id="eventDate" name="eventDate" required>
+              <select id="eventDate" name="eventDate" required>
+                <option value="">-- Loading available dates... --</option>
+              </select>
               <div class="error-message" id="eventDate-error"></div>
             </div>
 

@@ -73,6 +73,11 @@ const profileSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  // Availability: list of dates when the artist is free (stored as ISO date strings YYYY-MM-DD)
+  availableDates: {
+    type: [String],
+    default: []
+  },
 }, {
   timestamps: true 
 });
